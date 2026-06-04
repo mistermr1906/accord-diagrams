@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Accord landing page — Section 06 · D7 Contract accuracy (flush-fit rebuild)
+  Supersedes: the previous "hollow-container-with-exactly-filling-interior" cube mechanic
+              (rejected 2026-04-17 — read as a plain cube, too close to D8).
+  Style-lock: diagrams/style-lock-isometric.md
+  Benchmark:  D4 hourglass · D5 lattice-plus-plane · D6 V-trough-plus-ball · Stat Row A.
+
+  Metaphor: A rectangular plug sunk FLUSH into a matching cavity in the iso ground plane.
+            The plug's top face sits exactly level with the ground surface — no step up,
+            no step down, no lip, no gap. Below-ground body of the plug is drawn as
+            dashed hidden edges (it extends exactly as deep as the cavity it fills).
+            The shared flush-top line where plug meets ground rim is the signature.
+            Emotional territory: exactness · exact fit · nothing over, nothing under.
+
+  Geometry — true 30° isometric, parallel projection:
+    screen_x = 200 + 0.866·(X − Y)
+    screen_y = 184 + 0.5·(X + Y) − Z           (world origin → canvas optical centre 200, 184)
+
+  Ground plane — square footprint, half-width G=75 (Z=0):
+    GB (−75, −75, 0) → (200,    109)   back   corner
+    GR (+75, −75, 0) → (329.90, 184)   right  corner
+    GF (+75, +75, 0) → (200,    259)   front  corner
+    GL (−75, +75, 0) → ( 70.10, 184)   left   corner
+
+  Plug — square footprint half B=40, depth D=30 (Z ∈ [−30, 0]):
+    Top rhombus (Z=0 · flush with ground):
+      BB (−40, −40,   0) → (200,    144)
+      BR (+40, −40,   0) → (269.28, 184)
+      BF (+40, +40,   0) → (200,    224)
+      BL (−40, +40,   0) → (130.72, 184)
+    Bottom rhombus (Z=−30 · below ground):
+      BB' (−40, −40, −30) → (200,    174)
+      BR' (+40, −40, −30) → (269.28, 214)
+      BF' (+40, +40, −30) → (200,    254)
+      BL' (−40, +40, −30) → (130.72, 214)
+
+  Depth=30 chosen so plug's front-bottom corner BF' (200, 254) stays inside the ground
+  rhombus perimeter (front corner GF at y=259) — plug reads fully contained below ground.
+
+  Edge roster:
+    SECONDARY  (4) — ground plane outer perimeter (atmospheric surround)
+    PRIMARY    (3) — plug top-rhombus front-left, left, back-left edges (the flush-top line)
+    ORANGE     (1) — plug top-rhombus front-right edge (BR→BF); the single spotlight on
+                     the exact line where plug meets cavity rim — the "it fits" moment
+    HIDDEN     (8) — plug 4 vertical side edges + plug 4 bottom-rhombus edges
+                     (all below-ground, occluded by the surrounding ground material)
+
+  Orange position — middle-right of canvas, diagonal going lower-left. Distinct from:
+    D4 (filled diamond at waist, middle-upper centre)
+    D5 (bottom-left of large anchor rhombus, bottom of canvas)
+    D6 (small diagonal interior top-face edge on ball, middle)
+    D8 (to be front-top-LEFT diagonal of ziggurat apex, upper-left)
+
+  Canvas: 400×400 · 1:1 square · container supplies dark ground (#0a0a0c) + 12 ambient
+  gridlines per style-lock container rules.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 400 400"
+     role="img"
+     aria-labelledby="d7-title d7-desc"
+     shape-rendering="geometricPrecision"
+     fill="none">
+  <title id="d7-title">Contract accuracy</title>
+  <desc id="d7-desc">A rectangular plug sunk flush into a matching cavity in the isometric ground plane, their top edges sharing one continuous line — representing part-timer shifts scheduled to exactly match the contracted count, nothing over, nothing under.</desc>
+
+  <defs>
+    <style>
+      .primary   { stroke: #e8e8ea; stroke-width: 1;    fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+      .secondary { stroke: #5a5a60; stroke-width: 0.75; fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+      .hidden    { stroke: #33333a; stroke-width: 0.5;  fill: none; stroke-dasharray: 3 3;             stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+      .accent    { stroke: #f7693b; stroke-width: 1;    fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+    </style>
+  </defs>
+
+  <!-- Plug · below-ground body — 4 vertical side edges + 4 bottom-rhombus edges (hidden, dashed) -->
+  <g aria-hidden="true">
+    <!-- 4 vertical side edges -->
+    <line class="hidden" x1="200"    y1="144" x2="200"    y2="174" /><!-- BB → BB' -->
+    <line class="hidden" x1="269.28" y1="184" x2="269.28" y2="214" /><!-- BR → BR' -->
+    <line class="hidden" x1="200"    y1="224" x2="200"    y2="254" /><!-- BF → BF' -->
+    <line class="hidden" x1="130.72" y1="184" x2="130.72" y2="214" /><!-- BL → BL' -->
+    <!-- 4 bottom-rhombus edges -->
+    <line class="hidden" x1="200"    y1="174" x2="269.28" y2="214" /><!-- BB' → BR' -->
+    <line class="hidden" x1="269.28" y1="214" x2="200"    y2="254" /><!-- BR' → BF' -->
+    <line class="hidden" x1="200"    y1="254" x2="130.72" y2="214" /><!-- BF' → BL' -->
+    <line class="hidden" x1="130.72" y1="214" x2="200"    y2="174" /><!-- BL' → BB' -->
+  </g>
+
+  <!-- Ground plane · outer perimeter (secondary · atmospheric surround) -->
+  <g aria-hidden="true">
+    <line class="secondary" x1="200"    y1="109" x2="329.90" y2="184" /><!-- GB → GR  back-right -->
+    <line class="secondary" x1="329.90" y1="184" x2="200"    y2="259" /><!-- GR → GF  front-right -->
+    <line class="secondary" x1="200"    y1="259" x2="70.10"  y2="184" /><!-- GF → GL  front-left -->
+    <line class="secondary" x1="70.10"  y1="184" x2="200"    y2="109" /><!-- GL → GB  back-left -->
+  </g>
+
+  <!-- Plug · top-rhombus · 3 primary edges (4th replaced by orange) — the flush-top line -->
+  <g aria-hidden="true">
+    <line class="primary" x1="200"    y1="144" x2="269.28" y2="184" /><!-- BB → BR  back-right -->
+    <line class="primary" x1="200"    y1="224" x2="130.72" y2="184" /><!-- BF → BL  front-left -->
+    <line class="primary" x1="130.72" y1="184" x2="200"    y2="144" /><!-- BL → BB  back-left  -->
+  </g>
+
+  <!-- Orange · single spotlight · plug top-rhombus front-right edge · the exact fit-line -->
+  <line class="accent" x1="269.28" y1="184" x2="200" y2="224" /><!-- BR → BF -->
+
+</svg>

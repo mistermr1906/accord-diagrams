@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Accord landing page — Section 02 · D1 Conversational setup
+  Source brief: diagrams/02-engine.md §D1
+  Style-lock:   diagrams/style-lock-isometric.md
+  Metaphor:     Layered hexagonal forms assembling from scattered positions into a unified structured block.
+
+  Composition:
+    - Core cluster (primary stroke): 3 hexagons in a triangular honeycomb arrangement at optical centre
+    - Scattered (secondary stroke): 4 individual hexagons at upper positions, reading as still-in-transit
+
+  Canvas: 400x400 viewBox · square 1:1 · background: container's #0a0a0c
+  Rendered size target: 240-320 px on landing page
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 400 400"
+     role="img"
+     aria-labelledby="d1-title d1-desc"
+     shape-rendering="geometricPrecision"
+     fill="none">
+  <title id="d1-title">Conversational setup</title>
+  <desc id="d1-desc">Scattered elements assembling into an organised whole — representing unstructured inputs becoming a structured store configuration.</desc>
+
+  <defs>
+    <style>
+      .primary {
+        stroke: #e8e8ea;
+        stroke-width: 1;
+        fill: none;
+        vector-effect: non-scaling-stroke;
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        stroke-miterlimit: 4;
+      }
+      .secondary {
+        stroke: #5a5a60;
+        stroke-width: 0.75;
+        fill: none;
+        vector-effect: non-scaling-stroke;
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        stroke-miterlimit: 4;
+      }
+    </style>
+  </defs>
+
+  <!-- Scattered hexagons (upper region, secondary stroke, r=16) -->
+  <g aria-hidden="true">
+    <!-- Hex A: far upper-left -->
+    <path class="secondary" d="M 103.86 83 L 90 91 L 76.14 83 L 76.14 67 L 90 59 L 103.86 67 Z" />
+    <!-- Hex B: upper-mid-left (closer to cluster) -->
+    <path class="secondary" d="M 153.86 113 L 140 121 L 126.14 113 L 126.14 97 L 140 89 L 153.86 97 Z" />
+    <!-- Hex C: upper-mid-right -->
+    <path class="secondary" d="M 278.86 93 L 265 101 L 251.14 93 L 251.14 77 L 265 69 L 278.86 77 Z" />
+    <!-- Hex D: far upper-right -->
+    <path class="secondary" d="M 333.86 128 L 320 136 L 306.14 128 L 306.14 112 L 320 104 L 333.86 112 Z" />
+  </g>
+
+  <!-- Core honeycomb cluster at optical centre (primary stroke, r=22) -->
+  <g aria-hidden="true">
+    <!-- Top hex -->
+    <path class="primary" d="M 219.05 179 L 200 190 L 180.95 179 L 180.95 157 L 200 146 L 219.05 157 Z" />
+    <!-- Bottom-left hex -->
+    <path class="primary" d="M 200.05 212 L 181 223 L 161.95 212 L 161.95 190 L 181 179 L 200.05 190 Z" />
+    <!-- Bottom-right hex -->
+    <path class="primary" d="M 238.05 212 L 219 223 L 199.95 212 L 199.95 190 L 219 179 L 238.05 190 Z" />
+  </g>
+</svg>

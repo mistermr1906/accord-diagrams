@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  D5 — Conflict-free Publishing
+  Accord landing page §06 · Outcome 2 (CONFLICT-FREE PUBLISHING)
+  Brief: diagrams/06-what-changes.md (D5 section)
+  Style-lock: diagrams/style-lock-isometric.md
+  Canvas: 460 × 460 (1:1 square)
+
+  Composition — Field Clears:
+  — Upper region (y ≈ 90–245): dense isometric lattice of 6 intersecting lines in SECONDARY stroke
+    (3 along X-axis slope +30°, 3 along Y-axis slope -30°). Constraint chaos residue.
+  — Middle region (y ≈ 245–280): abrupt transition — lattice simply ends, no opacity fade.
+  — Lower region (y ≈ 280–400): cleared foreground, anchor plane at optical centre of cleared space.
+  — Anchor plane: flat horizontal iso rhombus, width ≈ 165 px (~36% canvas), in PRIMARY stroke.
+  — Orange spotlight: BOTTOM-LEFT edge of anchor rhombus (BOTTOM corner → LEFT corner).
+
+  Echo avoidance: NOT convergence geometry (reserved for §02 D3). Anchor plane is an
+  independent resolved state, not a convergence target.
+
+  Isometric slopes:
+    +X direction: (0.866, +0.5) per world unit — down-right at 30°
+    +Y direction: (-0.866, +0.5) per world unit — down-left at 30°
+
+  Anchor plane rhombus corners (flat rhombus, no thickness):
+    TOP (230, 292.5) · RIGHT (312.27, 340) · BOTTOM (230, 387.5) · LEFT (147.73, 340)
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 460 460"
+     width="460" height="460"
+     role="img" aria-labelledby="d5-title d5-desc">
+  <title id="d5-title">Conflict-free publishing</title>
+  <desc id="d5-desc">A dense lattice of constraints at the back of the frame, with a clean resolved plane anchored in cleared foreground space — representing rule/request collisions resolved before publication.</desc>
+
+  <g fill="none" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" shape-rendering="geometricPrecision">
+
+    <!-- Lattice · secondary stroke 0.78 px · 6 intersecting iso lines -->
+    <g stroke="#5a5a60" stroke-width="0.78">
+      <!-- X-direction lines (slope +30°, going down-right) -->
+      <line x1="120" y1="90"  x2="293.2"  y2="190" />  <!-- L1 -->
+      <line x1="140" y1="125" x2="295.88" y2="215" />  <!-- L2 -->
+      <line x1="165" y1="165" x2="303.56" y2="245" />  <!-- L3 -->
+      <!-- Y-direction lines (slope -30°, going down-left) -->
+      <line x1="340" y1="90"  x2="166.8"  y2="190" />  <!-- L4 -->
+      <line x1="320" y1="125" x2="164.12" y2="215" />  <!-- L5 -->
+      <line x1="295" y1="165" x2="156.44" y2="245" />  <!-- L6 -->
+    </g>
+
+    <!-- Anchor plane · primary stroke 1.15 px · flat iso rhombus in cleared foreground
+         BOTTOM-LEFT edge replaced by orange spotlight below -->
+    <g stroke="#e8e8ea" stroke-width="1.15" vector-effect="non-scaling-stroke">
+      <!-- TOP-RIGHT edge: TOP → RIGHT -->
+      <line x1="230" y1="292.5" x2="312.27" y2="340" />
+      <!-- RIGHT-BOTTOM edge: RIGHT → BOTTOM -->
+      <line x1="312.27" y1="340" x2="230" y2="387.5" />
+      <!-- LEFT-TOP edge: LEFT → TOP -->
+      <line x1="147.73" y1="340" x2="230" y2="292.5" />
+    </g>
+
+    <!-- Orange spotlight · BOTTOM-LEFT edge of anchor plane (BOTTOM → LEFT corner) -->
+    <line x1="230" y1="387.5" x2="147.73" y2="340" stroke="#f7693b" stroke-width="1.15" vector-effect="non-scaling-stroke" />
+
+  </g>
+</svg>

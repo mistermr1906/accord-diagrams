@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<!--
+  Accord — D9: Store setup in plain conversation (UI product-screen mode)
+  Purpose: a static, high-fidelity mockup of Accord's onboarding chat — a manager
+  configures their shop by talking to the assistant, and the conversation becomes a
+  structured, solver-ready "store profile." A picture of a product screen, not an app.
+  No JavaScript, no real inputs, no animation.
+
+  Governed by diagrams/accord-diagram-bible.md (§5.4 UI product-screen, §6 one-accent).
+  Locks: accent is ORANGE (#ee5f19) — the single orange moment is the Confirm button
+  fill, nowhere else. No shadows/glows. The only blur is the summary card's backdrop-
+  filter (glass material). The assistant captures; the SOLVER does the work.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D9 Store Setup</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as proof-data-widget.html does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — the window floats top-left-ish in dominant negative space
+       (~55–65% of the canvas stays empty black). */
+    .figure {
+      min-height: 100vh;
+      padding: 96px;
+    }
+
+    /* The window vessel — a SOLID value-step surface (not translucent).
+       Depth = surface step + 1px hairline + corner vignette ONLY. No shadow/glow. */
+    .setup-window {
+      width: 440px;
+      border-radius: 22px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Corner vignette — softly darkens the edges so the window reads as floating.
+       A depth cue, never a content mask. */
+    .setup-window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 55%, transparent 60%, rgba(0,0,0,0.30) 100%);
+    }
+
+    /* (1) Header zone */
+    .sw-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--glass-hairline);
+    }
+    .sw-kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      line-height: 1;
+    }
+
+    /* (2) Chat area */
+    .sw-chat {
+      position: relative;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    /* Top fade — the first (faded) exchange melts upward into the header. */
+    .sw-chat::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      pointer-events: none;
+      z-index: 2;
+      background: linear-gradient(to bottom, var(--surface-card), transparent);
+    }
+
+    /* A message = sender label stacked above its bubble. */
+    .msg { display: flex; flex-direction: column; }
+    .msg.left  { align-items: flex-start; }
+    .msg.right { align-items: flex-end; }
+    .msg.faded { opacity: 0.4; }
+
+    .sender {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    /* LIVE messages read one shade brighter; faded pair stays --text-muted. */
+    .msg:not(.faded) .sender {
+      color: var(--text-tertiary);
+    }
+
+    .bubble {
+      max-width: 72%;
+      border-radius: 16px;
+      padding: 10px 14px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--text-primary);
+    }
+    .bubble.assistant {
+      background: var(--surface-card-2);
+      border: none;
+    }
+    .bubble.manager {
+      background: transparent;
+      border: 1px solid var(--glass-hairline);
+    }
+
+    /* The summary card — the ONE glass element. */
+    .summary-card {
+      width: 88%;
+      align-self: flex-start;
+      background: var(--glass-fill);
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-hairline);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .summary-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    .summary-rows {
+      display: flex;
+      flex-direction: column;
+    }
+    .summary-row {
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      gap: 12px;
+      padding: 7px 0;
+      align-items: start;
+    }
+    .summary-row + .summary-row {
+      border-top: 1px solid var(--glass-hairline);
+    }
+    .sr-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      line-height: 1.3;
+    }
+    .sr-value {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+    .summary-foot {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--glass-hairline);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    /* (3) CTA row — the ONE orange moment in the whole figure. */
+    .sw-cta {
+      padding: 20px;
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0c; /* the only raw hex — near-black for contrast on orange */
+      border: none;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--glass-hairline);
+      color: var(--text-secondary);
+    }
+
+    /* FIG caption — OUTSIDE the window, left-aligned to its left edge. */
+    .fig-caption { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <main class="figure">
+    <section
+      class="setup-window"
+      aria-label="Accord onboarding chat turning a manager's spoken answers into a structured, solver-ready store profile."
+    >
+      <!-- (1) Header -->
+      <div class="sw-header">
+        <div class="sw-kicker">ACCORD &middot; STORE SETUP</div>
+      </div>
+
+      <!-- (2) Chat area -->
+      <div class="sw-chat">
+        <!-- 1. FADED — assistant -->
+        <div class="msg left faded">
+          <div class="sender">ACCORD</div>
+          <div class="bubble assistant">And what type of business is James Oliver?</div>
+        </div>
+
+        <!-- 2. FADED — manager -->
+        <div class="msg right faded">
+          <div class="sender">MARCUS</div>
+          <div class="bubble manager">Menswear retail, one floor.</div>
+        </div>
+
+        <!-- 3. LIVE — assistant -->
+        <div class="msg left">
+          <div class="sender">ACCORD</div>
+          <div class="bubble assistant">What are your opening hours — do they vary by day?</div>
+        </div>
+
+        <!-- 4. LIVE — manager -->
+        <div class="msg right">
+          <div class="sender">MARCUS</div>
+          <div class="bubble manager">9am to 9pm, Monday through Saturday. Sundays 11 to 5.</div>
+        </div>
+
+        <!-- Lead-in to the summary card -->
+        <div class="msg left">
+          <div class="sender">ACCORD</div>
+          <div class="bubble assistant">Here's the store profile I've captured:</div>
+        </div>
+
+        <!-- The summary card — the one glass element -->
+        <div class="summary-card">
+          <div class="summary-title">Store profile &middot; James Oliver</div>
+          <div class="summary-rows">
+            <div class="summary-row">
+              <div class="sr-label">TRADING DAYS</div>
+              <div class="sr-value num">7 of 7 days open</div>
+            </div>
+            <div class="summary-row">
+              <div class="sr-label">HOURS</div>
+              <div class="sr-value num">Mon&ndash;Sat 09:00&ndash;21:00 &middot; Sun 11:00&ndash;17:00</div>
+            </div>
+            <div class="summary-row">
+              <div class="sr-label">SHIFT TYPES</div>
+              <div class="sr-value num">3 of 3 &middot; Early / Mid / Late</div>
+            </div>
+            <div class="summary-row">
+              <div class="sr-label">COVERAGE FLOOR</div>
+              <div class="sr-value num">&ge;1 Early + &ge;1 Late daily &middot; 2 Late on Sundays</div>
+            </div>
+          </div>
+          <div class="summary-foot">READY FOR THE SOLVER</div>
+        </div>
+      </div>
+
+      <!-- (3) CTA row — the one orange moment -->
+      <div class="sw-cta">
+        <button class="btn btn-primary" type="button">Confirm profile</button>
+        <button class="btn btn-ghost" type="button">Edit</button>
+      </div>
+    </section>
+
+    <!-- FIG caption — spaced-hyphen separator, left-aligned to the window edge. -->
+    <p class="fig-caption">FIG 7.1A - STORE SETUP IN PLAIN CONVERSATION</p>
+  </main>
+</body>
+</html>

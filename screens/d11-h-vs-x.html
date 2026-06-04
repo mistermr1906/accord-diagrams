@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<!--
+  Accord — D11: H vs X, side by side (UI product-screen mode)
+  Purpose: a static, high-fidelity figure proving Accord's central trust rule —
+  ONLY a holiday (H) reduces the weekly shift target; a day-off request (X) just
+  pins which days the regular days off fall on. Two equal panels, same person
+  (Marcus), same two days booked off in one week — but as 2H his target drops
+  5 → 3, and as 2X his target stays 5. A comparison, not a sequence: no
+  connector, no arrow, no "vs".
+
+  Governed by diagrams/accord-diagram-bible.md (§5.4 UI product-screen, §6 one-accent).
+  Locks: accent is ORANGE (#ee5f19) — the single orange moment is the big "3"
+  (the target that MOVED) in the left footer, nowhere else. Its visual rhyme is
+  the big WHITE "5" in the right footer (the target that DIDN'T move). No green
+  tick. No shadows/glows. Depth = value-step surface + 1px hairline + corner
+  vignette only. No JavaScript, no real inputs, no animation.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D11 Holiday vs Day Off</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as D10 does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — the two panels float top-left in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      padding: 96px;
+    }
+
+    /* The comparison: two equal panels side by side. No connector between them. */
+    .comparison {
+      display: flex;
+      align-items: flex-start;
+      gap: 48px;
+    }
+    .panel {
+      width: 300px;
+      flex: 0 0 300px;
+    }
+
+    /* ---- The mono kicker that hangs above each vessel ---- */
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    /* ---- The vessel = a value-step window with a 1px hairline + corner vignette.
+       Depth cues only: no shadow, no glow. ---- */
+    .frame {
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 22px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 55%, transparent 60%, rgba(0,0,0,0.30) 100%);
+    }
+    .frame > * { position: relative; z-index: 1; }
+
+    .sub-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    /* The week strip: 7 day-columns, Sun → Sat. Header row of single-letter
+       day-heads, then one row of shift cells. Columns align via one grid. */
+    .week {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      column-gap: 3px;
+      row-gap: 4px;
+    }
+    .day-head {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      text-align: center;
+    }
+    .cell {
+      height: 30px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cell.e   { background: var(--shift-e-bg);   color: var(--shift-e-text); }
+    .cell.m   { background: var(--shift-m-bg);   color: var(--shift-m-text); }
+    .cell.l   { background: var(--shift-l-bg);   color: var(--shift-l-text); }
+    .cell.h   { background: var(--shift-h-bg);   color: var(--shift-h-text); }   /* Holiday — muted violet */
+    .cell.x   { background: var(--shift-x-bg);   color: var(--shift-x-text); }   /* Requested day off — neutral grey, no fill, EXPLICIT X */
+    .cell.off { background: var(--shift-off-bg); color: var(--shift-off-text); } /* Regular day off — the · marker */
+
+    /* ---- The footer — separated by a hairline, like D10's hero-foot.
+       This is where the one orange moment lives (left panel). ---- */
+    .target {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--glass-hairline);
+    }
+    .target-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+    }
+    .target-value {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+    /* The two big numbers are the same size and sit on the same baseline — a
+       deliberate visual rhyme: the number that MOVED is orange, the number that
+       DIDN'T is white. */
+    .big {
+      font-family: var(--font-sans);
+      font-size: 30px;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .big-moved  { color: var(--accent); }       /* THE ONE ORANGE MOMENT — appears exactly once in the file */
+    .big-stayed { color: var(--text-primary); } /* white — the target that didn't change */
+    .was {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1;
+      color: var(--text-tertiary);
+    }
+    .arrow {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1;
+      color: var(--text-tertiary);
+    }
+    .unit {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+    .unchanged {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+    }
+    .target-note {
+      margin-top: 8px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+
+    /* ---- Shared legend — below both panels, hung from the left margin.
+       Each code letter in its own shift-tint colour (Bible rule). ---- */
+    .legend {
+      margin-top: 28px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+    }
+    .legend .e   { color: var(--shift-e-text); }
+    .legend .m   { color: var(--shift-m-text); }
+    .legend .l   { color: var(--shift-l-text); }
+    .legend .h   { color: var(--shift-h-text); }
+    .legend .x   { color: var(--shift-x-text); }
+    .legend .off { color: var(--shift-off-text); }
+
+    /* FIG caption — hung from the stage's left margin. */
+    .fig-caption { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <main class="figure">
+    <section
+      class="comparison"
+      aria-label="Marcus books the same two days, Monday and Tuesday, off in one week. As two holidays his weekly target drops from 5 shifts to 3 and he works 3. As two day-off requests his target stays 5 shifts and he still works 5 — the two days simply move to other days. Only a holiday reduces the weekly target."
+    >
+      <!-- LEFT PANEL — 2H (holiday) -->
+      <div class="panel">
+        <div class="kicker">HOLIDAY &middot; 2H</div>
+        <div class="frame">
+          <div class="sub-title">Marcus &middot; one week</div>
+
+          <!-- Week strip: Sun Mon Tue Wed Thu Fri Sat -->
+          <div class="week">
+            <div class="day-head" aria-hidden="true">S</div>
+            <div class="day-head" aria-hidden="true">M</div>
+            <div class="day-head" aria-hidden="true">T</div>
+            <div class="day-head" aria-hidden="true">W</div>
+            <div class="day-head" aria-hidden="true">T</div>
+            <div class="day-head" aria-hidden="true">F</div>
+            <div class="day-head" aria-hidden="true">S</div>
+
+            <div class="cell e num">E</div>
+            <div class="cell h num">H</div>
+            <div class="cell h num">H</div>
+            <div class="cell e num">E</div>
+            <div class="cell m num">M</div>
+            <div class="cell off num" aria-hidden="true">&middot;</div>
+            <div class="cell off num" aria-hidden="true">&middot;</div>
+          </div>
+
+          <!-- Footer — the one orange moment: the target that MOVED -->
+          <div class="target">
+            <div class="target-label">WEEKLY TARGET</div>
+            <div class="target-value">
+              <span class="was num">5</span>
+              <span class="arrow" aria-hidden="true">&rarr;</span>
+              <span class="big big-moved num">3</span>
+              <span class="unit">shifts</span>
+            </div>
+            <div class="target-note num">2 of 2 holidays booked &middot; works 3 of 3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL — 2X (day off) -->
+      <div class="panel">
+        <div class="kicker">DAY OFF &middot; 2X</div>
+        <div class="frame">
+          <div class="sub-title">Marcus &middot; one week</div>
+
+          <!-- Week strip: Sun Mon Tue Wed Thu Fri Sat -->
+          <div class="week">
+            <div class="day-head" aria-hidden="true">S</div>
+            <div class="day-head" aria-hidden="true">M</div>
+            <div class="day-head" aria-hidden="true">T</div>
+            <div class="day-head" aria-hidden="true">W</div>
+            <div class="day-head" aria-hidden="true">T</div>
+            <div class="day-head" aria-hidden="true">F</div>
+            <div class="day-head" aria-hidden="true">S</div>
+
+            <div class="cell e num">E</div>
+            <div class="cell x num">X</div>
+            <div class="cell x num">X</div>
+            <div class="cell e num">E</div>
+            <div class="cell m num">M</div>
+            <div class="cell l num">L</div>
+            <div class="cell l num">L</div>
+          </div>
+
+          <!-- Footer — the visual rhyme: the target that STAYED (white, not orange) -->
+          <div class="target">
+            <div class="target-label">WEEKLY TARGET</div>
+            <div class="target-value">
+              <span class="big big-stayed num">5</span>
+              <span class="unit">shifts</span>
+              <span class="unchanged num">&middot; unchanged</span>
+            </div>
+            <div class="target-note num">2 of 2 days off pinned &middot; works 5 of 5</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Shared legend — below both panels, hung from the left margin. -->
+    <div class="legend">
+      <span class="e">E</span> Early &middot; <span class="m">M</span> Mid &middot; <span class="l">L</span> Late &middot; <span class="h">H</span> Holiday &middot; <span class="x">X</span> Requested day off &middot; <span class="off">&middot;</span> Regular day off
+    </div>
+
+    <!-- FIG caption — spaced-hyphen separator, hung from the stage's left margin. -->
+    <p class="fig-caption">FIG 7.3A - ONLY A HOLIDAY REDUCES THE WEEKLY TARGET</p>
+  </main>
+</body>
+</html>

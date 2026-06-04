@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Accord landing page — Section 06 · D6 Automatic rebalancing (V-trough rebuild)
+  Supersedes: the previous "beam resting on columns with one block missing" mechanic
+              (rejected 2026-04-17 — read as industrial machinery, not silent correction).
+  Style-lock: diagrams/style-lock-isometric.md
+  Benchmark:  D4 hourglass (400×400 · filled orange grain at waist) · D5 lattice-plus-plane
+              (460×460 · orange edge on anchor rhombus) · Stat Row A (A1–A3).
+
+  Metaphor: A concave V-trough in isometric wireframe — two sloping inner walls meeting
+            at a horizontal crease along the floor — with a single small cube settled
+            at the lowest point of the valley. Gravity found the ball's resting place;
+            the geometry of the well made it inevitable; no hand, no machinery, no
+            trajectory lines. Emotional territory: invisibility · automatic correction.
+
+  Geometry — true 30° isometric, parallel projection:
+    screen_x = 200 + 0.866·(X − Y)
+    screen_y = 163 + 0.5·(X + Y) − Z
+
+  Trough — length L=192 (along X, half=96), width W=120 (along Y, half=60), depth D=72:
+    A (−96, −60,  0) → (168.82,  85)   top-rim · back-far side · back corner
+    B (+96, −60,  0) → (335.10, 181)   top-rim · back-far side · front corner
+    C (+96, +60,  0) → (231.18, 241)   top-rim · near side · front corner
+    D (−96, +60,  0) → ( 64.90, 145)   top-rim · near side · back corner
+    E (−96,   0, −72)→ (116.86, 187)   crease · back end
+    F (+96,   0, −72)→ (283.14, 283)   crease · front end
+
+  Edge-weight assignment by depth (closer → primary):
+    PRIMARY    — C→F · B→F · B→C · E→F · C→D    (front-end V-cross-section + near rim + valley floor)
+    SECONDARY  — D→E · A→B · A→E · D→A           (back-end V-cross-section + far rim)
+
+  Ball — iso cube, side 20, centred at world (0, 0, −62); bottom face rests on crease at (0,0,−72):
+    Silhouette hexagon (CW from top):
+      (200, 205) back-top (−10,−10,−52)
+      (217.32, 215) top-right (+10,−10,−52)
+      (217.32, 235) bottom-right (+10,−10,−72)
+      (200, 245) front-bottom (+10,+10,−72)
+      (182.68, 235) bottom-left (−10,+10,−72)
+      (182.68, 215) top-left (−10,+10,−52)
+    Front-top interior corner (visible Y-radiator): (200, 225) = (+10,+10,−52)
+    Back-bottom interior corner (hidden Y-radiator): (200, 225) = (−10,−10,−72) — coincident in screen
+
+  Orange — single edge on the settled ball: the top-face near-right edge
+    FRONT-TOP (200, 225) → TOP-RIGHT (217.32, 215). Short diagonal glint on the top
+    of the rested mass. Position-distinct from D4 (centre waist, filled diamond) and
+    D5 (bottom-left of large anchor rhombus). Gesture-distinct: interior diagonal edge
+    at upper-middle, not silhouette edge, not filled primitive.
+
+  Canvas: 400×400 · 1:1 square · container supplies dark ground (#0a0a0c) + 12 ambient
+  gridlines per style-lock container rules.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 400 400"
+     role="img"
+     aria-labelledby="d6-title d6-desc"
+     shape-rendering="geometricPrecision"
+     fill="none">
+  <title id="d6-title">Automatic rebalancing</title>
+  <desc id="d6-desc">A concave isometric V-trough with a single small cube settled at the lowest point of the valley — representing weekly shift targets quietly self-adjusting to the stable resting state with no intervention.</desc>
+
+  <defs>
+    <style>
+      .primary   { stroke: #e8e8ea; stroke-width: 1;    fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+      .secondary { stroke: #5a5a60; stroke-width: 0.75; fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+      .hidden    { stroke: #33333a; stroke-width: 0.5;  fill: none; stroke-dasharray: 3 3;             stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+      .accent    { stroke: #f7693b; stroke-width: 1;    fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+    </style>
+  </defs>
+
+  <!-- Trough · back-end V-cross-section + far rim + back slopes (secondary · receding) -->
+  <g aria-hidden="true">
+    <line class="secondary" x1="64.90"  y1="145" x2="168.82" y2="85"  /><!-- D→A  back-end rim -->
+    <line class="secondary" x1="168.82" y1="85"  x2="335.10" y2="181" /><!-- A→B  far-side top rim -->
+    <line class="secondary" x1="168.82" y1="85"  x2="116.86" y2="187" /><!-- A→E  back-far slope edge -->
+    <line class="secondary" x1="64.90"  y1="145" x2="116.86" y2="187" /><!-- D→E  back-near slope edge -->
+  </g>
+
+  <!-- Trough · front-end V-cross-section + near rim + crease (primary · foreground) -->
+  <g aria-hidden="true">
+    <line class="primary" x1="335.10" y1="181" x2="231.18" y2="241" /><!-- B→C  front-end rim  -->
+    <line class="primary" x1="231.18" y1="241" x2="64.90"  y2="145" /><!-- C→D  near-side top rim -->
+    <line class="primary" x1="335.10" y1="181" x2="283.14" y2="283" /><!-- B→F  front-far slope -->
+    <line class="primary" x1="231.18" y1="241" x2="283.14" y2="283" /><!-- C→F  front-near slope -->
+    <line class="primary" x1="116.86" y1="187" x2="283.14" y2="283" /><!-- E→F  crease (valley bottom) -->
+  </g>
+
+  <!-- Ball · hidden Y-radiator edges from back-bottom corner (dashed tertiary) -->
+  <g aria-hidden="true">
+    <line class="hidden" x1="200" y1="225" x2="200"    y2="205" /><!-- back-bottom → back-top (vertical, behind) -->
+    <line class="hidden" x1="200" y1="225" x2="217.32" y2="235" /><!-- back-bottom → bottom-right -->
+    <line class="hidden" x1="200" y1="225" x2="182.68" y2="235" /><!-- back-bottom → bottom-left  -->
+  </g>
+
+  <!-- Ball · silhouette hexagon (primary) -->
+  <g aria-hidden="true">
+    <line class="primary" x1="200"    y1="205" x2="217.32" y2="215" /><!-- back-top → top-right -->
+    <line class="primary" x1="217.32" y1="215" x2="217.32" y2="235" /><!-- top-right → bottom-right -->
+    <line class="primary" x1="217.32" y1="235" x2="200"    y2="245" /><!-- bottom-right → front-bottom -->
+    <line class="primary" x1="200"    y1="245" x2="182.68" y2="235" /><!-- front-bottom → bottom-left -->
+    <line class="primary" x1="182.68" y1="235" x2="182.68" y2="215" /><!-- bottom-left → top-left -->
+    <line class="primary" x1="182.68" y1="215" x2="200"    y2="205" /><!-- top-left → back-top -->
+  </g>
+
+  <!-- Ball · visible Y-radiator edges from front-top corner (primary · 2 interior edges; third replaced by orange) -->
+  <g aria-hidden="true">
+    <line class="primary" x1="200" y1="225" x2="200"    y2="245" /><!-- front-top → front-bottom (vertical front) -->
+    <line class="primary" x1="200" y1="225" x2="182.68" y2="215" /><!-- front-top → top-left     (top-face diagonal) -->
+  </g>
+
+  <!-- Orange · single spotlight · top-face near-right edge of the settled ball -->
+  <line class="accent" x1="200" y1="225" x2="217.32" y2="215" />
+
+</svg>

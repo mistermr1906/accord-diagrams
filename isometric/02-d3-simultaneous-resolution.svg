@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Accord landing page — Section 02 · D3 Simultaneous resolution
+  Source brief: diagrams/02-engine.md §D3
+  Style-lock:   diagrams/style-lock-isometric.md
+  Metaphor:     Multiple parallel rectangular planes receding in depth, all converging toward a
+                single focal point. Many rules resolving into one valid output.
+
+  Geometry:
+    True 30° isometric parallel projection. Six vertical walls parallel to each other,
+    positioned along the world Y (depth) axis at y = 0, 20, 40, 60, 80, 100. Each wall's
+    half-dimensions (hw, hh) = (0.5 × (200−y), 0.3 × (200−y)) so all plane corners lie on
+    rays emanating from a mathematical focal point F = (0, 200, 0). This produces true
+    geometric convergence within the parallel-projection constraint — the convergence is
+    encoded in the size progression of the parallel planes, not in foreshortening.
+
+    Iso projection: screen = (0.866·(x−y), 0.5·(x+y)−z).
+    Canvas origin offset: (221.65, 184) so composition geometric centre lands at optical
+    centre (shape centre 4% above geometric canvas centre of 200).
+
+    Focal point F screen position: (0.866·(0−200), 0.5·200−0) = (−173.2, 100)
+    → On canvas: (221.65 − 173.2, 184 + 100) = (48.45, 284).
+
+    Multiplicity authorised per style-lock §E: "multiplicity allowed only when multiplicity
+    is itself the concept." Six parallel planes converging = multiplicity as the concept.
+
+    Stroke assignment:
+    - Plane 1 (front, largest): primary (1 px) — dominant
+    - Planes 2–6 (receding): secondary (0.75 px) — depth through weight hierarchy
+    - Four convergence lines from plane 6 corners to focal point: primary (1 px) — the subject
+
+    Convergence treatment: lines meet at focal point and terminate. No shape, no dot, no
+    marker at the apex. Pure geometric intersection per the brief's §D3 elements-to-avoid rule.
+
+  Canvas: 400×400 viewBox · square 1:1 · background: container's #0a0a0c
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 400 400"
+     role="img"
+     aria-labelledby="d3-title d3-desc"
+     shape-rendering="geometricPrecision"
+     fill="none">
+  <title id="d3-title">Simultaneous resolution</title>
+  <desc id="d3-desc">Many parallel rules converging into a single resolved point — representing constraints solved together in one pass.</desc>
+
+  <defs>
+    <style>
+      .primary {
+        stroke: #e8e8ea;
+        stroke-width: 1;
+        fill: none;
+        vector-effect: non-scaling-stroke;
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        stroke-miterlimit: 4;
+      }
+      .secondary {
+        stroke: #5a5a60;
+        stroke-width: 0.75;
+        fill: none;
+        vector-effect: non-scaling-stroke;
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        stroke-miterlimit: 4;
+      }
+    </style>
+  </defs>
+
+  <!-- Planes drawn back-to-front for visual Z-order (back planes behind, front plane on top) -->
+
+  <!-- Plane 6 (back, smallest, y=100) -->
+  <path class="secondary" aria-hidden="true"
+        d="M 91.75 239 L 178.35 289 L 178.35 229 L 91.75 179 Z" />
+
+  <!-- Plane 5 (y=80) -->
+  <path class="secondary" aria-hidden="true"
+        d="M 100.41 230 L 204.33 290 L 204.33 218 L 100.41 158 Z" />
+
+  <!-- Plane 4 (y=60) -->
+  <path class="secondary" aria-hidden="true"
+        d="M 109.07 221 L 230.31 291 L 230.31 207 L 109.07 137 Z" />
+
+  <!-- Plane 3 (y=40) -->
+  <path class="secondary" aria-hidden="true"
+        d="M 117.73 212 L 256.29 292 L 256.29 196 L 117.73 116 Z" />
+
+  <!-- Plane 2 (y=20) -->
+  <path class="secondary" aria-hidden="true"
+        d="M 126.39 203 L 282.27 293 L 282.27 185 L 126.39 95 Z" />
+
+  <!-- Plane 1 (front, largest, y=0) — dominant primary stroke -->
+  <path class="primary" aria-hidden="true"
+        d="M 135.05 194 L 308.25 294 L 308.25 174 L 135.05 74 Z" />
+
+  <!-- Convergence lines from Plane 6 corners to focal point F = (48.45, 284) -->
+  <!-- Lines meet at F and terminate. No shape, no dot, no marker. -->
+  <g aria-hidden="true">
+    <path class="primary" d="M 91.75 239 L 48.45 284" />
+    <path class="primary" d="M 178.35 289 L 48.45 284" />
+    <path class="primary" d="M 178.35 229 L 48.45 284" />
+    <path class="primary" d="M 91.75 179 L 48.45 284" />
+  </g>
+</svg>

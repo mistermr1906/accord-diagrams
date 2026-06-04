@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!--
+  Accord — Diagram token reference. Values mirror diagram-tokens.css verbatim.
+  Same near-black / IBM Plex styling as the gallery.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — Diagram tokens</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg-root);
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 72px 48px 110px; }
+
+    .back {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      color: var(--text-tertiary);
+      border-bottom: 1px solid var(--glass-gridline);
+      padding-bottom: 1px;
+    }
+    .back:hover { color: var(--text-primary); }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.6875rem;
+      color: var(--accent-stroke);
+      margin: 28px 0 16px;
+    }
+    h1 { font-family: var(--font-sans); font-weight: 300; font-size: 2.25rem; color: var(--text-primary); margin: 0 0 8px; letter-spacing: -0.01em; }
+    .lede { font-size: 1rem; color: var(--text-tertiary); margin: 0 0 16px; max-width: 640px; }
+
+    h2 {
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 1.1875rem;
+      color: var(--text-primary);
+      margin: 64px 0 6px;
+    }
+    .grp-note { font-size: 0.875rem; color: var(--text-muted); margin: 0 0 22px; max-width: 640px; }
+
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .sw {
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .chip { height: 64px; border-bottom: 1px solid var(--glass-hairline); }
+    .chip.bordered { box-shadow: inset 0 0 0 1px var(--glass-hairline); }
+    .sw-body { padding: 11px 13px 13px; }
+    .sw-name { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-primary); margin: 0 0 3px; }
+    .sw-hex  { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-muted); letter-spacing: 0.02em; }
+    .sw-role { font-size: 0.8125rem; color: var(--text-tertiary); margin: 6px 0 0; line-height: 1.4; }
+
+    /* shift cell preview: bg + its own text colour */
+    .cell {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 1.25rem;
+      border-bottom: 1px solid var(--glass-hairline);
+    }
+
+    /* typography rows */
+    .type-row {
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 12px;
+      padding: 20px 22px;
+      margin-bottom: 14px;
+    }
+    .type-sample-sans { font-family: var(--font-sans); font-weight: 400; font-size: 1.625rem; color: var(--text-primary); margin: 0 0 8px; }
+    .type-sample-mono { font-family: var(--font-mono); font-weight: 400; font-size: 1.25rem; color: var(--text-primary); margin: 0 0 8px; letter-spacing: 0.02em; }
+    .type-name { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary); }
+    .type-role { font-size: 0.875rem; color: var(--text-muted); margin: 4px 0 0; }
+
+    /* radius scale */
+    .radii { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+    .rad {
+      background: var(--surface-card-2);
+      border: 1px solid var(--glass-hairline);
+      padding: 18px 16px 14px;
+      text-align: center;
+    }
+    .rad-box {
+      height: 56px;
+      background: var(--bg-root);
+      border: 1px solid var(--accent-stroke);
+      margin: 0 auto 12px;
+    }
+    .rad-name { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-primary); }
+    .rad-val { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-muted); margin-top: 2px; }
+
+    @media (max-width: 600px) { .wrap { padding: 56px 24px 80px; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <a class="back" href="./index.html">← Diagrams gallery</a>
+
+    <p class="eyebrow">Accord · diagram tokens</p>
+    <h1>Token reference</h1>
+    <p class="lede">Every value below is from the shared <code style="font-family:var(--font-mono);color:var(--text-tertiary)">diagram-tokens.css</code>. The Bible is the source of truth — if a value here disagrees, the Bible wins.</p>
+
+    <!-- ===== Surface ladder ===== -->
+    <h2>Surface ladder</h2>
+    <p class="grp-note">Elevation is always a value step, never a shadow. A card looks "above" the page because it is lighter, darkest → lightest.</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#0a0a0c"></div><div class="sw-body"><p class="sw-name">--bg-root</p><p class="sw-hex">#0a0a0c</p><p class="sw-role">Diagram ground.</p></div></div>
+      <div class="sw"><div class="chip" style="background:#131416"></div><div class="sw-body"><p class="sw-name">--surface-recessed</p><p class="sw-hex">#131416</p><p class="sw-role">Recessed data / chart panel.</p></div></div>
+      <div class="sw"><div class="chip" style="background:#161618"></div><div class="sw-body"><p class="sw-name">--surface-card</p><p class="sw-hex">#161618</p><p class="sw-role">Glass card / screen window (L1).</p></div></div>
+      <div class="sw"><div class="chip" style="background:#1c1c1e"></div><div class="sw-body"><p class="sw-name">--surface-card-2</p><p class="sw-hex">#1c1c1e</p><p class="sw-role">Elevated surface (L2): popover, active row.</p></div></div>
+      <div class="sw"><div class="chip" style="background:#1e1d1b"></div><div class="sw-body"><p class="sw-name">--surface-warm</p><p class="sw-hex">#1e1d1b</p><p class="sw-role">Warm glass inside accent zones.</p></div></div>
+      <div class="sw"><div class="chip" style="background:#262523"></div><div class="sw-body"><p class="sw-name">--surface-edge</p><p class="sw-hex">#262523</p><p class="sw-role">Inner edge / frosted rim. Hairline only.</p></div></div>
+    </div>
+
+    <!-- ===== Accent ===== -->
+    <h2>The single accent — orange</h2>
+    <p class="grp-note">One accent at two weights, not two brand colours. Never a wireframe stroke, never a background, never behind body text. Cyan/teal is fully abandoned.</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#ee5f19"></div><div class="sw-body"><p class="sw-name">--accent</p><p class="sw-hex">#ee5f19</p><p class="sw-role">Solid fill: marker dots, accent bars, primary-CTA fills, focus ring.</p></div></div>
+      <div class="sw"><div class="chip" style="background:#f7693b"></div><div class="sw-body"><p class="sw-name">--accent-stroke</p><p class="sw-hex">#f7693b</p><p class="sw-role">1px hairline / small text over near-black. Eyebrows, crosshair.</p></div></div>
+    </div>
+
+    <!-- ===== Grey text steps ===== -->
+    <h2>Grey text steps</h2>
+    <p class="grp-note">The text ramp on near-black. Off-white top, never pure white.</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#ededed"></div><div class="sw-body"><p class="sw-name">--text-primary</p><p class="sw-hex">#ededed</p><p class="sw-role">Big numbers, headings, the one line a figure is about.</p></div></div>
+      <div class="sw"><div class="chip" style="background:#bdbdbd"></div><div class="sw-body"><p class="sw-name">--text-quote</p><p class="sw-hex">#bdbdbd</p><p class="sw-role">Serif-italic testimonial body only.</p></div></div>
+      <div class="sw"><div class="chip" style="background:#b2b2b2"></div><div class="sw-body"><p class="sw-name">--text-secondary</p><p class="sw-hex">#b2b2b2</p><p class="sw-role">Sub-labels, body, resting list rows.</p></div></div>
+      <div class="sw"><div class="chip" style="background:#9e9e9e"></div><div class="sw-body"><p class="sw-name">--text-tertiary</p><p class="sw-hex">#9e9e9e</p><p class="sw-role">Smaller captions, field labels, axis ticks.</p></div></div>
+      <div class="sw"><div class="chip" style="background:#6e7176"></div><div class="sw-body"><p class="sw-name">--text-muted</p><p class="sw-hex">#6e7176</p><p class="sw-role">FIG captions, tiniest micro-labels.</p></div></div>
+      <div class="sw"><div class="chip" style="background:#4a4a4e"></div><div class="sw-body"><p class="sw-name">--text-quaternary</p><p class="sw-hex">#4a4a4e</p><p class="sw-role">De-emphasised / blocked / faded-out content.</p></div></div>
+    </div>
+
+    <!-- ===== Shift palette ===== -->
+    <h2>Shift palette</h2>
+    <p class="grp-note">The rota grid (UI product-screen mode). Each cell shows its background with its own text colour. No cyan/teal — "teal Early" is overridden to dusty green.</p>
+    <div class="swatches">
+      <div class="sw"><div class="cell" style="background:#16211a;color:#5a9768">E</div><div class="sw-body"><p class="sw-name">--shift-e</p><p class="sw-hex">bg #16211a · text #5a9768</p><p class="sw-role">Early — dusty green.</p></div></div>
+      <div class="sw"><div class="cell" style="background:#151c27;color:#6b8fb5">M</div><div class="sw-body"><p class="sw-name">--shift-m</p><p class="sw-hex">bg #151c27 · text #6b8fb5</p><p class="sw-role">Mid — muted slate-blue.</p></div></div>
+      <div class="sw"><div class="cell" style="background:#211d14;color:#a8845e">L</div><div class="sw-body"><p class="sw-name">--shift-l</p><p class="sw-hex">bg #211d14 · text #a8845e</p><p class="sw-role">Late — warm tan.</p></div></div>
+      <div class="sw"><div class="cell" style="background:transparent;color:#8a8a8d">X</div><div class="sw-body"><p class="sw-name">--shift-x</p><p class="sw-hex">bg transparent · text #8a8a8d</p><p class="sw-role">Day off — neutral grey, no fill.</p></div></div>
+      <div class="sw"><div class="cell" style="background:#1a1620;color:#917daa">H</div><div class="sw-body"><p class="sw-name">--shift-h</p><p class="sw-hex">bg #1a1620 · text #917daa</p><p class="sw-role">Holiday — muted violet.</p></div></div>
+      <div class="sw"><div class="cell" style="background:#131315;color:#6b6b6f">·</div><div class="sw-body"><p class="sw-name">--shift-off</p><p class="sw-hex">bg #131315 · text #6b6b6f</p><p class="sw-role">Off (regular) — empty / row-alt.</p></div></div>
+    </div>
+
+    <!-- ===== Status colours ===== -->
+    <h2>Status colours</h2>
+    <p class="grp-note">UI product-screen mode only. Information, read second — never "the accent". Each has a dark bed.</p>
+    <div class="swatches">
+      <div class="sw"><div class="cell" style="background:#2e2414;color:#c89544">warning</div><div class="sw-body"><p class="sw-name">--status-warning</p><p class="sw-hex">#c89544 · bed #2e2414</p><p class="sw-role">Coverage-below-min, day-4-of-5 streak, deferred request.</p></div></div>
+      <div class="sw"><div class="cell" style="background:#14291f;color:#3ecf8e">success</div><div class="sw-body"><p class="sw-name">--status-success</p><p class="sw-hex">#3ecf8e · bed #14291f</p><p class="sw-role">Validated, Honoured ✓, all slots filled.</p></div></div>
+      <div class="sw"><div class="cell" style="background:#3a1a1b;color:#ea6363">danger</div><div class="sw-body"><p class="sw-name">--status-danger</p><p class="sw-hex">#ea6363 · bed #3a1a1b</p><p class="sw-role">Hard infeasibility / blocked-day only.</p></div></div>
+      <div class="sw"><div class="cell" style="background:#1f2514;color:#8fa14a">ambient</div><div class="sw-body"><p class="sw-name">--status-ambient</p><p class="sw-hex">#8fa14a · bed #1f2514</p><p class="sw-role">Ambient / informational notes; never a primary action.</p></div></div>
+    </div>
+
+    <!-- ===== Typefaces ===== -->
+    <h2>Typefaces</h2>
+    <p class="grp-note">Two families, never crossed.</p>
+    <div class="type-row">
+      <p class="type-sample-sans">Marcus covers the Early manager shift</p>
+      <p class="type-name">--font-sans · IBM Plex Sans (300 / 400 / 500)</p>
+      <p class="type-role">The spoken / prose voice: headlines, body, and all big stat numbers.</p>
+    </div>
+    <div class="type-row">
+      <p class="type-sample-mono">FIG 6.4 — 14 OF 14 SHIFTS · rota_mar2026.xlsx</p>
+      <p class="type-name">--font-mono · IBM Plex Mono (400 / 500)</p>
+      <p class="type-role">The instrument-readout voice: FIG captions, axis tags, codes, filenames, uppercase kickers.</p>
+    </div>
+
+    <!-- ===== Corner radius ===== -->
+    <h2>Corner radius</h2>
+    <p class="grp-note">Glass / UI product-screen mode. Isometric &amp; editorial modes keep zero radius — no exceptions.</p>
+    <div class="radii">
+      <div class="rad"><div class="rad-box" style="border-radius:22px"></div><p class="rad-name">Large card / window</p><p class="rad-val">20–24px</p></div>
+      <div class="rad"><div class="rad-box" style="border-radius:13px"></div><p class="rad-name">KPI sub-tile</p><p class="rad-val">12–14px</p></div>
+      <div class="rad"><div class="rad-box" style="border-radius:11px"></div><p class="rad-name">Tooltip chip</p><p class="rad-val">10–12px</p></div>
+      <div class="rad"><div class="rad-box" style="border-radius:8px"></div><p class="rad-name">Button</p><p class="rad-val">8px</p></div>
+      <div class="rad"><div class="rad-box" style="border-radius:7px"></div><p class="rad-name">Grid cell</p><p class="rad-val">6–8px</p></div>
+      <div class="rad"><div class="rad-box" style="border-radius:0"></div><p class="rad-name">Isometric / editorial</p><p class="rad-val">0px</p></div>
+    </div>
+
+  </div>
+</body>
+</html>

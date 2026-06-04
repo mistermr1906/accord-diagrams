@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Accord landing page — Section 02 · D2 Scheduling continuity
+  Source brief: diagrams/02-engine.md §D2
+  Style-lock:   diagrams/style-lock-isometric.md
+  Metaphor:     Stacked horizontal planes with a continuous thread running through all layers,
+                connecting bottom to top without breaking.
+
+  Geometry:
+    True 30° isometric parallel projection. Each plane is a horizontal rectangle (140 × 60
+    world units) at progressive Z offsets. Iso projection: screen = (0.866·(x−y), 0.5·(x+y)−z).
+    World origin maps to SVG (200, 229) so the optical-centre shift lands 4% above geometric
+    centre (184).
+
+    Plane vertices per-plane (world): C1(−70,−30), C2(70,−30), C3(70,30), C4(−70,30)
+    → screen-relative: C1(−34.64,−50), C2(86.60,20), C3(34.64,50), C4(−86.60,−20)
+    C1 = back-most vertex (smallest screen Y). C3 = front-most vertex (largest screen Y).
+    Front edges (C2→C3 and C3→C4) = primary stroke.
+    Back edges (C2→C1 and C1→C4) = secondary stroke.
+
+    Plane z-offsets: 0, 30, 60, 90.
+    Thread: vertical line at screen X=200, from Y=29 (60 above plane 4 top vertex at Y=89)
+    to Y=339 (60 below plane 1 bottom vertex at Y=279). The 60-unit extension = 15% of canvas.
+
+  Canvas: 400×400 viewBox · square 1:1 · background: container's #0a0a0c
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 400 400"
+     role="img"
+     aria-labelledby="d2-title d2-desc"
+     shape-rendering="geometricPrecision"
+     fill="none">
+  <title id="d2-title">Scheduling continuity</title>
+  <desc id="d2-desc">A continuous connection passing unbroken through stacked time layers — representing scheduling continuity across months.</desc>
+
+  <defs>
+    <style>
+      .primary {
+        stroke: #e8e8ea;
+        stroke-width: 1;
+        fill: none;
+        vector-effect: non-scaling-stroke;
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        stroke-miterlimit: 4;
+      }
+      .secondary {
+        stroke: #5a5a60;
+        stroke-width: 0.75;
+        fill: none;
+        vector-effect: non-scaling-stroke;
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        stroke-miterlimit: 4;
+      }
+    </style>
+  </defs>
+
+  <!-- Plane 1 (bottom, z=0) -->
+  <g aria-hidden="true">
+    <path class="secondary" d="M 286.6 249 L 165.36 179 L 113.4 209" />
+    <path class="primary"   d="M 286.6 249 L 234.64 279 L 113.4 209" />
+  </g>
+
+  <!-- Plane 2 (z=30) -->
+  <g aria-hidden="true">
+    <path class="secondary" d="M 286.6 219 L 165.36 149 L 113.4 179" />
+    <path class="primary"   d="M 286.6 219 L 234.64 249 L 113.4 179" />
+  </g>
+
+  <!-- Plane 3 (z=60) -->
+  <g aria-hidden="true">
+    <path class="secondary" d="M 286.6 189 L 165.36 119 L 113.4 149" />
+    <path class="primary"   d="M 286.6 189 L 234.64 219 L 113.4 149" />
+  </g>
+
+  <!-- Plane 4 (top, z=90) -->
+  <g aria-hidden="true">
+    <path class="secondary" d="M 286.6 159 L 165.36 89 L 113.4 119" />
+    <path class="primary"   d="M 286.6 159 L 234.64 189 L 113.4 119" />
+  </g>
+
+  <!-- Continuous thread: single unbroken vertical line from 60 above top plane to 60 below bottom plane -->
+  <path class="primary" d="M 200 29 L 200 339" aria-hidden="true" />
+</svg>

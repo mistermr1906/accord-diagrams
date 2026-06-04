@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<!--
+  Accord — Landing-page diagrams · designer handoff gallery
+  Static, self-contained. Visual language mirrors the diagram screens: near-black
+  ground (--bg-root), IBM Plex Sans/Mono, shared diagram-tokens.css. One accent
+  (orange #ee5f19) reserved for genuine accents only — no cyan/teal.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — Landing-page diagrams</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as the screen files do) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens -->
+  <link rel="stylesheet" href="./diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* Shared left margin — every section and the header align to this column */
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 88px 48px 120px;
+    }
+
+    /* ---- Header ---------------------------------------------------------- */
+    .eyebrow {
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.6875rem;
+      color: var(--accent-stroke);
+      margin: 0 0 18px;
+    }
+    h1 {
+      font-family: var(--font-sans);
+      font-weight: 300;
+      font-size: 2.5rem;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      margin: 0 0 10px;
+    }
+    .subtitle {
+      font-size: 1.0625rem;
+      color: var(--text-tertiary);
+      margin: 0 0 34px;
+      font-weight: 300;
+    }
+    .intro {
+      max-width: 760px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--glass-hairline);
+      padding-top: 26px;
+      margin: 0;
+    }
+    .intro p { margin: 0 0 14px; }
+    .intro p:last-child { margin-bottom: 0; }
+    .intro a {
+      color: var(--text-primary);
+      text-decoration: none;
+      border-bottom: 1px solid var(--glass-gridline);
+    }
+    .intro a:hover { border-bottom-color: var(--text-primary); }
+    .intro strong { color: var(--text-primary); font-weight: 500; }
+
+    /* ---- Section --------------------------------------------------------- */
+    section { margin-top: 72px; }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      border-bottom: 1px solid var(--glass-hairline);
+      padding-bottom: 14px;
+      margin-bottom: 36px;
+    }
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      letter-spacing: 0.06em;
+      color: var(--accent-stroke);
+    }
+    .section-title {
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+    }
+    .section-meta {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ---- Card grid ------------------------------------------------------- */
+    .grid {
+      display: grid;
+      gap: 24px;
+    }
+    .grid-iso { grid-template-columns: repeat(3, 1fr); }
+    .grid-screens { grid-template-columns: repeat(3, 1fr); }
+
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Isometric SVG stage — near-black, square */
+    .iso-stage {
+      background: var(--bg-root);
+      border-bottom: 1px solid var(--glass-hairline);
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .iso-stage img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Screen thumbnail — scaled non-interactive iframe */
+    .screen-stage {
+      position: relative;
+      background: var(--bg-root);
+      border-bottom: 1px solid var(--glass-hairline);
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+    }
+    .screen-stage iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1100px;
+      height: 825px;            /* 1100 × 4/3 */
+      border: 0;
+      transform: scale(0.345);  /* ≈ 1100 → ~380px wide card content */
+      transform-origin: top left;
+      pointer-events: none;
+    }
+    /* invisible click-catcher so a stray click never reaches the iframe */
+    .screen-stage .catch {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .meta {
+      padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .meta-top {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .d-num {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 0.8125rem;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+    }
+    .concept {
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+      font-weight: 400;
+    }
+    .screen-title {
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+      font-weight: 400;
+    }
+    .hint {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .hint code {
+      font-family: var(--font-mono);
+      color: var(--text-tertiary);
+      font-size: 0.75rem;
+    }
+
+    .links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+    a.action {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--glass-gridline);
+      padding-bottom: 1px;
+    }
+    a.action:hover { color: var(--text-primary); border-bottom-color: var(--text-primary); }
+    a.action.primary {
+      color: var(--accent-stroke);
+      border-bottom-color: rgba(247, 105, 59, 0.4);
+    }
+    a.action.primary:hover { border-bottom-color: var(--accent-stroke); }
+
+    footer {
+      margin-top: 84px;
+      border-top: 1px solid var(--glass-hairline);
+      padding-top: 24px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    footer a { color: var(--text-tertiary); text-decoration: none; border-bottom: 1px solid var(--glass-gridline); }
+    footer a:hover { color: var(--text-primary); }
+
+    @media (max-width: 900px) {
+      .grid-iso, .grid-screens { grid-template-columns: repeat(2, 1fr); }
+      .wrap { padding: 64px 28px 90px; }
+      h1 { font-size: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .grid-iso, .grid-screens { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header>
+      <p class="eyebrow">Accord · designer handoff</p>
+      <h1>Landing-page diagrams</h1>
+      <p class="subtitle">11 finished figures across three landing-page sections.</p>
+
+      <div class="intro">
+        <p>
+          Hi Robert — this is the working set of diagrams for the Accord landing page.
+          Everything here is built from one shared token set (palette, type, spacing) so
+          the figures stay visually consistent. The <a href="./tokens.html">Tokens page</a>
+          lists every colour, typeface and radius value.
+        </p>
+        <p>
+          The <strong>isometric figures</strong> (§02, §06) are downloadable SVG vectors —
+          drag the file straight into Figma and edit the paths directly. The
+          <strong>product-screen mockups</strong> (§07) are full HTML pages; to bring one in
+          as editable Figma layers, run the <strong>html.to.design</strong> plugin on that
+          screen's own URL (each "Open full screen ↗" link below is that URL).
+        </p>
+      </div>
+    </header>
+
+    <!-- ===== §02 · Engine ============================================== -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">§02</span>
+        <span class="section-title">Engine</span>
+        <span class="section-meta">3 of 11 · D1–D3 · isometric</span>
+      </div>
+      <div class="grid grid-iso">
+
+        <article class="card">
+          <div class="iso-stage"><img src="isometric/02-d1-conversational-setup.svg" alt="D1 — Conversational setup" /></div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D1</span><span class="concept">Conversational setup</span></div>
+            <div class="links"><a class="action" href="isometric/02-d1-conversational-setup.svg" download>Download SVG ↗</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="iso-stage"><img src="isometric/02-d2-scheduling-continuity.svg" alt="D2 — Scheduling continuity" /></div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D2</span><span class="concept">Scheduling continuity</span></div>
+            <div class="links"><a class="action" href="isometric/02-d2-scheduling-continuity.svg" download>Download SVG ↗</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="iso-stage"><img src="isometric/02-d3-simultaneous-resolution.svg" alt="D3 — Simultaneous resolution" /></div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D3</span><span class="concept">Simultaneous resolution</span></div>
+            <div class="links"><a class="action" href="isometric/02-d3-simultaneous-resolution.svg" download>Download SVG ↗</a></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===== §06 · What changes ======================================= -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">§06</span>
+        <span class="section-title">What changes</span>
+        <span class="section-meta">5 of 11 · D4–D8 · isometric</span>
+      </div>
+      <div class="grid grid-iso">
+
+        <article class="card">
+          <div class="iso-stage"><img src="isometric/06-d4-time-reclaimed.svg" alt="D4 — Time reclaimed" /></div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D4</span><span class="concept">Time reclaimed</span></div>
+            <div class="links"><a class="action" href="isometric/06-d4-time-reclaimed.svg" download>Download SVG ↗</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="iso-stage"><img src="isometric/06-d5-conflict-free-publishing.svg" alt="D5 — Conflict-free publishing" /></div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D5</span><span class="concept">Conflict-free publishing</span></div>
+            <div class="links"><a class="action" href="isometric/06-d5-conflict-free-publishing.svg" download>Download SVG ↗</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="iso-stage"><img src="isometric/06-d6-automatic-rebalancing.svg" alt="D6 — Automatic rebalancing" /></div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D6</span><span class="concept">Automatic rebalancing</span></div>
+            <div class="links"><a class="action" href="isometric/06-d6-automatic-rebalancing.svg" download>Download SVG ↗</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="iso-stage"><img src="isometric/06-d7-contract-accuracy.svg" alt="D7 — Contract accuracy" /></div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D7</span><span class="concept">Contract accuracy</span></div>
+            <div class="links"><a class="action" href="isometric/06-d7-contract-accuracy.svg" download>Download SVG ↗</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="iso-stage"><img src="isometric/06-d8-first-publish-reliability.svg" alt="D8 — First-publish reliability" /></div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D8</span><span class="concept">First-publish reliability</span></div>
+            <div class="links"><a class="action" href="isometric/06-d8-first-publish-reliability.svg" download>Download SVG ↗</a></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===== §07 · How it works ======================================= -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">§07</span>
+        <span class="section-title">How it works</span>
+        <span class="section-meta">3 of 11 · D9–D11 · product screens</span>
+      </div>
+      <div class="grid grid-screens">
+
+        <article class="card">
+          <div class="screen-stage">
+            <iframe src="screens/d9-setup-interview.html" title="D9 — Store setup in plain conversation" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+            <a class="catch" href="screens/d9-setup-interview.html" aria-label="Open D9 full screen"></a>
+          </div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D9</span><span class="screen-title">Store setup in plain conversation</span></div>
+            <p class="hint">To edit in Figma: import this page's URL with the <code>html.to.design</code> plugin.</p>
+            <div class="links"><a class="action primary" href="screens/d9-setup-interview.html">Open full screen ↗</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="screen-stage">
+            <iframe src="screens/d10-generation-sequence.html" title="D10 — Generation sequence" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+            <a class="catch" href="screens/d10-generation-sequence.html" aria-label="Open D10 full screen"></a>
+          </div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D10</span><span class="screen-title">Generation sequence</span></div>
+            <p class="hint">To edit in Figma: import this page's URL with the <code>html.to.design</code> plugin.</p>
+            <div class="links"><a class="action primary" href="screens/d10-generation-sequence.html">Open full screen ↗</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="screen-stage">
+            <iframe src="screens/d11-h-vs-x.html" title="D11 — Holiday vs day-off" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+            <a class="catch" href="screens/d11-h-vs-x.html" aria-label="Open D11 full screen"></a>
+          </div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">D11</span><span class="screen-title">Holiday vs day-off (H vs X)</span></div>
+            <p class="hint">To edit in Figma: import this page's URL with the <code>html.to.design</code> plugin.</p>
+            <div class="links"><a class="action primary" href="screens/d11-h-vs-x.html">Open full screen ↗</a></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <footer>
+      11 of 11 diagrams · shared token set → <a href="./tokens.html">Tokens reference ↗</a>
+    </footer>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<!--
+  Accord — D10: Generate, validated in one pass (UI product-screen mode, Composition E)
+  Purpose: a static, high-fidelity mockup of Accord's generation sequence — a manager
+  presses Generate, the SOLVER validates the month against every rule, and a finished,
+  validated March 2026 rota returns with 0 violations. An asymmetric storyboard:
+  two small frames stacked left (1 GENERATE, 2 VALIDATE) thread into one dominant hero
+  frame right (3 PUBLISH). A picture of a product screen, not an app.
+  No JavaScript, no real inputs, no animation.
+
+  Governed by diagrams/accord-diagram-bible.md (§5.4 UI product-screen, §6 one-accent).
+  Locks: accent is ORANGE (#ee5f19) — the single orange moment is the "0" in the result
+  line, nowhere else. Green ✓ (--status-success) for the validation checks. No shadows/
+  glows. Depth = value-step surfaces + 1px hairlines + corner vignette only.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D10 Generation Sequence</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as D9 does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — the storyboard floats top-left in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      padding: 96px;
+    }
+
+    /* The asymmetric storyboard: narrow left stack → thin thread → dominant hero. */
+    .storyboard {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* ---- The mono kicker that hangs above each frame ---- */
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    /* ---- A frame = a value-step window with a 1px hairline + corner vignette.
+       Depth cues only: no shadow, no glow. ---- */
+    .frame {
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      position: relative;
+      overflow: hidden;
+    }
+    .frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 55%, transparent 60%, rgba(0,0,0,0.30) 100%);
+    }
+    .frame > * { position: relative; z-index: 1; }
+
+    /* ---- LEFT COLUMN — two small stacked frames ---- */
+    .left-col {
+      width: 210px;
+      flex: 0 0 210px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .frame.small {
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    /* Frame 1 — GENERATE */
+    .frame-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+    .lv-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      margin-bottom: 16px;
+    }
+    .lv-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .lv-value {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.2;
+    }
+    /* The Generate button in its PRESSED/just-clicked state — NOT orange. */
+    .btn-pressed {
+      display: inline-block;
+      background: var(--surface-card-2);
+      border: 1px solid var(--glass-hairline);
+      color: var(--text-primary);
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    /* Frame 2 — VALIDATE (the solver's constraint checklist) */
+    .check-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .check-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .check-mark {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      line-height: 1.2;
+      color: var(--status-success); /* the only coloured icon — green = positive outcome */
+      flex: 0 0 auto;
+    }
+    .check-body { line-height: 1.3; }
+    .check-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+    }
+    .check-value {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    /* ---- THE THREAD — a single 1px hairline connecting the left stack to the hero.
+       No arrowheads. A subtle implication of sequence. ---- */
+    .thread {
+      flex: 0 0 48px;
+      height: 1px;
+      background: var(--glass-hairline);
+    }
+
+    /* ---- RIGHT COLUMN — the HERO frame (3 · PUBLISH) ---- */
+    .right-col {
+      width: 430px;
+      flex: 0 0 430px;
+    }
+    .frame.hero {
+      border-radius: 22px;
+      padding: 20px;
+    }
+    .hero-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    /* The transposed rota grid: employees as rows, weekdays as columns.
+       Row labels sit in their own left column, OUTSIDE the cell field. */
+    .rota {
+      display: grid;
+      grid-template-columns: 56px repeat(5, 1fr);
+      gap: 3px;
+    }
+    .rota-corner { /* empty top-left cell */ }
+    .col-head {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding-bottom: 4px;
+    }
+    .row-label {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      padding-right: 8px;
+    }
+    .cell {
+      height: 26px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cell.e   { background: var(--shift-e-bg); color: var(--shift-e-text); }
+    .cell.m   { background: var(--shift-m-bg); color: var(--shift-m-text); }
+    .cell.l   { background: var(--shift-l-bg); color: var(--shift-l-text); }
+    .cell.off { background: var(--shift-off-bg); color: var(--shift-off-text); }
+
+    /* Legend — OUTSIDE the grid (Bible rule). Each code letter in its tint colour. */
+    .legend {
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+    }
+    .legend .e { color: var(--shift-e-text); }
+    .legend .m { color: var(--shift-m-text); }
+    .legend .l { color: var(--shift-l-text); }
+
+    /* The result footer — validated pill + the one orange moment. */
+    .hero-foot {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--glass-hairline);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--status-success-bed);
+      color: var(--status-success);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+    .result {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+    .result-zero {
+      font-family: var(--font-sans);
+      font-size: 30px;
+      font-weight: 400;
+      line-height: 1;
+      color: var(--accent); /* THE ONE ORANGE MOMENT — appears exactly once in the file */
+    }
+    .result-word {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+    .result-note {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+    }
+
+    /* FIG caption — OUTSIDE all frames, hung from the stage's left margin. */
+    .fig-caption { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <main class="figure">
+    <section
+      class="storyboard"
+      aria-label="Accord generates the James Oliver March 2026 rota in a single pass — coverage, consecutive-day and part-timer-cap constraints all met, returning a validated schedule with 0 violations."
+    >
+      <!-- LEFT COLUMN — two small stacked frames -->
+      <div class="left-col">
+
+        <!-- Frame 1 — GENERATE -->
+        <div>
+          <div class="kicker">1 &middot; GENERATE</div>
+          <div class="frame small">
+            <div class="frame-title">Generate &middot; March 2026</div>
+            <div class="lv-rows">
+              <div>
+                <div class="lv-label">TEAM</div>
+                <div class="lv-value num">5 of 5 configured</div>
+              </div>
+              <div>
+                <div class="lv-label">REQUESTS</div>
+                <div class="lv-value num">14 of 14 captured</div>
+              </div>
+            </div>
+            <span class="btn-pressed num">Generate March 2026</span>
+          </div>
+        </div>
+
+        <!-- Frame 2 — VALIDATE -->
+        <div>
+          <div class="kicker">2 &middot; VALIDATE</div>
+          <div class="frame small">
+            <div class="check-rows">
+              <div class="check-row">
+                <span class="check-mark" aria-hidden="true">&#10003;</span>
+                <span class="check-body">
+                  <span class="check-label">COVERAGE</span>
+                  <span class="check-value num"> &mdash; 30 of 30 days met</span>
+                </span>
+              </div>
+              <div class="check-row">
+                <span class="check-mark" aria-hidden="true">&#10003;</span>
+                <span class="check-body">
+                  <span class="check-label">CONSECUTIVE DAYS</span>
+                  <span class="check-value num"> &mdash; 0 breaches, 5-day max</span>
+                </span>
+              </div>
+              <div class="check-row">
+                <span class="check-mark" aria-hidden="true">&#10003;</span>
+                <span class="check-body">
+                  <span class="check-label">PART-TIMER CAPS</span>
+                  <span class="check-value num"> &mdash; 2 of 2 within cap</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- THE THREAD — a single subtle hairline implying sequence -->
+      <div class="thread" aria-hidden="true"></div>
+
+      <!-- RIGHT COLUMN — the HERO frame (3 · PUBLISH) -->
+      <div class="right-col">
+        <div class="kicker">3 &middot; PUBLISH</div>
+        <div class="frame hero">
+          <div class="hero-title">March 2026 rota &middot; James Oliver</div>
+
+          <!-- Transposed rota grid: employees as rows, weekdays as columns -->
+          <div class="rota">
+            <!-- Header row -->
+            <div class="rota-corner"></div>
+            <div class="col-head">M</div>
+            <div class="col-head">T</div>
+            <div class="col-head">W</div>
+            <div class="col-head">T</div>
+            <div class="col-head">F</div>
+
+            <!-- Marcus : E E L L M -->
+            <div class="row-label">Marcus</div>
+            <div class="cell e num">E</div>
+            <div class="cell e num">E</div>
+            <div class="cell l num">L</div>
+            <div class="cell l num">L</div>
+            <div class="cell m num">M</div>
+
+            <!-- Sofia : L E E M L -->
+            <div class="row-label">Sofia</div>
+            <div class="cell l num">L</div>
+            <div class="cell e num">E</div>
+            <div class="cell e num">E</div>
+            <div class="cell m num">M</div>
+            <div class="cell l num">L</div>
+
+            <!-- James : M L M E L -->
+            <div class="row-label">James</div>
+            <div class="cell m num">M</div>
+            <div class="cell l num">L</div>
+            <div class="cell m num">M</div>
+            <div class="cell e num">E</div>
+            <div class="cell l num">L</div>
+
+            <!-- Nadia : E · M · L -->
+            <div class="row-label">Nadia</div>
+            <div class="cell e num">E</div>
+            <div class="cell off num">&middot;</div>
+            <div class="cell m num">M</div>
+            <div class="cell off num">&middot;</div>
+            <div class="cell l num">L</div>
+
+            <!-- Elena : · · L · L (Lates only, never Mon/Tue) -->
+            <div class="row-label">Elena</div>
+            <div class="cell off num">&middot;</div>
+            <div class="cell off num">&middot;</div>
+            <div class="cell l num">L</div>
+            <div class="cell off num">&middot;</div>
+            <div class="cell l num">L</div>
+          </div>
+
+          <!-- Legend — outside the grid -->
+          <div class="legend">
+            <span class="e">E</span> EARLY &middot; <span class="m">M</span> MID &middot; <span class="l">L</span> LATE
+          </div>
+
+          <!-- Result footer — validated pill + the one orange moment -->
+          <div class="hero-foot">
+            <span class="pill">
+              <span aria-hidden="true">&#10003;</span> Validated
+            </span>
+            <span class="result">
+              <span class="result-zero num">0</span>
+              <span class="result-word">violations</span>
+              <span class="result-note num">&middot; 30 of 30 days scheduled</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIG caption — spaced-hyphen separator, hung from the stage's left margin. -->
+    <p class="fig-caption">FIG 7.2A - GENERATE, VALIDATED IN ONE PASS</p>
+  </main>
+</body>
+</html>
