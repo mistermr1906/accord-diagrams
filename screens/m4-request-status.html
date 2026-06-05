@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<!--
+  Accord — M4: Request status (UI product-screen mode, §5.4)
+  Purpose: a static, high-fidelity mockup of Sofia's request-history screen on a phone.
+  Three submitted requests, each with a status badge: two Honoured (green ✓), one
+  Deferred (amber) with the blocking rule named beneath it.
+  The shared phone frame (300×650, soft rounded body, value-step + internal vignette,
+  no shadow/notch/buttons) is inherited verbatim from M1.
+  Zero orange — green/amber status badges carry the screen. Deliberate restraint.
+  James Oliver roster (Sofia). No JavaScript, no animation.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — M4 Request Status</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as d9-setup-interview.html does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — phone centred in dominant negative space (~60% empty). */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Inner column at exactly the phone's width so the caption's left edge
+       aligns to the phone's left edge (shared left margin). */
+    .stack {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    /* ====================================================================
+       SHARED PHONE FRAME — build IDENTICALLY across M1–M7 (reusable kit).
+       Soft rounded body. Depth = value-step (card lighter than ground) +
+       internal radial vignette + 1px hairline. NO shadow, NO glow, NO notch.
+       ==================================================================== */
+    .phone {
+      position: relative;
+      width: 300px;
+      height: 650px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 44px;
+      overflow: hidden;
+    }
+    /* Internal radial vignette — the only depth cue besides the value step.
+       Sits above screen content but clipped to the rounded body. Not a shadow. */
+    .phone::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 50%, transparent 62%, rgba(0,0,0,0.28));
+      z-index: 5;
+    }
+    .screen {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    /* Load-bearing elements lifted ABOVE the vignette so they read full-strength. */
+    .lift { position: relative; z-index: 10; }
+    /* ==================================================================== */
+
+
+    /* --- M4 screen content -------------------------------------------- */
+    .m4 {
+      position: absolute;
+      inset: 0;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+    }
+    .m4-kicker {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .m4-title {
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .m4-summary {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    /* The request list — thin rows separated by 1px hairlines. */
+    .m4-list { display: flex; flex-direction: column; }
+    .m4-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px 2px;
+    }
+    .m4-row + .m4-row {
+      border-top: 1px solid var(--glass-hairline);
+    }
+    .m4-chip {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .m4-body { flex: 1; min-width: 0; }
+    .m4-label {
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+    .m4-date {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 3px;
+    }
+    .m4-rule {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 6px;
+    }
+
+    /* Status badges — information read second, never the accent. */
+    .m4-badge {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      margin-top: 1px;
+    }
+    .m4-badge.ok {
+      color: var(--status-success);
+      background: var(--status-success-bed);
+    }
+    .m4-badge.deferred {
+      color: var(--status-warning);
+      background: var(--status-warning-bed);
+    }
+    .m4-tick { font-size: 11px; line-height: 1; }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+    <div class="phone">
+      <div class="screen">
+
+        <div class="m4">
+          <div class="m4-kicker">Your requests</div>
+          <div class="m4-title">Requests</div>
+          <div class="m4-summary"><span class="num">2</span> of <span class="num">3</span> honoured &middot; <span class="num">1</span> deferred</div>
+
+          <div class="m4-list lift">
+
+            <!-- Row a — Day off, honoured -->
+            <div class="m4-row">
+              <div class="m4-chip" style="background: var(--surface-edge); color: var(--shift-x-text);">X</div>
+              <div class="m4-body">
+                <div class="m4-label">Day off</div>
+                <div class="m4-date">Wed 11 Mar</div>
+              </div>
+              <div class="m4-badge ok">Honoured <span class="m4-tick">&check;</span></div>
+            </div>
+
+            <!-- Row b — Holiday, honoured -->
+            <div class="m4-row">
+              <div class="m4-chip" style="background: var(--shift-h-bg); color: var(--shift-h-text);">H</div>
+              <div class="m4-body">
+                <div class="m4-label">Holiday</div>
+                <div class="m4-date">Thu 19 Mar</div>
+              </div>
+              <div class="m4-badge ok">Honoured <span class="m4-tick">&check;</span></div>
+            </div>
+
+            <!-- Row c — Late preference, deferred (blocking rule named) -->
+            <div class="m4-row">
+              <div class="m4-chip" style="background: var(--surface-edge); color: var(--text-muted);">&middot;</div>
+              <div class="m4-body">
+                <div class="m4-label">Late preference</div>
+                <div class="m4-date">Fri 20 Mar</div>
+                <div class="m4-rule">Coverage needs an Early</div>
+              </div>
+              <div class="m4-badge deferred">Deferred</div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="fig-caption">FIG 10.4A - REQUEST STATUS</div>
+   </div>
+  </div>
+</body>
+</html>

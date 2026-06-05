@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!--
+  Accord — M6: Profile & settings (UI product-screen mode, §5.4)
+  Purpose: a static, high-fidelity mockup of Elena's profile/settings screen on a phone.
+  Availability facts (weekly target, available shifts, blocked days, Saturday cap) as
+  label→value rows, a neutral hairline notifications toggle (ON), and a Save CTA.
+  The shared phone frame (300×650, soft rounded body, value-step + internal vignette,
+  no shadow/notch/buttons) is inherited verbatim from M1.
+  One orange moment = the "Save" CTA. The toggle stays neutral.
+  James Oliver roster (Elena). No JavaScript, no animation.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — M6 Profile & Settings</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as d9-setup-interview.html does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — phone centred in dominant negative space (~60% empty). */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Inner column at exactly the phone's width so the caption's left edge
+       aligns to the phone's left edge (shared left margin). */
+    .stack {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    /* ====================================================================
+       SHARED PHONE FRAME — build IDENTICALLY across M1–M7 (reusable kit).
+       Soft rounded body. Depth = value-step (card lighter than ground) +
+       internal radial vignette + 1px hairline. NO shadow, NO glow, NO notch.
+       ==================================================================== */
+    .phone {
+      position: relative;
+      width: 300px;
+      height: 650px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 44px;
+      overflow: hidden;
+    }
+    /* Internal radial vignette — the only depth cue besides the value step.
+       Sits above screen content but clipped to the rounded body. Not a shadow. */
+    .phone::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 50%, transparent 62%, rgba(0,0,0,0.28));
+      z-index: 5;
+    }
+    .screen {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    /* Load-bearing elements lifted ABOVE the vignette so they read full-strength. */
+    .lift { position: relative; z-index: 10; }
+    /* ==================================================================== */
+
+
+    /* --- M6 screen content -------------------------------------------- */
+    .m6 {
+      position: absolute;
+      inset: 0;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Identity header — avatar + name + part-time tag. */
+    .m6-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .m6-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--surface-card-2);
+      border: 1px solid var(--glass-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .m6-name { font-size: 17px; color: var(--text-primary); }
+    .m6-tag {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    /* Settings sections. */
+    .m6-section-head {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .m6-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 46px;
+      padding: 8px 0;
+    }
+    .m6-row + .m6-row {
+      border-top: 1px solid var(--glass-hairline);
+    }
+    .m6-key { font-size: 13px; color: var(--text-tertiary); }
+    .m6-val { font-size: 14px; color: var(--text-primary); text-align: right; }
+
+    .m6-section + .m6-section { margin-top: 24px; }
+
+    /* Neutral hairline toggle — ON, never orange, no iOS gloss. */
+    .m6-toggle {
+      width: 40px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid var(--glass-hairline);
+      background: var(--surface-edge);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .m6-toggle::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--text-secondary);
+    }
+
+    /* THE ONE ORANGE MOMENT — the Save CTA (clone of M2's Confirm). */
+    .m6-save {
+      margin-top: auto;
+      width: 100%;
+      height: 46px;
+      background: var(--accent);
+      color: #0a0a0c;
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 500;
+      border: none;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+    <div class="phone">
+      <div class="screen">
+
+        <div class="m6">
+
+          <!-- Identity -->
+          <div class="m6-head">
+            <div class="m6-avatar">E</div>
+            <div>
+              <div class="m6-name">Elena</div>
+              <div class="m6-tag">Part-time</div>
+            </div>
+          </div>
+
+          <!-- Availability -->
+          <div class="m6-section">
+            <div class="m6-section-head">Availability</div>
+            <div class="m6-row">
+              <div class="m6-key">Weekly target</div>
+              <div class="m6-val"><span class="num">2</span> shifts</div>
+            </div>
+            <div class="m6-row">
+              <div class="m6-key">Available shifts</div>
+              <div class="m6-val">Late only</div>
+            </div>
+            <div class="m6-row">
+              <div class="m6-key">Blocked days</div>
+              <div class="m6-val">Sun &middot; Mon &middot; Tue</div>
+            </div>
+            <div class="m6-row">
+              <div class="m6-key">Saturdays</div>
+              <div class="m6-val"><span class="num">1</span> max / month</div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="m6-section">
+            <div class="m6-section-head">Notifications</div>
+            <div class="m6-row">
+              <div class="m6-key">Push notifications</div>
+              <div class="m6-toggle" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <button class="m6-save lift">Save</button>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="fig-caption">FIG 10.6A - PROFILE SETTINGS</div>
+   </div>
+  </div>
+</body>
+</html>

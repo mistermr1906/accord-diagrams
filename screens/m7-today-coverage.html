@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!--
+  Accord — M7: Today's coverage (UI product-screen mode, §5.4)
+  Purpose: a static, high-fidelity mockup of Marcus's manager "today" view on a phone.
+  Today's date, a green "all slots filled" pill, then three taller shift blocks
+  (Early/Mid/Late), each with a shift-tinted accent bar, the staff name, and a
+  denominated filled count.
+  The shared phone frame (300×650, soft rounded body, value-step + internal vignette,
+  no shadow/notch/buttons) is inherited verbatim from M1.
+  One orange moment = the "TODAY" eyebrow. The green pill + shift tints are information.
+  James Oliver roster (Marcus, Sofia, James). No JavaScript, no animation.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — M7 Today's Coverage</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as d9-setup-interview.html does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — phone centred in dominant negative space (~60% empty). */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Inner column at exactly the phone's width so the caption's left edge
+       aligns to the phone's left edge (shared left margin). */
+    .stack {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    /* ====================================================================
+       SHARED PHONE FRAME — build IDENTICALLY across M1–M7 (reusable kit).
+       Soft rounded body. Depth = value-step (card lighter than ground) +
+       internal radial vignette + 1px hairline. NO shadow, NO glow, NO notch.
+       ==================================================================== */
+    .phone {
+      position: relative;
+      width: 300px;
+      height: 650px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 44px;
+      overflow: hidden;
+    }
+    /* Internal radial vignette — the only depth cue besides the value step.
+       Sits above screen content but clipped to the rounded body. Not a shadow. */
+    .phone::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 50%, transparent 62%, rgba(0,0,0,0.28));
+      z-index: 5;
+    }
+    .screen {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    /* Load-bearing elements lifted ABOVE the vignette so they read full-strength. */
+    .lift { position: relative; z-index: 10; }
+    /* ==================================================================== */
+
+
+    /* --- M7 screen content -------------------------------------------- */
+    .m7 {
+      position: absolute;
+      inset: 0;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* THE ONE ORANGE MOMENT — the TODAY eyebrow. */
+    .m7-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent-stroke);
+      margin-bottom: 8px;
+    }
+    .m7-date {
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+    .m7-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--status-success);
+      background: var(--status-success-bed);
+      margin-bottom: 28px;
+    }
+    .m7-tick { font-size: 12px; line-height: 1; }
+
+    /* Coverage-by-shift blocks — taller cards, shift-tinted accent bar. */
+    .m7-blocks { display: flex; flex-direction: column; gap: 14px; }
+    .m7-block {
+      position: relative;
+      background: var(--surface-card-2);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 12px;
+      padding: 16px 16px 16px 20px;
+      overflow: hidden;
+    }
+    .m7-bar {
+      position: absolute;
+      top: 0; bottom: 0; left: 0;
+      width: 3px;
+    }
+    .m7-shift {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+    .m7-staff {
+      font-size: 16px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .m7-count { font-size: 12px; color: var(--text-tertiary); }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+    <div class="phone">
+      <div class="screen">
+
+        <div class="m7">
+          <div class="m7-eyebrow">Today</div>
+          <div class="m7-date">Wed 18 March</div>
+          <div class="m7-pill">All slots filled &middot; <span class="num">3</span> of <span class="num">3</span> <span class="m7-tick">&check;</span></div>
+
+          <div class="m7-blocks">
+
+            <!-- Early -->
+            <div class="m7-block">
+              <div class="m7-bar" style="background: var(--shift-e-text);"></div>
+              <div class="m7-shift" style="color: var(--shift-e-text);">Early</div>
+              <div class="m7-staff">James</div>
+              <div class="m7-count"><span class="num">1</span> of <span class="num">1</span> filled</div>
+            </div>
+
+            <!-- Mid -->
+            <div class="m7-block">
+              <div class="m7-bar" style="background: var(--shift-m-text);"></div>
+              <div class="m7-shift" style="color: var(--shift-m-text);">Mid</div>
+              <div class="m7-staff">Sofia</div>
+              <div class="m7-count"><span class="num">1</span> of <span class="num">1</span> filled</div>
+            </div>
+
+            <!-- Late -->
+            <div class="m7-block lift">
+              <div class="m7-bar" style="background: var(--shift-l-text);"></div>
+              <div class="m7-shift" style="color: var(--shift-l-text);">Late</div>
+              <div class="m7-staff">Marcus</div>
+              <div class="m7-count"><span class="num">1</span> of <span class="num">1</span> filled</div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="fig-caption">FIG 10.7A - TODAY'S COVERAGE</div>
+   </div>
+  </div>
+</body>
+</html>
