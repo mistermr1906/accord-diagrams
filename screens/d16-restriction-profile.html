@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<!--
+  Accord — D16: Shift restrictions locked per employee (UI product-screen mode · §5.4).
+  Purpose: a static, high-fidelity mockup showing Elena's shift-type restrictions —
+  defined once on her profile, enforced on the weekly availability grid. Early and Mid
+  are blocked every day; Late is blocked Sunday, Monday and Tuesday — leaving only Late
+  on Wednesday to Saturday available (4 of 7 days). A picture of a product screen, not
+  app code. No JavaScript, no real inputs, no animation.
+
+  Governed by diagrams/accord-diagram-bible.md (§5.4 UI product-screen, §6 one-accent,
+  §7 denominators, §1 palette). Locks: accent is ORANGE (#ee5f19) — the single orange
+  moment is the thin focus ring hugging the 4 available Late cells (Wed–Sat); nothing
+  else is orange (cells inside the ring stay Late-tan, never orange-filled). Blocked
+  cells use --text-quaternary. No shadow / no glow / no backdrop-blur (no glass panels on
+  this screen). Depth = value-step surface + 1px hairline + corner vignette only. No
+  cyan/teal anywhere. James Oliver demo names.
+
+  Authorised deviations (cited so the gate passes):
+   (a) Robert said the available cells are "highlighted teal" — overridden to the Late tan
+       shift tint + an orange focus ring (Bible §1 abandons cyan/teal everywhere; §6's
+       one-orange lands on the focus ring).
+   (b) No connector lines between the restriction list and the grid — Robert's "connected
+       by lines" simplified to spatial proximity for §5.4 restraint (Peter's call).
+   (c) The grid is a shift-type × weekday availability matrix for one person — a new grid
+       type distinct from the transposed rota grid — authorised as the clearest way to
+       show per-person restrictions.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D16 Restriction Profile</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as D12 does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — window floats top-left in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      padding: 96px;
+    }
+
+    /* The mono kicker that hangs above the window. */
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    /* The window — value-step vessel, 1px hairline, corner vignette. No shadow/glow/blur. */
+    .window {
+      width: 480px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 22px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 55%, transparent 60%, rgba(0,0,0,0.30) 100%);
+    }
+    .window > * { position: relative; z-index: 1; }
+
+    .win-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    /* (1) Compact restriction header strip — one line, inline items split by ·. */
+    .restrict {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--glass-hairline);
+    }
+    .restrict .dot { color: var(--text-quaternary); padding: 0 6px; }
+
+    /* (2) THE HERO — availability matrix: 64px label gutter + 7 equal day columns.
+       Anchored relative so the orange focus ring can be placed by grid coordinates. */
+    .matrix {
+      display: grid;
+      grid-template-columns: 64px repeat(7, 1fr);
+      column-gap: 3px;
+      row-gap: 3px;
+      align-items: center;
+      position: relative;
+      margin-top: 20px;
+    }
+
+    /* Day-head row (Sun → Sat). */
+    .corner {}
+    .col-head {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding-bottom: 4px;
+    }
+
+    /* Shift-type row labels — outside the cell field. */
+    .row-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      padding-right: 8px;
+    }
+
+    /* Cells — enlarged because the grid is the hero. */
+    .cell {
+      height: 36px;
+      border-radius: 7px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Available Late cell — warm tan shift tint (never orange-filled). */
+    .cell.l {
+      background: var(--shift-l-bg);
+      color: var(--shift-l-text);
+    }
+    /* Blocked cell — greyed bed, faint en-dash in quaternary grey = restricted. */
+    .cell.blocked {
+      background: var(--shift-off-bg);
+      color: var(--text-quaternary);
+    }
+
+    /* (3) THE ONE ORANGE MOMENT — a thin focus ring hugging the 4 available Late cells
+       (Wed–Sat), placed by grid coordinates (row 4 = LATE, columns 5–9 = Wed–Sat).
+       The cells inside stay Late-tan; only this ring is orange. */
+    .late-ring {
+      grid-row: 4;
+      grid-column: 5 / 9;
+      align-self: stretch;
+      justify-self: stretch;
+      margin: -3px;
+      border: 1px solid var(--accent-stroke);
+      border-radius: 9px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* (4) Neutral denominated readout + legend — OUTSIDE the grid. */
+    .readout {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--glass-hairline);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .readout-main {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+    .legend-note {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+
+    /* FIG caption — OUTSIDE the window, aligned to its left edge. */
+    .fig-caption { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <main class="figure">
+    <section
+      class="window"
+      aria-label="Accord shows Elena's shift restrictions enforced on the weekly grid: Early and Mid are blocked every day, and Late is blocked Sunday, Monday and Tuesday, leaving only Late on Wednesday to Saturday available — 4 of 7 days."
+    >
+      <div class="kicker">RESTRICTIONS &middot; SHIFT LOCKS</div>
+      <div class="window-inner">
+        <div class="win-title">Elena &middot; Full-time</div>
+
+        <!-- (1) Compact restriction header strip -->
+        <div class="restrict">
+          Lates only<span class="dot">&middot;</span>No Sundays<span class="dot">&middot;</span>No Mon/Tue
+        </div>
+
+        <!-- (2) The hero — availability matrix -->
+        <div class="matrix">
+          <!-- Day-head row: Sun → Sat -->
+          <div class="corner"></div>
+          <div class="col-head">S</div>
+          <div class="col-head">M</div>
+          <div class="col-head">T</div>
+          <div class="col-head">W</div>
+          <div class="col-head">T</div>
+          <div class="col-head">F</div>
+          <div class="col-head">S</div>
+
+          <!-- EARLY — blocked every day -->
+          <div class="row-label">Early</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+
+          <!-- MID — blocked every day -->
+          <div class="row-label">Mid</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+
+          <!-- LATE — blocked Sun/Mon/Tue; available Wed–Sat (Late tan) -->
+          <div class="row-label">Late</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell blocked num">&ndash;</div>
+          <div class="cell l num" style="grid-row: 4; grid-column: 5;">L</div>
+          <div class="cell l num" style="grid-row: 4; grid-column: 6;">L</div>
+          <div class="cell l num" style="grid-row: 4; grid-column: 7;">L</div>
+          <div class="cell l num" style="grid-row: 4; grid-column: 8;">L</div>
+
+          <!-- The one orange moment — focus ring around the 4 available Late cells -->
+          <div class="late-ring" aria-hidden="true"></div>
+        </div>
+
+        <!-- (4) Denominated readout + legend, outside the grid -->
+        <div class="readout">
+          <div class="readout-main num">AVAILABLE &middot; Late only &middot; 4 of 7 days</div>
+          <div class="legend-note">Greyed = restricted</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIG caption — spaced-hyphen separator, hung from the stage's left margin. -->
+    <p class="fig-caption">FIG 8.5A - SHIFT RESTRICTIONS LOCKED PER EMPLOYEE</p>
+  </main>
+</body>
+</html>

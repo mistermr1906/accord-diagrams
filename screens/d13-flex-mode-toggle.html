@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<!--
+  Accord — D13: Flex mode — part-timer shifts flexed within a locked monthly total
+  (UI product-screen mode · §5.4). Purpose: a static, high-fidelity mockup showing the
+  two ways Accord can spread Nadia's locked monthly total across four weeks. STRICT keeps
+  every week at 3 shifts (3-3-3-3); FLEXIBLE lets weeks vary (2-4-3-3). Both total the
+  same 12 — the contract is never breached. A picture of a product screen, not app code.
+  No JavaScript, no real inputs, no animation.
+
+  Governed by diagrams/accord-diagram-bible.md (§5.4 UI product-screen, §6 one-accent,
+  §7 denominators, §1 palette). Locks: accent is ORANGE (#ee5f19) — the single orange
+  moment is the shared locked total "12 of 12 shifts", nothing else. The Strict|Flexible
+  toggle is NEUTRAL (no orange). Bars are charcoal with grey hairline caps (no orange
+  caps). No shadow / no glow / no backdrop-blur (no glass panels on this screen). Depth =
+  value-step surface + 1px hairline + corner vignette only. James Oliver demo names.
+
+  Authorised deviations (cited so the gate passes):
+   (a) Two small-multiple bar charts instead of one — Robert's Feature-2 brief explicitly
+       asks for two week-by-week charts (STRICT vs FLEXIBLE) shown side by side.
+   (b) The one orange moment is the shared locked TOTAL, not a §5.2 orange bar cap — §6
+       lets the single accent land on the figure's most load-bearing truth (the contract
+       total that both modes preserve).
+   (c) Robert's "Flexible 2-4-3-4 / both total 13" corrected to FLEXIBLE 2-4-3-3 = 12 so
+       both modes total the SAME (the feature's promise: monthly total stays locked;
+       3 shifts/week × 4 weeks = 12; 2-4-3-4 = 13 ≠ Strict's 12). Strict stays 3-3-3-3.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D13 Flex Mode Toggle</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as D12 does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — window floats top-left in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      padding: 96px;
+    }
+
+    /* The mono kicker that hangs above the window. */
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    /* The window — value-step vessel, 1px hairline, corner vignette. No shadow/glow/blur. */
+    .window {
+      width: 480px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 22px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 55%, transparent 60%, rgba(0,0,0,0.30) 100%);
+    }
+    .window > * { position: relative; z-index: 1; }
+
+    .win-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    /* (1) Compact profile + toggle header — one line, not a big card. */
+    .head-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--glass-hairline);
+    }
+    .who-name {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+    .who-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      margin-top: 3px;
+    }
+
+    /* Flat hairline toggle — Strict | Flexible. No iOS knob, no shadow. NEUTRAL. */
+    .toggle {
+      display: inline-flex;
+      border: 1px solid var(--glass-hairline);
+      border-radius: 9px;
+      overflow: hidden;
+    }
+    .seg {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1;
+      padding: 8px 14px;
+    }
+    .seg.off-state {
+      background: transparent;
+      color: var(--text-secondary);
+    }
+    .seg.on-state {
+      background: var(--surface-card-2);
+      color: var(--text-primary);
+    }
+    .seg + .seg { border-left: 1px solid var(--glass-hairline); }
+
+    /* (2) Two small-multiple bar charts, side by side. */
+    .charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 28px;
+      margin-top: 22px;
+    }
+    .chart-cap {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Bars row — bottom-aligned; each bar height ∝ that week's shift count (count×22). */
+    .bars {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 12px;
+      align-items: end;
+    }
+    .bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .bar-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1;
+      margin-bottom: 7px;
+    }
+    /* Flat vertical bar: faint top-lit charcoal fill + a thin grey hairline cap on top.
+       No orange caps. */
+    .bar {
+      width: 100%;
+      max-width: 30px;
+      border-radius: 3px 3px 0 0;
+      border-top: 2px solid var(--text-tertiary);
+      background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
+      background-color: var(--surface-recessed);
+    }
+
+    /* x-axis week labels under the bars, OUTSIDE the data. */
+    .axis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 12px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--glass-hairline);
+    }
+    .tick {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* (3) THE ONE ORANGE MOMENT — the shared locked total, centred beneath both charts.
+       Label sits OUTSIDE the number. Nothing else in the file is orange. */
+    .total {
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid var(--glass-hairline);
+      text-align: center;
+    }
+    .total-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .total-value {
+      font-family: var(--font-sans);
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1;
+      color: var(--accent); /* the single orange moment */
+    }
+
+    /* Tiny helper note — mono, muted, outside the data. */
+    .helper {
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* FIG caption — OUTSIDE the window, aligned to its left edge. */
+    .fig-caption { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <main class="figure">
+    <section
+      class="window"
+      aria-label="Accord shows part-timer Nadia's four-week shift distribution in Strict mode (3-3-3-3) and Flexible mode (2-4-3-3); both total 12 of 12 shifts, so the monthly contract stays locked either way."
+    >
+      <div class="kicker">CONTRACTS &middot; FLEX MODE</div>
+      <div class="window-inner">
+        <div class="win-title">Nadia &middot; Part-time</div>
+
+        <!-- (1) Compact profile + neutral Strict|Flexible toggle -->
+        <div class="head-row">
+          <div class="who">
+            <div class="who-sub num">3 shifts/week</div>
+          </div>
+          <div class="toggle" role="presentation">
+            <div class="seg off-state">Strict</div>
+            <div class="seg on-state">Flexible</div>
+          </div>
+        </div>
+
+        <!-- (2) Two small-multiple bar charts -->
+        <div class="charts">
+          <!-- STRICT — every week 3 shifts -->
+          <div class="chart">
+            <div class="chart-cap">STRICT</div>
+            <div class="bars">
+              <div class="bar-col"><span class="bar-num num">3</span><span class="bar" style="height:66px;"></span></div>
+              <div class="bar-col"><span class="bar-num num">3</span><span class="bar" style="height:66px;"></span></div>
+              <div class="bar-col"><span class="bar-num num">3</span><span class="bar" style="height:66px;"></span></div>
+              <div class="bar-col"><span class="bar-num num">3</span><span class="bar" style="height:66px;"></span></div>
+            </div>
+            <div class="axis">
+              <span class="tick">W1</span>
+              <span class="tick">W2</span>
+              <span class="tick">W3</span>
+              <span class="tick">W4</span>
+            </div>
+          </div>
+
+          <!-- FLEXIBLE — weeks vary, same monthly total -->
+          <div class="chart">
+            <div class="chart-cap">FLEXIBLE</div>
+            <div class="bars">
+              <div class="bar-col"><span class="bar-num num">2</span><span class="bar" style="height:44px;"></span></div>
+              <div class="bar-col"><span class="bar-num num">4</span><span class="bar" style="height:88px;"></span></div>
+              <div class="bar-col"><span class="bar-num num">3</span><span class="bar" style="height:66px;"></span></div>
+              <div class="bar-col"><span class="bar-num num">3</span><span class="bar" style="height:66px;"></span></div>
+            </div>
+            <div class="axis">
+              <span class="tick">W1</span>
+              <span class="tick">W2</span>
+              <span class="tick">W3</span>
+              <span class="tick">W4</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- (3) The one orange moment — the shared locked total -->
+        <div class="total">
+          <div class="total-label">MONTHLY TOTAL &middot; LOCKED</div>
+          <div class="total-value num">12 of 12 shifts</div>
+        </div>
+
+        <!-- Tiny helper note -->
+        <div class="helper">Bars = shifts per week</div>
+      </div>
+    </section>
+
+    <!-- FIG caption — spaced-hyphen separator, hung from the stage's left margin. -->
+    <p class="fig-caption">FIG 8.2A - PART-TIMER SHIFTS FLEXED WITHIN A LOCKED MONTHLY TOTAL</p>
+  </main>
+</body>
+</html>
