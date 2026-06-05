@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<!--
+  Accord — D19: The manager edits, then approves (UI product-screen mode)
+  Purpose: a static, high-fidelity mockup of the validated March 2026 rota at the
+  approval moment. The manager has opened one shift cell (James, Wednesday) and the
+  shift-picker dropdown floats below it; the current value (Mid) is still selected,
+  so nothing has actually changed — the grid stays valid, "0 violations · Ready to
+  approve" stays truthful. A closed Export control offers Excel or Deputy CSV.
+  A picture of a product screen, not an app. No JavaScript, no real inputs, no animation.
+
+  Governed by diagrams/accord-diagram-bible.md (§5.4 UI product-screen, §6 one-accent,
+  §7 denominators). Locks: accent is ORANGE (#ee5f19) — the single orange moment is the
+  "Approve & Publish" button fill, NOWHERE else (not the edited cell, not the dropdown,
+  not the "0", not Export). Green appears exactly once too: the ✓ Validated pill — the
+  one allowed coloured icon. The edited cell's focus ring is a neutral 1px state cue, not
+  a depth shadow. No shadows/glows/blur. Depth = value-step surfaces + 1px hairlines +
+  corner vignettes only.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D19 Edit & Export</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as D9/D10/D12 do) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — the window floats top-left in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      padding: 96px;
+    }
+
+    /* ---- The mono kicker that hangs above the window ---- */
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    /* ---- The window = a value-step vessel with a 1px hairline + corner vignette.
+       Depth cues only: no shadow, no glow, no blur. ---- */
+    .window {
+      width: 520px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 22px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 55%, transparent 60%, rgba(0,0,0,0.30) 100%);
+    }
+    .window > * { position: relative; z-index: 1; }
+
+    /* ---- Header row — title left, closed export control right ---- */
+    .win-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .win-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .btn {
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1;
+      cursor: default;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--glass-hairline);
+      color: var(--text-secondary);
+    }
+
+    /* The transposed rota grid: employees as rows, weekdays as columns. */
+    .rota {
+      display: grid;
+      grid-template-columns: 56px repeat(5, 1fr);
+      gap: 3px;
+      position: relative;  /* (already applied via .window > *, restate for clarity) */
+      z-index: 5;          /* lift grid + its floating menu above .legend and .foot (both z-index 1) */
+    }
+    .rota-corner {}
+    .col-head {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding-bottom: 4px;
+    }
+    .row-label {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      padding-right: 8px;
+    }
+    .cell {
+      position: relative;
+      height: 26px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cell.e   { background: var(--shift-e-bg);   color: var(--shift-e-text); }
+    .cell.m   { background: var(--shift-m-bg);   color: var(--shift-m-text); }
+    .cell.l   { background: var(--shift-l-bg);   color: var(--shift-l-text); }
+    .cell.off { background: var(--shift-off-bg); color: var(--shift-off-text); }
+
+    /* The one edited cell — a neutral 1px focus ring (state cue, not depth shadow).
+       Keeps its Mid shift-tint underneath. NOT orange. */
+    .cell.editing {
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28) inset;
+      z-index: 4; /* the cell + its menu sit above neighbouring cells */
+    }
+
+    /* The floating shift-picker — §5.4 floating-menu kit piece. Anchored directly
+       below the edited cell, overlapping the rows beneath (correct §5.4 behaviour).
+       L2 surface, 1px hairline, its own corner vignette. No shadow/glow. */
+    .menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 200px;
+      background: var(--surface-card-2);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 12px;
+      padding: 6px;
+      z-index: 6;
+      overflow: hidden;
+    }
+    .menu::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 55%, transparent 60%, rgba(0,0,0,0.30) 100%);
+    }
+    .menu > * { position: relative; z-index: 1; }
+
+    .opt {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1;
+    }
+    /* The current value — subtle lighter row + a neutral check on the right.
+       No orange: orange is spent on Approve. */
+    .opt.current {
+      background: var(--surface-edge);
+    }
+    .opt .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+    .dot.e   { background: var(--shift-e-text); }
+    .dot.m   { background: var(--shift-m-text); }
+    .dot.l   { background: var(--shift-l-text); }
+    .dot.off { background: var(--shift-off-text); }
+    .opt .opt-label { flex: 1 1 auto; }
+    .opt .opt-check {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex: 0 0 auto;
+    }
+
+    /* Legend — OUTSIDE the grid (Bible rule). Each code letter in its tint colour. */
+    .legend {
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+    }
+    .legend .e   { color: var(--shift-e-text); }
+    .legend .m   { color: var(--shift-m-text); }
+    .legend .l   { color: var(--shift-l-text); }
+    .legend .off { color: var(--shift-off-text); }
+
+    /* ---- Bottom bar — hairline-topped, validation status left, actions right ---- */
+    .foot {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--glass-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .foot-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--status-success-bed);
+      color: var(--status-success); /* the one allowed coloured icon — green ✓ */
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+    .status-text {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+    .status-text .zero { color: var(--text-primary); } /* the "0" — neutral, NOT orange */
+
+    .foot-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    /* THE ONE ORANGE MOMENT — appears exactly once in the file. */
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0c; /* the only raw hex — near-black for contrast on orange */
+      border: none;
+    }
+
+    /* FIG caption — OUTSIDE the window, hung from the stage's left margin. */
+    .fig-caption { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <main class="figure">
+    <div class="kicker">ROTA &middot; EDIT &amp; EXPORT</div>
+
+    <section
+      class="window"
+      aria-label="Accord presents the validated James Oliver March 2026 rota — 0 violations, ready to approve — where the manager can override any shift cell with a dropdown and export to Excel or Deputy CSV before approving and publishing."
+    >
+      <!-- Header: title left, closed export control right -->
+      <div class="win-head">
+        <div class="win-title">March 2026 rota &middot; James Oliver</div>
+        <button class="btn btn-ghost" type="button">Export &#9662;</button>
+      </div>
+
+      <!-- Transposed rota grid: employees as rows, weekdays as columns -->
+      <div class="rota">
+        <!-- Header row -->
+        <div class="rota-corner"></div>
+        <div class="col-head">M</div>
+        <div class="col-head">T</div>
+        <div class="col-head">W</div>
+        <div class="col-head">T</div>
+        <div class="col-head">F</div>
+
+        <!-- Marcus : E E L L M -->
+        <div class="row-label">Marcus</div>
+        <div class="cell e num">E</div>
+        <div class="cell e num">E</div>
+        <div class="cell l num">L</div>
+        <div class="cell l num">L</div>
+        <div class="cell m num">M</div>
+
+        <!-- Sofia : L E E M L -->
+        <div class="row-label">Sofia</div>
+        <div class="cell l num">L</div>
+        <div class="cell e num">E</div>
+        <div class="cell e num">E</div>
+        <div class="cell m num">M</div>
+        <div class="cell l num">L</div>
+
+        <!-- James : M L M E L  — Wednesday (M) is the cell being edited -->
+        <div class="row-label">James</div>
+        <div class="cell m num">M</div>
+        <div class="cell l num">L</div>
+        <div class="cell m num editing">
+          M
+          <!-- The floating shift-picker — current value (Mid) stays selected -->
+          <div class="menu" role="listbox" aria-label="Shift for James, Wednesday — current value Mid">
+            <div class="opt">
+              <span class="dot e" aria-hidden="true"></span>
+              <span class="opt-label">Early</span>
+            </div>
+            <div class="opt current" aria-selected="true">
+              <span class="dot m" aria-hidden="true"></span>
+              <span class="opt-label">Mid</span>
+              <span class="opt-check" aria-hidden="true">&#10003;</span>
+            </div>
+            <div class="opt">
+              <span class="dot l" aria-hidden="true"></span>
+              <span class="opt-label">Late</span>
+            </div>
+            <div class="opt">
+              <span class="dot off" aria-hidden="true"></span>
+              <span class="opt-label">Off</span>
+            </div>
+          </div>
+        </div>
+        <div class="cell e num">E</div>
+        <div class="cell l num">L</div>
+
+        <!-- Nadia : E · M · L -->
+        <div class="row-label">Nadia</div>
+        <div class="cell e num">E</div>
+        <div class="cell off num">&middot;</div>
+        <div class="cell m num">M</div>
+        <div class="cell off num">&middot;</div>
+        <div class="cell l num">L</div>
+
+        <!-- Elena : · · L · L  (Lates only, never Mon/Tue) -->
+        <div class="row-label">Elena</div>
+        <div class="cell off num">&middot;</div>
+        <div class="cell off num">&middot;</div>
+        <div class="cell l num">L</div>
+        <div class="cell off num">&middot;</div>
+        <div class="cell l num">L</div>
+      </div>
+
+      <!-- Legend — outside the grid -->
+      <div class="legend">
+        <span class="e">E</span> Early &middot; <span class="m">M</span> Mid &middot; <span class="l">L</span> Late &middot; <span class="off">&middot;</span> Day off
+      </div>
+
+      <!-- Bottom bar — validation status left, actions right -->
+      <div class="foot">
+        <div class="foot-status">
+          <span class="pill">
+            <span aria-hidden="true">&#10003;</span> Validated
+          </span>
+          <span class="status-text">&middot; <span class="zero num">0</span> violations &middot; Ready to approve</span>
+        </div>
+        <div class="foot-actions">
+          <button class="btn btn-ghost" type="button">Regenerate</button>
+          <button class="btn btn-primary" type="button">Approve &amp; Publish</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIG caption — spaced-hyphen separator, hung from the stage's left margin. -->
+    <p class="fig-caption">FIG 8.8A - THE MANAGER EDITS, THEN APPROVES</p>
+  </main>
+</body>
+</html>
