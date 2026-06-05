@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<!--
+  Accord — D14-B: Month-boundary carryover (UI product-screen mode · DETAIL CROP / Variant B)
+  Purpose: a static, high-fidelity crop into the one moment where Accord reads last
+  month's published rota and counts it forward — Sofia worked a Late on the last day
+  of February, so her Early on the first day of March is blocked. The cross-month
+  turnaround violation is PREVENTED. Positive outcome: no amber, no fix button.
+
+  Variant B = the "detail crop". The reader's eye lands on Sofia's enlarged, sharp
+  focus row; the neighbour rows (Marcus, James) are ghosted at opacity 0.22 and
+  dissolve into the window's top/bottom edges via the radial vignette — the §5.4
+  "let rows fade at the window edge" device (opacity, never a shadow). The signature
+  carryover TIE (the one orange moment) is blown up across the Feb→Mar seam.
+
+  Governed by diagrams/accord-diagram-bible.md (§5.4 UI product-screen, §6 one-accent,
+  §7 denominators). Locks: accent is ORANGE (#ee5f19) — the single orange moment is
+  the carryover tie (ring + line + arrow-dot) bridging the seam, nowhere else. The
+  blocked Early is shown as a struck, de-emphasised E; the positive outcome (turnaround
+  protected) is carried by that blocked cell plus the orange carryover tie. No green,
+  no amber.
+  No shadows/glows/blur. Depth = value-step surface + 1px hairline + corner vignette +
+  the ghost-row opacity fade. No JavaScript, no real inputs, no animation.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D14-B Month-Boundary Carryover (detail crop)</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as D18 does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .figure {
+      min-height: 100vh;
+      padding: 96px;
+    }
+
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    /* The window — value-step vessel, 1px hairline, corner vignette. No shadow/blur. */
+    .window {
+      width: 480px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 22px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 50%, transparent 52%, rgba(0,0,0,0.34) 100%);
+    }
+    .window > * { position: relative; z-index: 1; }
+
+    .win-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    /* The tight column crop: label gutter + 4 date columns around the seam. The
+       seam line and the orange tie are absolutely positioned inside .rota. */
+    .rota {
+      display: grid;
+      grid-template-columns: 64px repeat(4, 1fr);
+      column-gap: 3px;
+      row-gap: 3px;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Two-month spanning labels — each over its two date columns. */
+    .month-head {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: var(--text-muted);
+      text-align: center;
+      padding-bottom: 4px;
+    }
+
+    /* Date-number heads (NOT weekday letters). */
+    .corner {}
+    .col-head {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding-bottom: 2px;
+    }
+
+    .row-label {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      padding-right: 8px;
+    }
+
+    /* Standard (ghost) cell. */
+    .cell {
+      position: relative;
+      height: 26px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* The enlarged sharp focus cells — taller, larger glyph. */
+    .cell.big {
+      height: 40px;
+      font-size: 14px;
+      border-radius: 7px;
+    }
+    .cell.e   { background: var(--shift-e-bg);   color: var(--shift-e-text); }
+    .cell.m   { background: var(--shift-m-bg);   color: var(--shift-m-text); }
+    .cell.l   { background: var(--shift-l-bg);   color: var(--shift-l-text); }
+    .cell.off { background: var(--shift-off-bg); color: var(--shift-off-text); }
+    /* The blocked Early — neutral bed, struck-through letter in faded grey. */
+    .cell.blocked { background: var(--shift-off-bg); color: var(--text-muted); }
+    .cell.blocked .strike { text-decoration: line-through; }
+
+    /* The key B device: neighbour rows ghosted, dissolving into the window edges. */
+    .ghost { opacity: 0.22; }
+
+    /* The Feb→Mar seam — a 1px hairline in the gap, height of the sharp focus band. */
+    .seam {
+      position: absolute;
+      right: -2px;
+      top: -3px;
+      bottom: -3px;
+      width: 1px;
+      background: var(--surface-edge);
+      z-index: 2;
+    }
+
+    /* THE ONE ORANGE MOMENT — the carryover tie, blown up across the seam.
+       Hollow ring at the right edge of Sofia's 28-Feb (Late) cell → 1.5px line
+       continuing across the 3px gap + seam → solid arrow-dot terminating ON the
+       1-Mar (blocked) cell, so the eye reads "this Late carried over and blocked
+       this Early." Anchored in the 28-Feb focus cell, vertically centred; the
+       line is sized to span the full gap so the dot lands inside the next cell. */
+    .tie {
+      position: absolute;
+      top: 50%;
+      left: 100%;            /* start at the right edge of the 28-Feb cell */
+      transform: translate(-9px, -50%);  /* pull back so the ring sits on the edge */
+      display: flex;
+      align-items: center;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .tie-ring {
+      width: 9px;
+      height: 9px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      background: transparent;
+      flex: 0 0 auto;
+    }
+    .tie-line {
+      width: 18px;           /* spans the 3px gap + seam and reaches into the 1-Mar cell */
+      height: 1.5px;
+      background: var(--accent-stroke);
+      flex: 0 0 auto;
+    }
+    .tie-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex: 0 0 auto;        /* solid arrow-dot — lands on the 1-Mar blocked cell */
+    }
+
+    .legend {
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+    }
+    .legend .e   { color: var(--shift-e-text); }
+    .legend .m   { color: var(--shift-m-text); }
+    .legend .l   { color: var(--shift-l-text); }
+    .legend .off { color: var(--shift-off-text); }
+    .legend .blocked-key { color: var(--text-muted); text-decoration: line-through; }
+
+    .fig-caption { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <main class="figure">
+    <section
+      class="window"
+      aria-label="Accord reads February's published rota and counts it forward: Sofia worked a Late shift on 28 February, so the Early shift on 1 March is blocked to protect her turnaround. The cross-month turnaround violation is prevented."
+    >
+      <div class="kicker">CONTINUITY &middot; MONTH BOUNDARY</div>
+      <div class="window-inner">
+        <div class="win-title">February &rarr; March 2026 &middot; James Oliver</div>
+
+        <div class="rota">
+          <!-- Month-spanning labels: FEBRUARY over cols 27/28, MARCH over cols 1/2 -->
+          <div class="corner"></div>
+          <div class="month-head" style="grid-column: 2 / 4;">FEBRUARY</div>
+          <div class="month-head" style="grid-column: 4 / 6;">MARCH</div>
+
+          <!-- Date-number heads -->
+          <div class="corner"></div>
+          <div class="col-head num">27</div>
+          <div class="col-head num">28</div>
+          <div class="col-head num">1</div>
+          <div class="col-head num">2</div>
+
+          <!-- Ghost — Marcus : E M ‖ E L  (dissolves into the top edge) -->
+          <div class="row-label ghost">Marcus</div>
+          <div class="cell e ghost num">E</div>
+          <div class="cell m ghost num">M</div>
+          <div class="cell e ghost num">E</div>
+          <div class="cell l ghost num">L</div>
+
+          <!-- Sofia — FOCUS (sharp, enlarged) : L L ‖ [blocked E] L -->
+          <div class="row-label">Sofia</div>
+          <div class="cell l big num">L</div>
+          <div class="cell l big num">L<!-- carried Late · the seam hairline + the orange tie hang off this cell -->
+            <span class="seam" aria-hidden="true"></span>
+            <span class="tie" aria-hidden="true">
+              <span class="tie-ring"></span>
+              <span class="tie-line"></span>
+              <span class="tie-dot"></span>
+            </span>
+          </div>
+          <div class="cell blocked big num"><span class="strike">E</span></div>
+          <div class="cell l big num">L</div>
+
+          <!-- Ghost — James : E E ‖ L L  (dissolves into the bottom edge) -->
+          <div class="row-label ghost">James</div>
+          <div class="cell e ghost num">E</div>
+          <div class="cell e ghost num">E</div>
+          <div class="cell l ghost num">L</div>
+          <div class="cell l ghost num">L</div>
+        </div>
+
+        <!-- Legend — outside the grid -->
+        <div class="legend">
+          <span class="e">E</span> Early &middot; <span class="m">M</span> Mid &middot; <span class="l">L</span> Late &middot; <span class="off">&middot;</span> Day off &middot; <span class="blocked-key">E</span> Early blocked
+        </div>
+      </div>
+    </section>
+
+    <p class="fig-caption">FIG 8.3A - RULES CARRY ACROSS THE MONTH BOUNDARY</p>
+  </main>
+</body>
+</html>

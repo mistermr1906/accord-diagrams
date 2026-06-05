@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<!--
+  Accord — D15-B: Consecutive-day tracker (UI product-screen mode · DETAIL CROP / Variant B)
+  Purpose: a static, high-fidelity crop into the one moment where Accord counts each
+  person's consecutive working days across the month boundary and flags any run over
+  the 5-day cap. James works 6 days in a row (26 Feb → 3 Mar); the 6th is the breach.
+  §08 alert grammar: amber MARKS the problem (the flagged cell + the streak's 6).
+  This crop carries NO action affordance — the explanatory feature card lives beside
+  it on the page — so there is ZERO orange anywhere in this file.
+
+  Variant B = the "detail crop". All six worked days stay visible (the run must be
+  seen), but the ROWS are cropped to James: his enlarged, sharp focus row sits between
+  ghosted neighbours (Marcus, Sofia) at opacity 0.22 that dissolve into the window's
+  top/bottom edges via the radial vignette — the §5.4 "let rows fade at the window
+  edge" device (opacity, never a shadow). The signature STREAK TRACK is blown up
+  directly beneath James's row as the dominant visual.
+
+  Governed by diagrams/accord-diagram-bible.md (§5.4 UI product-screen, §6 one-accent,
+  §7 denominators). Locks: the single accent (orange) is deliberately absent here —
+  this is a quiet diagnostic crop, no CTA. Amber (--status-warning) marks the problem;
+  it is information, never the accent. No shadows/glows/blur. Depth = value-step
+  surface + 1px hairline + corner vignette + the ghost-row opacity fade. No JavaScript,
+  no real inputs, no animation.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D15-B Consecutive-Day Tracker (detail crop)</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as D18 does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .figure {
+      min-height: 100vh;
+      padding: 96px;
+    }
+
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    /* The window — value-step vessel, 1px hairline, corner vignette. No shadow/blur. */
+    .window {
+      width: 480px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 22px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 50%, transparent 52%, rgba(0,0,0,0.34) 100%);
+    }
+    .window > * { position: relative; z-index: 1; }
+
+    .win-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    /* Label gutter + 6 date columns (the whole 6-day run). Seam + flag positioned
+       inside .rota. */
+    .rota {
+      display: grid;
+      grid-template-columns: 64px repeat(6, 1fr);
+      column-gap: 3px;
+      row-gap: 3px;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Two-month spanning labels. */
+    .month-head {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: var(--text-muted);
+      text-align: center;
+      padding-bottom: 4px;
+    }
+
+    /* Date-number heads (NOT weekday letters). */
+    .corner {}
+    .col-head {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding-bottom: 2px;
+    }
+    .col-head.flag { color: var(--status-warning); }
+
+    .row-label {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      padding-right: 8px;
+    }
+
+    /* Standard (ghost) cell. */
+    .cell {
+      position: relative;
+      height: 26px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* The enlarged sharp focus cells. */
+    .cell.big {
+      height: 40px;
+      font-size: 14px;
+      border-radius: 7px;
+    }
+    .cell.e   { background: var(--shift-e-bg);   color: var(--shift-e-text); }
+    .cell.m   { background: var(--shift-m-bg);   color: var(--shift-m-text); }
+    .cell.l   { background: var(--shift-l-bg);   color: var(--shift-l-text); }
+    .cell.off { background: var(--shift-off-bg); color: var(--shift-off-text); }
+
+    /* The breach cell — a subtle amber band bleeding into the gaps, behind the cell. */
+    .cell.flag::before {
+      content: "";
+      position: absolute;
+      inset: -3px -1.5px;
+      background: var(--status-warning-bed);
+      border-radius: 8px;
+      z-index: -1;
+    }
+
+    /* The key B device: neighbour rows ghosted, dissolving into the window edges. */
+    .ghost { opacity: 0.22; }
+
+    /* The Feb→Mar seam — a 1px hairline in the gap, height of the sharp focus band. */
+    .seam {
+      position: absolute;
+      right: -2px;
+      top: -3px;
+      bottom: -3px;
+      width: 1px;
+      background: var(--surface-edge);
+      z-index: 2;
+    }
+
+    /* ---- THE ENLARGED STREAK TRACK — B's hero. Six counts climb 1→6 across the
+       run; the track fills left→right and the final segment under the 6 turns amber
+       (the breach). Spans the 6 date columns, aligned to them. ---- */
+    .streak-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      text-align: right;
+      padding-right: 8px;
+      line-height: 1.2;
+    }
+    .streak-track {
+      position: relative;
+      padding-top: 4px;
+      padding-bottom: 11px;
+    }
+    .streak-nums {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      column-gap: 3px;
+    }
+    .streak-num {
+      position: relative;
+      z-index: 1;
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.3;
+    }
+    /* The 6th count — the breach: amber on its amber bed chip. */
+    .streak-num.breach {
+      color: var(--status-warning);
+      background: var(--status-warning-bed);
+      border-radius: 6px;
+    }
+    /* The track itself — 3px (thicker than A), running beneath the numbers. */
+    .track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 2px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--surface-edge);
+    }
+    /* Final segment — under the 6 — amber. Width = one of six date columns. */
+    .track-amber {
+      position: absolute;
+      right: 0;
+      bottom: 2px;
+      height: 3px;
+      width: calc((100% - 15px) / 6);
+      border-radius: 2px;
+      background: var(--status-warning);
+    }
+
+    .legend {
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+    }
+    .legend .e   { color: var(--shift-e-text); }
+    .legend .m   { color: var(--shift-m-text); }
+    .legend .l   { color: var(--shift-l-text); }
+    .legend .off { color: var(--shift-off-text); }
+
+    .fig-caption { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <main class="figure">
+    <section
+      class="window"
+      aria-label="Accord counts consecutive working days across the month boundary: James is scheduled for 6 days in a row from 26 February to 3 March, which exceeds the 5-day limit. Accord flags the breach and suggests assigning James off on 3 March."
+    >
+      <div class="kicker">LIMITS &middot; CONSECUTIVE DAYS</div>
+      <div class="window-inner">
+        <div class="win-title">February &rarr; March 2026 &middot; James Oliver</div>
+
+        <div class="rota">
+          <!-- Month-spanning labels: FEBRUARY over 26/27/28, MARCH over 1/2/3 -->
+          <div class="corner"></div>
+          <div class="month-head" style="grid-column: 2 / 5;">FEBRUARY</div>
+          <div class="month-head" style="grid-column: 5 / 8;">MARCH</div>
+
+          <!-- Date-number heads — 3 Mar head flagged amber -->
+          <div class="corner"></div>
+          <div class="col-head num">26</div>
+          <div class="col-head num">27</div>
+          <div class="col-head num">28</div>
+          <div class="col-head num">1</div>
+          <div class="col-head num">2</div>
+          <div class="col-head flag num">3</div>
+
+          <!-- Ghost — Marcus : E L · ‖ E L L  (dissolves into the top edge) -->
+          <div class="row-label ghost">Marcus</div>
+          <div class="cell e ghost num">E</div>
+          <div class="cell l ghost num">L</div>
+          <div class="cell off ghost num">&middot;</div>
+          <div class="cell e ghost num">E</div>
+          <div class="cell l ghost num">L</div>
+          <div class="cell l ghost num">L</div>
+
+          <!-- James — FOCUS (sharp, enlarged) : E L M ‖ E L L — all six worked -->
+          <div class="row-label">James</div>
+          <div class="cell e big num">E</div>
+          <div class="cell l big num">L</div>
+          <div class="cell m big num">M<!-- the seam hairline hangs off the 28-Feb cell -->
+            <span class="seam" aria-hidden="true"></span>
+          </div>
+          <div class="cell e big num">E</div>
+          <div class="cell l big num">L</div>
+          <div class="cell l big flag num">L</div>
+
+          <!-- THE ENLARGED STREAK TRACK — directly beneath James's row -->
+          <div class="streak-label">STREAK<br />5 MAX</div>
+          <div class="streak-track" style="grid-column: 2 / 8;">
+            <div class="streak-nums">
+              <span class="streak-num num">1</span>
+              <span class="streak-num num">2</span>
+              <span class="streak-num num">3</span>
+              <span class="streak-num num">4</span>
+              <span class="streak-num num">5</span>
+              <span class="streak-num breach num">6</span>
+            </div>
+            <span class="track" aria-hidden="true"></span>
+            <span class="track-amber" aria-hidden="true"></span>
+          </div>
+
+          <!-- Ghost — Sofia : L E L ‖ · E L  (dissolves into the bottom edge) -->
+          <div class="row-label ghost">Sofia</div>
+          <div class="cell l ghost num">L</div>
+          <div class="cell e ghost num">E</div>
+          <div class="cell l ghost num">L</div>
+          <div class="cell off ghost num">&middot;</div>
+          <div class="cell e ghost num">E</div>
+          <div class="cell l ghost num">L</div>
+        </div>
+
+        <!-- Legend — outside the grid -->
+        <div class="legend">
+          <span class="e">E</span> Early &middot; <span class="m">M</span> Mid &middot; <span class="l">L</span> Late &middot; <span class="off">&middot;</span> Day off
+        </div>
+      </div>
+    </section>
+
+    <p class="fig-caption">FIG 8.4A - CONSECUTIVE DAYS CAPPED ACROSS MONTHS</p>
+  </main>
+</body>
+</html>
