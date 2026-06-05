@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<!--
+  Accord — D17: Manager presence required on key days (UI product-screen mode)
+  Purpose: a static, high-fidelity mockup of Accord catching a manager-coverage
+  collision. The two manager rows (Marcus + Sofia) are both off on Tuesday, leaving
+  0 of 1 required managers on shift; the Tuesday column reads amber and a card below
+  names it in plain English and offers one fix.
+  No JavaScript, no real inputs, no animation.
+
+  Governed by diagrams/accord-diagram-bible.md (§5.4 UI product-screen, §6 one-accent,
+  §7 denominators). Locks: accent is ORANGE (#ee5f19) — the single orange moment is
+  the "Suggest fix" button, nowhere else. Amber (--status-warning) marks the problem;
+  it is information, never the accent. No shadows/glows/blur. Depth = value-step
+  surface + 1px hairline + corner vignette only.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D17 Manager Conflict</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as D10/D11 do) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .figure {
+      min-height: 100vh;
+      padding: 96px;
+    }
+
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    /* The window — value-step vessel, 1px hairline, corner vignette. No shadow/blur. */
+    .window {
+      width: 480px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 22px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 55%, transparent 60%, rgba(0,0,0,0.30) 100%);
+    }
+    .window > * { position: relative; z-index: 1; }
+
+    .win-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    /* Transposed rota grid: employees as rows, weekdays as columns. */
+    .rota {
+      display: grid;
+      grid-template-columns: 72px repeat(6, 1fr);
+      column-gap: 3px;
+      row-gap: 3px;
+      align-items: center;
+    }
+
+    /* The amber manager chip — left edge sits at the Tuesday column head. */
+    .chip-cell {
+      grid-column: 3 / -1;
+      justify-self: start;
+      margin-bottom: 4px;
+    }
+    .chip {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--status-warning);
+      background: var(--status-warning-bed);
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+
+    .corner {}
+    .col-head {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding-bottom: 2px;
+    }
+    .col-head.flag { color: var(--status-warning); }
+
+    /* Employee row labels — outside the cell field. Manager rows carry a tag. */
+    .row-label {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 8px;
+      line-height: 1.1;
+    }
+    .row-name {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+    .row-tag {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .cell {
+      position: relative;
+      height: 26px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cell.e   { background: var(--shift-e-bg);   color: var(--shift-e-text); }
+    .cell.m   { background: var(--shift-m-bg);   color: var(--shift-m-text); }
+    .cell.l   { background: var(--shift-l-bg);   color: var(--shift-l-text); }
+    .cell.off { background: var(--shift-off-bg); color: var(--shift-off-text); }
+
+    /* The flagged Tuesday column — subtle amber band bleeding into the gaps. */
+    .cell.flag::before {
+      content: "";
+      position: absolute;
+      inset: -3px -1.5px;
+      background: var(--status-warning-bed);
+      border-radius: 7px;
+      z-index: -1;
+    }
+
+    .legend {
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+    }
+    .legend .e   { color: var(--shift-e-text); }
+    .legend .m   { color: var(--shift-m-text); }
+    .legend .l   { color: var(--shift-l-text); }
+    .legend .off { color: var(--shift-off-text); }
+
+    .card {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--glass-hairline);
+    }
+    .card-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--status-warning);
+      margin-bottom: 8px;
+    }
+    .card-line {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .card-fix {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+    .card-cta { margin-top: 14px; }
+    .btn {
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1;
+      cursor: default;
+    }
+    /* THE ONE ORANGE MOMENT — appears exactly once in the file. */
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0c; /* the only raw hex — near-black for contrast on orange */
+      border: none;
+    }
+
+    .fig-caption { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <main class="figure">
+    <section
+      class="window"
+      aria-label="Accord flags Tuesday because both managers, Marcus and Sofia, are off, leaving 0 of the 1 required manager on shift, and suggests one of them works that day."
+    >
+      <div class="kicker">COVERAGE &middot; MANAGER PRESENCE</div>
+      <div class="window-inner">
+        <div class="win-title">March 2026 &middot; James Oliver</div>
+
+        <div class="rota">
+          <!-- Amber manager chip, left edge at the Tuesday column head -->
+          <div class="chip-cell">
+            <span class="chip num">MANAGER &middot; 0 of 1 required</span>
+          </div>
+
+          <!-- Header row -->
+          <div class="corner"></div>
+          <div class="col-head">M</div>
+          <div class="col-head flag">T</div>
+          <div class="col-head">W</div>
+          <div class="col-head">T</div>
+          <div class="col-head">F</div>
+          <div class="col-head">S</div>
+
+          <!-- Marcus (manager) : E · L L M E -->
+          <div class="row-label">
+            <span class="row-name">Marcus</span>
+            <span class="row-tag">Manager</span>
+          </div>
+          <div class="cell e num">E</div>
+          <div class="cell off flag num">&middot;</div>
+          <div class="cell l num">L</div>
+          <div class="cell l num">L</div>
+          <div class="cell m num">M</div>
+          <div class="cell e num">E</div>
+
+          <!-- Sofia (manager) : L · E E L L -->
+          <div class="row-label">
+            <span class="row-name">Sofia</span>
+            <span class="row-tag">Manager</span>
+          </div>
+          <div class="cell l num">L</div>
+          <div class="cell off flag num">&middot;</div>
+          <div class="cell e num">E</div>
+          <div class="cell e num">E</div>
+          <div class="cell l num">L</div>
+          <div class="cell l num">L</div>
+
+          <!-- James : M L M E L L -->
+          <div class="row-label">
+            <span class="row-name">James</span>
+          </div>
+          <div class="cell m num">M</div>
+          <div class="cell l flag num">L</div>
+          <div class="cell m num">M</div>
+          <div class="cell e num">E</div>
+          <div class="cell l num">L</div>
+          <div class="cell l num">L</div>
+
+          <!-- Nadia : E · M · L · -->
+          <div class="row-label">
+            <span class="row-name">Nadia</span>
+          </div>
+          <div class="cell e num">E</div>
+          <div class="cell off flag num">&middot;</div>
+          <div class="cell m num">M</div>
+          <div class="cell off num">&middot;</div>
+          <div class="cell l num">L</div>
+          <div class="cell off num">&middot;</div>
+
+          <!-- Elena : · · L · L L  (Lates only, never Mon/Tue) -->
+          <div class="row-label">
+            <span class="row-name">Elena</span>
+          </div>
+          <div class="cell off num">&middot;</div>
+          <div class="cell off flag num">&middot;</div>
+          <div class="cell l num">L</div>
+          <div class="cell off num">&middot;</div>
+          <div class="cell l num">L</div>
+          <div class="cell l num">L</div>
+        </div>
+
+        <div class="legend">
+          <span class="e">E</span> Early &middot; <span class="m">M</span> Mid &middot; <span class="l">L</span> Late &middot; <span class="off">&middot;</span> Day off
+        </div>
+
+        <div class="card">
+          <div class="card-label num">TUESDAY 17 MARCH &middot; MANAGER COVERAGE</div>
+          <div class="card-line">Marcus and Sofia are both off. 0 of 1 manager on shift.</div>
+          <div class="card-fix">Suggest: one manager works Tuesday.</div>
+          <div class="card-cta">
+            <button class="btn btn-primary" type="button">Suggest fix</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="fig-caption">FIG 8.6A - MANAGER PRESENCE REQUIRED ON KEY DAYS</p>
+  </main>
+</body>
+</html>

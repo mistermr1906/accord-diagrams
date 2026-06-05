@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<!--
+  Accord — D12: Coverage minimums enforced per day (UI product-screen mode)
+  Purpose: a static, high-fidelity mockup of Accord catching a daily-coverage dip.
+  A staff-count strip runs across the top of the transposed March rota; Tuesday's
+  count of 2 falls below the floor, the whole Tuesday column reads amber, and a
+  card below names the cause in plain English and offers one fix.
+  No JavaScript, no real inputs, no animation.
+
+  Governed by diagrams/accord-diagram-bible.md (§5.4 UI product-screen, §6 one-accent,
+  §7 denominators). Locks: accent is ORANGE (#ee5f19) — the single orange moment is
+  the "Suggest fix" button, nowhere else. Amber (--status-warning) marks the problem;
+  it is information, never the accent. No shadows/glows/blur. Depth = value-step
+  surface + 1px hairline + corner vignette only.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D12 Coverage Minimums</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as D10/D11 do) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — the window floats top-left in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      padding: 96px;
+    }
+
+    /* ---- The mono kicker that hangs above the window ---- */
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    /* ---- The window = a value-step vessel with a 1px hairline + corner vignette.
+       Depth cues only: no shadow, no glow, no blur. ---- */
+    .window {
+      width: 480px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 22px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 55%, transparent 60%, rgba(0,0,0,0.30) 100%);
+    }
+    .window > * { position: relative; z-index: 1; }
+
+    .win-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    /* The transposed rota grid: employees as rows, weekdays as columns. The
+       staff-count strip is the first row, aligned to the same day columns. */
+    .rota {
+      display: grid;
+      grid-template-columns: 64px repeat(6, 1fr);
+      column-gap: 3px;
+      row-gap: 3px;
+      align-items: center;
+    }
+
+    /* Row 1 — staff-count strip. Left label sits OUTSIDE the data. */
+    .strip-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      padding-right: 8px;
+      text-align: right;
+    }
+    .count {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.6;
+    }
+    /* The one count below the floor — amber text on its amber bed chip. */
+    .count.flag {
+      color: var(--status-warning);
+      background: var(--status-warning-bed);
+      border-radius: 6px;
+    }
+
+    /* Header row of single-letter mono day-heads. */
+    .corner {}
+    .col-head {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding-bottom: 2px;
+    }
+    .col-head.flag { color: var(--status-warning); }
+
+    /* Employee row labels — outside the cell field. */
+    .row-label {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      padding-right: 8px;
+    }
+
+    /* Shift cells. */
+    .cell {
+      position: relative;
+      height: 26px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cell.e   { background: var(--shift-e-bg);   color: var(--shift-e-text); }
+    .cell.m   { background: var(--shift-m-bg);   color: var(--shift-m-text); }
+    .cell.l   { background: var(--shift-l-bg);   color: var(--shift-l-text); }
+    .cell.off { background: var(--shift-off-bg); color: var(--shift-off-text); }
+
+    /* The flagged column — a subtle continuous amber band bleeding into the 3px
+       gaps, behind the cells. Cells keep their own shift tint on top. */
+    .cell.flag::before {
+      content: "";
+      position: absolute;
+      inset: -3px -1.5px;
+      background: var(--status-warning-bed);
+      border-radius: 7px;
+      z-index: -1;
+    }
+
+    /* Legend — OUTSIDE the grid (Bible rule). Each code letter in its tint colour. */
+    .legend {
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+    }
+    .legend .e   { color: var(--shift-e-text); }
+    .legend .m   { color: var(--shift-m-text); }
+    .legend .l   { color: var(--shift-l-text); }
+    .legend .off { color: var(--shift-off-text); }
+
+    /* ---- The card below the grid — hairline-separated. Names the issue in plain
+       English, then the one orange "Suggest fix" button. ---- */
+    .card {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--glass-hairline);
+    }
+    .card-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--status-warning);
+      margin-bottom: 8px;
+    }
+    .card-line {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .card-fix {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+    .card-cta {
+      margin-top: 14px;
+    }
+    .btn {
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1;
+      cursor: default;
+    }
+    /* THE ONE ORANGE MOMENT — appears exactly once in the file. */
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0c; /* the only raw hex — near-black for contrast on orange */
+      border: none;
+    }
+
+    /* FIG caption — OUTSIDE the window, aligned to its left edge. */
+    .fig-caption { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <main class="figure">
+    <section
+      class="window"
+      aria-label="Accord counts staffing per day and flags Tuesday, where Late coverage is 1 of the 2 required because Sofia is off, and suggests reassigning James."
+    >
+      <div class="kicker">COVERAGE &middot; DAILY MINIMUMS</div>
+      <div class="window-inner">
+        <div class="win-title">March 2026 &middot; James Oliver</div>
+
+        <!-- Transposed rota grid with staff-count strip as the first row -->
+        <div class="rota">
+          <!-- Row 1 — STAFF ON count strip -->
+          <div class="strip-label">STAFF ON</div>
+          <div class="count num">4</div>
+          <div class="count flag num">2</div>
+          <div class="count num">5</div>
+          <div class="count num">3</div>
+          <div class="count num">5</div>
+          <div class="count num">3</div>
+
+          <!-- Header row -->
+          <div class="corner"></div>
+          <div class="col-head">M</div>
+          <div class="col-head flag">T</div>
+          <div class="col-head">W</div>
+          <div class="col-head">T</div>
+          <div class="col-head">F</div>
+          <div class="col-head">S</div>
+
+          <!-- Marcus : E L E L M · -->
+          <div class="row-label">Marcus</div>
+          <div class="cell e num">E</div>
+          <div class="cell l flag num">L</div>
+          <div class="cell e num">E</div>
+          <div class="cell l num">L</div>
+          <div class="cell m num">M</div>
+          <div class="cell off num">&middot;</div>
+
+          <!-- Sofia : L · E E L L -->
+          <div class="row-label">Sofia</div>
+          <div class="cell l num">L</div>
+          <div class="cell off flag num">&middot;</div>
+          <div class="cell e num">E</div>
+          <div class="cell e num">E</div>
+          <div class="cell l num">L</div>
+          <div class="cell l num">L</div>
+
+          <!-- James : M M L E L L -->
+          <div class="row-label">James</div>
+          <div class="cell m num">M</div>
+          <div class="cell m flag num">M</div>
+          <div class="cell l num">L</div>
+          <div class="cell e num">E</div>
+          <div class="cell l num">L</div>
+          <div class="cell l num">L</div>
+
+          <!-- Nadia : E · M · L · -->
+          <div class="row-label">Nadia</div>
+          <div class="cell e num">E</div>
+          <div class="cell off flag num">&middot;</div>
+          <div class="cell m num">M</div>
+          <div class="cell off num">&middot;</div>
+          <div class="cell l num">L</div>
+          <div class="cell off num">&middot;</div>
+
+          <!-- Elena : · · L · L L  (Lates only, never Mon/Tue) -->
+          <div class="row-label">Elena</div>
+          <div class="cell off num">&middot;</div>
+          <div class="cell off flag num">&middot;</div>
+          <div class="cell l num">L</div>
+          <div class="cell off num">&middot;</div>
+          <div class="cell l num">L</div>
+          <div class="cell l num">L</div>
+        </div>
+
+        <!-- Legend — outside the grid -->
+        <div class="legend">
+          <span class="e">E</span> Early &middot; <span class="m">M</span> Mid &middot; <span class="l">L</span> Late &middot; <span class="off">&middot;</span> Day off
+        </div>
+
+        <!-- Card — the issue in plain English + the one orange moment -->
+        <div class="card">
+          <div class="card-label num">TUESDAY LATE &middot; 1 of 2 required</div>
+          <div class="card-line">Sofia unavailable &mdash; day off. Late coverage falls to 1 of 2.</div>
+          <div class="card-fix">Suggest: reassign James from Mid to Late.</div>
+          <div class="card-cta">
+            <button class="btn btn-primary" type="button">Suggest fix</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIG caption — spaced-hyphen separator, hung from the stage's left margin. -->
+    <p class="fig-caption">FIG 8.1A - COVERAGE FLOOR ENFORCED PER DAY</p>
+  </main>
+</body>
+</html>
