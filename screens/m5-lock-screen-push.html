@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<!--
+  Accord — M5: Lock-screen rota-published push (UI product-screen mode, §5.4)
+  Purpose: a static, high-fidelity mockup of a phone LOCK SCREEN — the one screen
+  allowed an OS clock — carrying a single Accord notification. Shares the M1 phone
+  frame verbatim (300×650, soft rounded body, value-step + internal vignette, no
+  shadow/notch/buttons). One orange moment = the notification's live-stripe; the app
+  chip is NEUTRAL grey. James Oliver roster. No JavaScript, no animation.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — M5 Lock-Screen Push</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as d9-setup-interview.html does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — phone centred in dominant negative space (~60% empty). */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Inner column at exactly the phone's width so the caption's left edge
+       aligns to the phone's left edge (shared left margin). */
+    .stack {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    /* ====================================================================
+       SHARED PHONE FRAME — build IDENTICALLY across M1–M7 (reusable kit).
+       Soft rounded body. Depth = value-step (card lighter than ground) +
+       internal radial vignette + 1px hairline. NO shadow, NO glow, NO notch.
+       ==================================================================== */
+    .phone {
+      position: relative;
+      width: 300px;
+      height: 650px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 44px;
+      overflow: hidden;
+    }
+    /* Internal radial vignette — the only depth cue besides the value step.
+       Sits above screen content but clipped to the rounded body. Not a shadow. */
+    .phone::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 50%, transparent 62%, rgba(0,0,0,0.28));
+      z-index: 5;
+    }
+    .screen {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    /* Load-bearing elements lifted ABOVE the vignette so they read full-strength. */
+    .lift { position: relative; z-index: 10; }
+    /* ==================================================================== */
+
+
+    /* --- M5 lock-screen content --------------------------------------- */
+    .m5-clock {
+      position: absolute;
+      top: 22%;
+      left: 0; right: 0;
+      text-align: center;
+    }
+    .m5-clock .time {
+      font-size: 52px;
+      font-weight: 300;
+      color: var(--text-primary);
+      line-height: 1;
+      letter-spacing: -0.01em;
+    }
+    .m5-clock .date {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* The notification glass card */
+    .m5-banner {
+      position: absolute;
+      top: 46%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 248px;
+      background: var(--surface-card-2);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 16px;
+      padding: 14px;
+      padding-left: 17px;          /* room beyond the 3px live-stripe */
+      overflow: hidden;            /* clip the stripe to the rounded corners */
+    }
+    /* THE ONE ORANGE MOMENT — live-stripe on the banner's left edge */
+    .m5-banner::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--accent);
+    }
+    .m5-banner-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .m5-chip {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      background: var(--surface-edge);   /* NEUTRAL grey — not the orange moment */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--text-secondary);
+      flex: none;
+    }
+    .m5-app {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+    }
+    .m5-now {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .m5-body {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--text-primary);
+    }
+    .m5-body .affordance { color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+    <div class="phone">
+      <div class="screen">
+        <!-- Lock clock -->
+        <div class="m5-clock">
+          <div class="time num">17:45</div>
+          <div class="date">Friday 27 February</div>
+        </div>
+
+        <!-- Single notification banner (left stripe is the one orange moment) -->
+        <div class="m5-banner lift">
+          <div class="m5-banner-head">
+            <div class="m5-chip">A</div>
+            <div class="m5-app">Accord</div>
+            <div class="m5-now">now</div>
+          </div>
+          <div class="m5-body">March rota published. <span class="affordance">Tap to view your shifts.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fig-caption">FIG 10.5A - ROTA-PUBLISHED PUSH</div>
+   </div>
+  </div>
+</body>
+</html>

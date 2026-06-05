@@ -176,6 +176,19 @@
       z-index: 2;
     }
 
+    /* Portrait variant — for the mobile phone screens (300×650 phone centred on a
+       full-height near-black body with its FIG caption below). Tall stage + a tall
+       iframe viewport so the whole phone + caption is contained, centred and large,
+       never clipped. */
+    .screen-stage.portrait {
+      aspect-ratio: 3 / 4;
+    }
+    .screen-stage.portrait iframe {
+      width: 640px;
+      height: 960px;
+      transform: scale(0.54);   /* 640 → ~345px wide card content */
+    }
+
     .meta {
       padding: 16px 18px 18px;
       display: flex;
@@ -529,8 +542,44 @@
       </div>
     </section>
 
+    <!-- ===== §10 · The App ============================================= -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">§10</span>
+        <span class="section-title">The App</span>
+        <span class="section-meta">2 of 7 · M1 · M5 · mobile product screens</span>
+      </div>
+      <div class="grid grid-screens">
+
+        <article class="card">
+          <div class="screen-stage portrait">
+            <iframe src="screens/m1-login.html" title="M1 — Biometric login" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+            <a class="catch" href="screens/m1-login.html" aria-label="Open M1 full screen"></a>
+          </div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">M1</span><span class="screen-title">Biometric login</span></div>
+            <p class="hint">To edit in Figma: import this page's URL with the <code>html.to.design</code> plugin.</p>
+            <div class="links"><a class="action primary" href="screens/m1-login.html">Open full screen ↗</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="screen-stage portrait">
+            <iframe src="screens/m5-lock-screen-push.html" title="M5 — Lock-screen push" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+            <a class="catch" href="screens/m5-lock-screen-push.html" aria-label="Open M5 full screen"></a>
+          </div>
+          <div class="meta">
+            <div class="meta-top"><span class="d-num">M5</span><span class="screen-title">Lock-screen push</span></div>
+            <p class="hint">To edit in Figma: import this page's URL with the <code>html.to.design</code> plugin.</p>
+            <div class="links"><a class="action primary" href="screens/m5-lock-screen-push.html">Open full screen ↗</a></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
     <footer>
-      19 diagrams · §08 complete · shared token set → <a href="./tokens.html">Tokens reference ↗</a>
+      21 diagrams · §08 complete · §10 mobile in progress · 2 of 7 app screens · shared token set → <a href="./tokens.html">Tokens reference ↗</a>
     </footer>
 
   </div>

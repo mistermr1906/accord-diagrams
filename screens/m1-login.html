@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--
+  Accord — M1: Employee biometric login (UI product-screen mode, §5.4)
+  Purpose: a static, high-fidelity mockup of Accord's in-app login screen on a phone.
+  The shared phone frame (300×650, soft rounded body, value-step + internal vignette,
+  no shadow/notch/buttons) is the reusable kit piece M2–M7 inherit verbatim.
+  One orange moment = the biometric focus ring hugging the fingerprint. Nothing else
+  is orange. James Oliver roster (Sofia). No JavaScript, no animation.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — M1 Biometric Login</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as d9-setup-interview.html does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — phone centred in dominant negative space (~60% empty). */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Inner column at exactly the phone's width so the caption's left edge
+       aligns to the phone's left edge (shared left margin). */
+    .stack {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    /* ====================================================================
+       SHARED PHONE FRAME — build IDENTICALLY across M1–M7 (reusable kit).
+       Soft rounded body. Depth = value-step (card lighter than ground) +
+       internal radial vignette + 1px hairline. NO shadow, NO glow, NO notch.
+       ==================================================================== */
+    .phone {
+      position: relative;
+      width: 300px;
+      height: 650px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 44px;
+      overflow: hidden;
+    }
+    /* Internal radial vignette — the only depth cue besides the value step.
+       Sits above screen content but clipped to the rounded body. Not a shadow. */
+    .phone::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 50%, transparent 62%, rgba(0,0,0,0.28));
+      z-index: 5;
+    }
+    .screen {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    /* Load-bearing elements lifted ABOVE the vignette so they read full-strength. */
+    .lift { position: relative; z-index: 10; }
+    /* ==================================================================== */
+
+
+    /* --- M1 screen content -------------------------------------------- */
+    .m1-wordmark {
+      position: absolute;
+      top: 14%;
+      left: 0; right: 0;
+      text-align: center;
+    }
+    .m1-wordmark .mark {
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+    .m1-wordmark .store {
+      margin-top: 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+    .m1-greeting {
+      position: absolute;
+      top: 38%;
+      left: 28px; right: 28px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 300;
+      color: var(--text-primary);
+      line-height: 1.25;
+    }
+    .m1-biometric {
+      position: absolute;
+      top: 68%;
+      left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .m1-ring {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);   /* the one orange moment */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .m1-touch {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+    .m1-pin {
+      position: absolute;
+      top: 88%;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+    <div class="phone">
+      <div class="screen">
+        <!-- Wordmark + store tag -->
+        <div class="m1-wordmark">
+          <div class="mark">Accord</div>
+          <div class="store">James Oliver</div>
+        </div>
+
+        <!-- Hero greeting -->
+        <div class="m1-greeting">Welcome back, Sofia</div>
+
+        <!-- Biometric prompt (focus ring is the one orange moment) -->
+        <div class="m1-biometric lift">
+          <div class="m1-ring">
+            <!-- Thin-line fingerprint: concentric curved arcs, neutral stroke -->
+            <svg width="38" height="38" viewBox="0 0 38 38" fill="none"
+                 stroke="var(--text-secondary)" stroke-width="1.5" stroke-linecap="round">
+              <path d="M8 22 C8 14, 13 9, 19 9 C25 9, 30 14, 30 22" />
+              <path d="M11.5 24 C11.5 16.5, 15 12.5, 19 12.5 C23 12.5, 26.5 16.5, 26.5 24" />
+              <path d="M15 26 C15 19, 16.5 16, 19 16 C21.5 16, 23 19, 23 25" />
+              <path d="M19 19.5 L19 27" />
+            </svg>
+          </div>
+          <div class="m1-touch">Touch to unlock</div>
+        </div>
+
+        <!-- Ghost secondary action -->
+        <div class="m1-pin lift">Use PIN instead</div>
+      </div>
+    </div>
+
+    <div class="fig-caption">FIG 10.1A - EMPLOYEE BIOMETRIC LOGIN</div>
+   </div>
+  </div>
+</body>
+</html>
