@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<!--
+  Accord — M3: Personal month view (UI product-screen mode, §5.4)
+  Purpose: a static, high-fidelity mockup of Sofia's own month in Accord on a phone.
+  Every day is colour-coded by the shift she works (E/M/L tints), off days are grey,
+  today (Wed 18) is ringed, and a shift-count summary + legend sits at the foot.
+  The shared phone frame (300×650, soft rounded body, value-step + internal vignette,
+  no shadow/notch/buttons) is inherited verbatim from M1.
+  One orange moment = the "today" ring on cell 18. Nothing else is orange.
+  James Oliver roster (Sofia). No JavaScript, no animation.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — M3 Personal Month View</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as d9-setup-interview.html does) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — phone centred in dominant negative space (~60% empty). */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Inner column at exactly the phone's width so the caption's left edge
+       aligns to the phone's left edge (shared left margin). */
+    .stack {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    /* ====================================================================
+       SHARED PHONE FRAME — build IDENTICALLY across M1–M7 (reusable kit).
+       Soft rounded body. Depth = value-step (card lighter than ground) +
+       internal radial vignette + 1px hairline. NO shadow, NO glow, NO notch.
+       ==================================================================== */
+    .phone {
+      position: relative;
+      width: 300px;
+      height: 650px;
+      background: var(--surface-card);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 44px;
+      overflow: hidden;
+    }
+    /* Internal radial vignette — the only depth cue besides the value step.
+       Sits above screen content but clipped to the rounded body. Not a shadow. */
+    .phone::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at 50% 50%, transparent 62%, rgba(0,0,0,0.28));
+      z-index: 5;
+    }
+    .screen {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    /* Load-bearing elements lifted ABOVE the vignette so they read full-strength. */
+    .lift { position: relative; z-index: 10; }
+    /* ==================================================================== */
+
+
+    /* --- M3 screen content -------------------------------------------- */
+    .m3 {
+      position: absolute;
+      inset: 0;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+    }
+    .m3-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .m3-month {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+    .m3-chevs {
+      display: flex;
+      gap: 16px;
+      font-size: 15px;
+      color: var(--text-tertiary);
+    }
+    .m3-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      margin-bottom: 8px;
+    }
+    .m3-weekdays span {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .m3-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-auto-rows: 60px;
+      gap: 8px;
+    }
+    .m3-cell {
+      border-radius: 8px;
+      padding-top: 9px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 6px;
+    }
+    .m3-date {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .m3-code {
+      font-size: 15px;
+      font-weight: 500;
+    }
+    /* Shift tints — bg from the *-bg token, code letter from the *-text token. */
+    .m3-cell.e { background: var(--shift-e-bg); }
+    .m3-cell.e .m3-code { color: var(--shift-e-text); }
+    .m3-cell.m { background: var(--shift-m-bg); }
+    .m3-cell.m .m3-code { color: var(--shift-m-text); }
+    .m3-cell.l { background: var(--shift-l-bg); }
+    .m3-cell.l .m3-code { color: var(--shift-l-text); }
+    /* Off days — grey fill, muted date, no code letter. */
+    .m3-cell.off { background: var(--shift-off-bg); }
+    .m3-cell.off .m3-date { color: var(--text-muted); }
+    /* Trailing empty cells after the 31st — pure ground, no fill, no border. */
+    .m3-cell.empty { background: transparent; }
+    /* THE ONE ORANGE MOMENT — today ring, hugging cell 18 (keeps its Mid tint). */
+    .m3-cell.today {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+
+    .m3-foot { margin-top: 32px; }
+    .m3-summary {
+      font-size: 16px;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .m3-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      align-items: center;
+    }
+    .m3-leg {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .m3-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+    <div class="phone">
+      <div class="screen">
+
+        <div class="m3">
+          <div class="m3-head">
+            <div class="m3-month">March 2026</div>
+            <div class="m3-chevs"><span>&lsaquo;</span><span>&rsaquo;</span></div>
+          </div>
+          <div class="m3-weekdays">
+            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+          </div>
+
+          <!-- 7 cols × 5 rows. March 2026 starts Sunday (1 = Sun); no leading blanks. -->
+          <div class="m3-grid">
+            <!-- row 1 -->
+            <div class="m3-cell off"><div class="m3-date num">1</div></div>
+            <div class="m3-cell off"><div class="m3-date num">2</div></div>
+            <div class="m3-cell e"><div class="m3-date num">3</div><div class="m3-code">E</div></div>
+            <div class="m3-cell e"><div class="m3-date num">4</div><div class="m3-code">E</div></div>
+            <div class="m3-cell m"><div class="m3-date num">5</div><div class="m3-code">M</div></div>
+            <div class="m3-cell l"><div class="m3-date num">6</div><div class="m3-code">L</div></div>
+            <div class="m3-cell l"><div class="m3-date num">7</div><div class="m3-code">L</div></div>
+            <!-- row 2 -->
+            <div class="m3-cell e"><div class="m3-date num">8</div><div class="m3-code">E</div></div>
+            <div class="m3-cell m"><div class="m3-date num">9</div><div class="m3-code">M</div></div>
+            <div class="m3-cell e"><div class="m3-date num">10</div><div class="m3-code">E</div></div>
+            <div class="m3-cell l"><div class="m3-date num">11</div><div class="m3-code">L</div></div>
+            <div class="m3-cell m"><div class="m3-date num">12</div><div class="m3-code">M</div></div>
+            <div class="m3-cell off"><div class="m3-date num">13</div></div>
+            <div class="m3-cell off"><div class="m3-date num">14</div></div>
+            <!-- row 3 (18 = today) -->
+            <div class="m3-cell off"><div class="m3-date num">15</div></div>
+            <div class="m3-cell off"><div class="m3-date num">16</div></div>
+            <div class="m3-cell e"><div class="m3-date num">17</div><div class="m3-code">E</div></div>
+            <div class="m3-cell m today"><div class="m3-date num">18</div><div class="m3-code">M</div></div>
+            <div class="m3-cell e"><div class="m3-date num">19</div><div class="m3-code">E</div></div>
+            <div class="m3-cell l"><div class="m3-date num">20</div><div class="m3-code">L</div></div>
+            <div class="m3-cell e"><div class="m3-date num">21</div><div class="m3-code">E</div></div>
+            <!-- row 4 -->
+            <div class="m3-cell e"><div class="m3-date num">22</div><div class="m3-code">E</div></div>
+            <div class="m3-cell m"><div class="m3-date num">23</div><div class="m3-code">M</div></div>
+            <div class="m3-cell l"><div class="m3-date num">24</div><div class="m3-code">L</div></div>
+            <div class="m3-cell e"><div class="m3-date num">25</div><div class="m3-code">E</div></div>
+            <div class="m3-cell m"><div class="m3-date num">26</div><div class="m3-code">M</div></div>
+            <div class="m3-cell off"><div class="m3-date num">27</div></div>
+            <div class="m3-cell off"><div class="m3-date num">28</div></div>
+            <!-- row 5 -->
+            <div class="m3-cell l"><div class="m3-date num">29</div><div class="m3-code">L</div></div>
+            <div class="m3-cell off"><div class="m3-date num">30</div></div>
+            <div class="m3-cell e"><div class="m3-date num">31</div><div class="m3-code">E</div></div>
+            <div class="m3-cell empty"></div>
+            <div class="m3-cell empty"></div>
+            <div class="m3-cell empty"></div>
+            <div class="m3-cell empty"></div>
+          </div>
+
+          <!-- Summary + legend / type breakdown -->
+          <div class="m3-foot">
+            <div class="m3-summary"><span class="num">22</span> shifts &middot; <span class="num">9</span> days off</div>
+            <div class="m3-legend">
+              <div class="m3-leg">
+                <div class="m3-swatch" style="background: var(--shift-e-bg); color: var(--shift-e-text);">E</div>
+                Early <span class="num">10</span>
+              </div>
+              <div class="m3-leg">
+                <div class="m3-swatch" style="background: var(--shift-m-bg); color: var(--shift-m-text);">M</div>
+                Mid <span class="num">6</span>
+              </div>
+              <div class="m3-leg">
+                <div class="m3-swatch" style="background: var(--shift-l-bg); color: var(--shift-l-text);">L</div>
+                Late <span class="num">6</span>
+              </div>
+              <div class="m3-leg">
+                <div class="m3-swatch" style="background: var(--shift-off-bg);"></div>
+                Off
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="fig-caption">FIG 10.3A - PERSONAL MONTH VIEW</div>
+   </div>
+  </div>
+</body>
+</html>
