@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!--
+  Accord — D25: The Network — multi-location scheduling.
+  Single build per the 2026-06-06 panel verdict: heavy lower edge tilted 5.7°,
+  third node apart above, one NADIA tag (D23 ELENA precedent), edges trimmed
+  to node rims.
+  Editorial / semi-abstract family (Bible §5.3 · diagrams/style-lock-editorial.md).
+  Bare strokes on the page ground — no frame, no card, no vignette, no glass, no fills
+  (text glyphs excepted). Non-directional — no arrowheads, no resolution point.
+  PURE GREYSCALE — zero orange anywhere in D25.
+
+  HEX → TOKEN MAP (SVG uses literal hex only; page furniture below uses CSS vars):
+    #9ea3a9 = --stroke-wire-hi   (the Thread-weight heavy edge A–B, 4px — brightest grey)
+    #868990 = --stroke-wire-mid  (3 open node circles + 2 thin edges, 1px)
+    #9e9e9e = --text-tertiary    (NADIA mono micro-tag)
+
+  GEOMETRY MATH (600×420 canvas = 20×14 modules of 30px):
+    - 3 NODES: open circles r=6 (Ø12px), fill none, 1px #868990, at
+      A (60,240) · B (360,210) · C (240,30).
+      Module check: A→B Δ(300,30) = 10×30/1×30 · A→C Δ(180,210) = 6×30/7×30 ·
+      B→C Δ(120,180) = 4×30/6×30. Heavy-edge tilt = atan(30/300) ≈ 5.7° off
+      horizontal.
+    - HEAVY EDGE (the one Thread-weight element — the shared employee): A–B,
+      stroke #9ea3a9, width 4, butt caps, dead straight. Both ends trimmed 6px
+      along the edge direction to the node RIM:
+        |A→B| = √(300² + 30²) = 301.5 · unit (300,−30)/301.5 = (0.9950, −0.0995)
+        from A + 6·unit = (65.97, 239.40) to B − 6·unit = (354.03, 210.60).
+    - THIN EDGES (each site's own rules): A–C and B–C, stroke #868990, width 1,
+      butt caps, dead straight, trimmed 6px to the rims the same way:
+        A–C: |A→C| = √(180² + 210²) = 276.6 · unit (180,−210)/276.6
+          from (63.90, 235.44) to (236.10, 34.56).
+        B–C: |B→C| = √(120² + 180²) = 216.3 · unit (−120,−180)/216.3
+          from (356.67, 205.01) to (243.33, 34.99).
+    - ONE MICRO-TAG: NADIA — text-anchor middle, x=210, baseline y=251
+      (= heavy-edge midpoint y 225 + 26, the D22 tag convention; heavy-edge
+      midpoint is (210,225)). No other text in the artwork.
+    - STROKE WIDTHS at the 600px reference: heavy edge 4px · thin edges 1px ·
+      node circles 1px
+    - PAINT ORDER = z-order: thin edges first, circles, tag, heavy edge LAST.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D25 Multi-Location Network</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as shipped plates do) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — artwork floating in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Fixed-width column: figure, stat, and FIG caption all hang from the
+       SAME left edge (shared-left-margin rule — the stack edge is the SVG's
+       own x=0 edge). */
+    .stack {
+      width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .stat {
+      margin-top: 20px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .fig-caption {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+
+    <svg viewBox="0 0 600 420" width="600" height="420" role="img"
+         aria-labelledby="d25t d25d" shape-rendering="geometricPrecision"
+         xmlns="http://www.w3.org/2000/svg">
+      <title id="d25t">Multi-location scheduling network</title>
+      <desc id="d25d">Three store locations; one heavy line marks Nadia shared between two sites; thin lines keep each site's own rules.</desc>
+
+      <!-- 2 THIN EDGES (1px, dead straight, trimmed 6px to the node rims).
+           Painted first. -->
+      <line x1="63.90" y1="235.44" x2="236.10" y2="34.56" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="356.67" y1="205.01" x2="243.33" y2="34.99" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+
+      <!-- 3 open node circles (1px, r=6). -->
+      <circle cx="60" cy="240" r="6" fill="none" stroke="#868990" stroke-width="1" />
+      <circle cx="360" cy="210" r="6" fill="none" stroke="#868990" stroke-width="1" />
+      <circle cx="240" cy="30" r="6" fill="none" stroke="#868990" stroke-width="1" />
+
+      <!-- ONE mono micro-tag — the shared employee, beneath the heavy edge's
+           midpoint (210,225). -->
+      <text x="210" y="251" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">NADIA</text>
+
+      <!-- THE HEAVY EDGE — the one Thread-weight element, painted last.
+           A–B, dead straight, trimmed 6px to both rims. -->
+      <line x1="65.97" y1="239.40" x2="354.03" y2="210.60" stroke="#9ea3a9" stroke-width="4" stroke-linecap="butt" />
+    </svg>
+
+    <div class="stat num">3 locations · 1 shared employee</div>
+    <div class="fig-caption">FIG 19.2A - RULES HOLD PER SITE WHILE HOURS TRACK ACROSS ALL</div>
+
+   </div>
+  </div>
+</body>
+</html>

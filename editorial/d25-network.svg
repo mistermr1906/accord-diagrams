@@ -1,0 +1,28 @@
+<!-- EXPORT ARTIFACT — the HTML plate diagrams/svg/d25-network.html is the source of truth; regenerate this file on any change. Generated 2026-06-06. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="600" height="500" shape-rendering="geometricPrecision" role="img" aria-labelledby="d25t d25d">
+  <title id="d25t">Multi-location scheduling network</title>
+  <desc id="d25d">Three store locations; one heavy line marks Nadia shared between two sites; thin lines keep each site's own rules.</desc>
+  <rect x="0" y="0" width="600" height="500" fill="#0a0a0c"/>
+  <g>
+      <!-- 2 THIN EDGES (1px, dead straight, trimmed 6px to the node rims).
+           Painted first. -->
+      <line x1="63.90" y1="235.44" x2="236.10" y2="34.56" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="356.67" y1="205.01" x2="243.33" y2="34.99" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+
+      <!-- 3 open node circles (1px, r=6). -->
+      <circle cx="60" cy="240" r="6" fill="none" stroke="#868990" stroke-width="1" />
+      <circle cx="360" cy="210" r="6" fill="none" stroke="#868990" stroke-width="1" />
+      <circle cx="240" cy="30" r="6" fill="none" stroke="#868990" stroke-width="1" />
+
+      <!-- ONE mono micro-tag — the shared employee, beneath the heavy edge's
+           midpoint (210,225). -->
+      <text x="210" y="251" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">NADIA</text>
+
+      <!-- THE HEAVY EDGE — the one Thread-weight element, painted last.
+           A–B, dead straight, trimmed 6px to both rims. -->
+      <line x1="65.97" y1="239.40" x2="354.03" y2="210.60" stroke="#9ea3a9" stroke-width="4" stroke-linecap="butt" />
+  </g>
+  <text x="0" y="455" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="14" fill="#b2b2b2">3 locations · 1 shared employee</text>
+  <text x="0" y="480" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#6e7176">FIG 19.2A - RULES HOLD PER SITE WHILE HOURS TRACK ACROSS ALL</text>
+</svg>

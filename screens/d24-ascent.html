@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!--
+  Accord — D24: The Ascent — self-serve onboarding climb.
+  WINNER — chosen 2026-06-06 (was Variant B: edge bleed (0,345) — thread family
+  runs edge-to-edge, D20/D21/D22 precedent; beat Variant A inset origin (60,330)).
+  Varied parameter across the pass: start treatment only. The losing -A file stays
+  on disk as a process record.
+  Editorial / semi-abstract family (Bible §5.3 · diagrams/style-lock-editorial.md).
+  Bare strokes on the page ground — no frame, no card, no vignette, no glass, no fills
+  (dot circles and text glyphs excepted). PURE GREYSCALE — zero orange anywhere in D24.
+
+  HEX → TOKEN MAP (SVG uses literal hex only; page furniture below uses CSS vars):
+    #9ea3a9 = --stroke-wire-hi   (the Thread, 4px — brightest grey)
+    #868990 = --stroke-wire-mid  (dotted-trail circles + 3 waypoint ticks)
+    #9e9e9e = --text-tertiary    (STORE SETUP / TEAM / FIRST ROTA mono micro-tags)
+
+  GEOMETRY MATH (600×420 canvas = 20×14 modules of 30px):
+    - LINE: (0,345) → (600,45). Rise:run exactly 1:2 (Δ = 600 run / −300 rise,
+      ≈26.57°). Direction unit vector (2,−1)/√5 = (0.8944, −0.4472).
+    - WAYPOINTS on the line at x = 210, 360, 510 (equal 150px spacing = 5 × 30px
+      module; all on-module): wp1 (210,240) · wp2 (360,165) · wp3 (510,90).
+    - TICKS: 12px-long straight lines crossing the thread PERPENDICULAR to it
+      (thread-normal). Normal unit = (1,2)/√5 → endpoint offset ±6 × (1,2)/√5
+      = ±(2.683, 5.367) from each waypoint centre:
+        wp1: (207.317, 234.633) → (212.683, 245.367)
+        wp2: (357.317, 159.633) → (362.683, 170.367)
+        wp3: (507.317, 84.633)  → (512.683, 95.367)
+      stroke #868990, width 2, linecap square.
+      Tick length 12px (vs the lock's 8px marker vocabulary) — CONFIRMED by 1× render
+      comparison vs 8px, 2026-06-06: 8px protrudes only 2px per side of the 4px thread
+      and vanishes at non-retina card scale.
+    - DOTTED TRAIL: 19 explicit circles, r=1.5 (Ø3px), fill #868990, stroke none,
+      12px centre-to-centre along the line direction. Dot k centre =
+      (0 + k×10.733, 345 − k×5.367) for k = 0…18 (12 × 0.8944 = 10.733 ·
+      12 × 0.4472 = 5.367). Dot 0 is centred ON the canvas edge at (0,345) —
+      half-clipped, deliberate: the journey arrives already moving. Dot 18 lands
+      (193.194, 248.394) — ≈18.8px short of wp1, at least one full 12px pitch
+      clear of the tick (the tick owns the transition; no partial dot, no dot
+      touching the tick).
+      Ø3 / 12px pitch / #868990 dot spec is a recorded figure-scoped deviation
+      from the family's ambient dot-trail spec (style-lock Amendment record,
+      2026-06-06 — the trail is the Thread in a prior state).
+    - SOLID THREAD: ONE path, M 210 240 L 600 45 — starts at wp1 (where the
+      dotted trail turns solid), runs straight through wp2 and wp3, exits the
+      right edge still climbing. stroke #9ea3a9, width 4, butt caps.
+    - MICRO-TAGS: one per waypoint, text-anchor middle at the waypoint's own x,
+      baseline at waypoint y + 30: STORE SETUP (210,274 — +34, nudged 4px for
+      dot-trail clearance) · TEAM (360,195) · FIRST ROTA (510,120).
+    - STROKE WIDTHS at the 600px reference: Thread 4px · ticks 2px · dots Ø3 fill
+    - PAINT ORDER = z-order: dots first, ticks, tags, Thread LAST.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D24 Self-Serve Onboarding</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as shipped plates do) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — artwork floating in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Fixed-width column: figure, stat, and FIG caption all hang from the
+       SAME left edge (shared-left-margin rule — leftmost artwork ink is the
+       half-clipped first dot at the SVG's own x=0, so the stack edge IS the
+       ink edge). */
+    .stack {
+      width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .stat {
+      margin-top: 20px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .fig-caption {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+
+    <svg viewBox="0 0 600 420" width="600" height="420" role="img"
+         aria-labelledby="d24t d24d" shape-rendering="geometricPrecision"
+         xmlns="http://www.w3.org/2000/svg">
+      <title id="d24t">Self-serve onboarding from first visit to first rota</title>
+      <desc id="d24d">A dotted trail becomes one solid climbing line at store setup, passing team and first rota, and exits still climbing - no setup call.</desc>
+
+      <!-- DOTTED TRAIL — 19 explicit circles, Ø3, 12px pitch along (0.8944,−0.4472),
+           from the canvas edge (0,345) — first dot half-clipped, deliberate —
+           toward waypoint 1. Painted first. -->
+      <circle cx="0" cy="345" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="10.733" cy="339.633" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="21.466" cy="334.266" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="32.199" cy="328.899" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="42.932" cy="323.532" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="53.665" cy="318.165" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="64.398" cy="312.798" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="75.131" cy="307.431" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="85.864" cy="302.064" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="96.597" cy="296.697" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="107.33" cy="291.33" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="118.063" cy="285.963" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="128.796" cy="280.596" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="139.529" cy="275.229" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="150.262" cy="269.862" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="160.995" cy="264.495" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="171.728" cy="259.128" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="182.461" cy="253.761" r="1.5" fill="#868990" stroke="none" />
+      <circle cx="193.194" cy="248.394" r="1.5" fill="#868990" stroke="none" />
+
+      <!-- 3 WAYPOINT TICKS — 12px, perpendicular to the thread (normal ±(2.683,5.367)),
+           2px #868990, square caps. -->
+      <line x1="207.317" y1="234.633" x2="212.683" y2="245.367" stroke="#868990" stroke-width="2" stroke-linecap="square" />
+      <line x1="357.317" y1="159.633" x2="362.683" y2="170.367" stroke="#868990" stroke-width="2" stroke-linecap="square" />
+      <line x1="507.317" y1="84.633" x2="512.683" y2="95.367" stroke="#868990" stroke-width="2" stroke-linecap="square" />
+
+      <!-- Mono micro-tags — one per waypoint, centred at the waypoint's x,
+           baseline at waypoint y + 30. -->
+      <text x="210" y="274" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">STORE SETUP</text>
+      <text x="360" y="195" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">TEAM</text>
+      <text x="510" y="120" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">FIRST ROTA</text>
+
+      <!-- THE THREAD — one path, painted last. Turns solid at waypoint 1 (store
+           setup), runs straight through team and first rota, exits the right
+           edge still climbing at slope 1:2. -->
+      <path d="M 210 240 L 600 45"
+            fill="none" stroke="#9ea3a9" stroke-width="4"
+            stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" />
+    </svg>
+
+    <div class="stat num">3 steps · 0 setup calls</div>
+    <div class="fig-caption">FIG 19.1A - THE LINE TURNS SOLID AT STORE SETUP</div>
+
+   </div>
+  </div>
+</body>
+</html>
