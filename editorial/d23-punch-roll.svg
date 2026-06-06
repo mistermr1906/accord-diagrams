@@ -1,0 +1,63 @@
+<!-- EXPORT ARTIFACT — the HTML plate diagrams/svg/d23-punch-roll.html is the source of truth; regenerate this file on any change. Generated 2026-06-06. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="600" height="500" shape-rendering="geometricPrecision" role="img" aria-labelledby="d23t d23d">
+  <title id="d23t">Plain language becomes solver input</title>
+  <desc id="d23d">Eight scattered marks become eight notes on a weekly grid: a plain sentence seated as exact positions, with the Sunday, Monday and Tuesday rows silent.</desc>
+  <rect x="0" y="0" width="600" height="500" fill="#0a0a0c"/>
+  <g>
+      <!-- RULED FIELD — 7 day rules (0.5px hairlines), SUN→SAT top to bottom,
+           30px pitch. Painted first. -->
+      <line x1="210" y1="150" x2="570" y2="150" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="210" y1="180" x2="570" y2="180" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="210" y1="210" x2="570" y2="210" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="210" y1="240" x2="570" y2="240" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="210" y1="270" x2="570" y2="270" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="210" y1="300" x2="570" y2="300" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="210" y1="330" x2="570" y2="330" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+
+      <!-- READ-POINT — the boundary where marks enter the field. -->
+      <line x1="210" y1="142" x2="210" y2="338" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+
+      <!-- WEEK TICKS — 4 week columns crossing the top rule. -->
+      <line x1="255" y1="146" x2="255" y2="154" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+      <line x1="345" y1="146" x2="345" y2="154" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+      <line x1="435" y1="146" x2="435" y2="154" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+      <line x1="525" y1="146" x2="525" y2="154" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+
+      <!-- DAY TAGS — mono micro-tags, right-aligned against the field. -->
+      <text x="200" y="154" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">SUN</text>
+      <text x="200" y="184" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">MON</text>
+      <text x="200" y="214" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">TUE</text>
+      <text x="200" y="244" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">WED</text>
+      <text x="200" y="274" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">THU</text>
+      <text x="200" y="304" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">FRI</text>
+      <text x="200" y="334" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">SAT</text>
+
+      <!-- CLUSTER TAG -->
+      <text x="15" y="168" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">ELENA</text>
+
+      <!-- THE CLUSTER — 8 data dots, loose and irregular, upper-left. -->
+      <circle cx="15"  cy="70"  r="3.5" fill="#9ea3a9" />
+      <circle cx="62"  cy="52"  r="3.5" fill="#9ea3a9" />
+      <circle cx="103" cy="80"  r="3.5" fill="#9ea3a9" />
+      <circle cx="35"  cy="108" r="3.5" fill="#9ea3a9" />
+      <circle cx="86"  cy="122" r="3.5" fill="#9ea3a9" />
+      <circle cx="130" cy="62"  r="3.5" fill="#9ea3a9" />
+      <circle cx="55"  cy="145" r="3.5" fill="#9ea3a9" />
+      <circle cx="118" cy="132" r="3.5" fill="#9ea3a9" />
+
+      <!-- THE SEATED MARKS — the same 8 dots at row-column intersections.
+           SUN/MON/TUE rows silent; 7 grey here, the orange follows. -->
+      <circle cx="255" cy="240" r="3.5" fill="#9ea3a9" />
+      <circle cx="255" cy="300" r="3.5" fill="#9ea3a9" />
+      <circle cx="345" cy="270" r="3.5" fill="#9ea3a9" />
+      <circle cx="345" cy="300" r="3.5" fill="#9ea3a9" />
+      <circle cx="435" cy="240" r="3.5" fill="#9ea3a9" />
+      <circle cx="435" cy="270" r="3.5" fill="#9ea3a9" />
+      <circle cx="525" cy="270" r="3.5" fill="#9ea3a9" />
+
+      <!-- THE ORANGE DOT — Elena's single permitted Saturday. Painted very last. -->
+      <circle cx="525" cy="330" r="3.5" fill="#ee5f19" />
+  </g>
+  <text x="0" y="455" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="14" fill="#b2b2b2">1 sentence · 8 shifts placed</text>
+  <text x="0" y="480" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#6e7176">FIG 14.4A - PLAIN LANGUAGE BECOMES SOLVER INPUT</text>
+</svg>

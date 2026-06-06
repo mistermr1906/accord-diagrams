@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--
+  Accord — D23: Plain language → solver input ("The Punch Roll") — WINNER — chosen
+  2026-06-06 (beat The Tracker Bar in the round-2 dot bake-off; concept replaced the
+  abandoned quantize/text-primary approaches — 10 prior candidates kept on disk as process
+  records).
+  Editorial / semi-abstract family (Bible §5.3 · diagrams/style-lock-editorial.md).
+  Bare strokes on the page ground — no frame, no card, no vignette, no glass, no thread.
+
+  CONCEPT: Elena's plain sentence ("evenings only, never sundays, one saturday a month at
+  most") as a loose cluster of 8 marks, upper-left — then the SAME 8 marks seated on a weekly
+  ruled field as a playable score, lower-right. Her rules are VISIBLE: the SUN, MON and TUE
+  rows carry zero dots (three silent rows), and exactly one dot sits on SAT (the orange).
+  Countable honesty: 8 marks in the cluster = 8 marks seated (7 grey + 1 orange).
+
+  DATA MARK — filled dot Ø7px #9ea3a9, the figure's subject; extends the F-lexicon's
+  sanctioned dot fill to a readable data-mark size; joins the family vocabulary as D23
+  precedent.
+
+  HEX → TOKEN MAP (SVG uses literal hex only; page furniture below uses CSS vars):
+    #9ea3a9 = --stroke-wire-hi   (data dots — fills, no stroke)
+    #868990 = --stroke-wire-mid  (open circles, lanes — unused in this candidate)
+    #6f7277 = --stroke-wire-lo   (hairlines, ticks, read-point)
+    #9e9e9e = --text-tertiary    (mono micro-tags)
+    #ee5f19 = --accent           (ONE orange dot, painted very last)
+
+  GEOMETRY MATH (600×420 canvas = 20×14 modules of 30px):
+    - RULED FIELD — 7 horizontal hairlines (0.5px #6f7277), x 210→570 (360px run = 12
+      modules), at y = 150, 180, 210, 240, 270, 300, 330 (30px pitch — exactly on the
+      module grid). Rows are the days SUN MON TUE WED THU FRI SAT, top to bottom
+      (the product's week runs Sunday-first).
+      The three SILENT rows (SUN y=150, MON y=180, TUE y=210 — zero dots by Elena's
+      rules) carry stroke-opacity="0.55"; the four working rows (WED–SAT), the
+      read-point, the week ticks, and all day tags stay at full opacity.
+      (Precedent: the same hex-at-0.55 dimming ships on D21's February field.)
+    - DAY TAGS — 7 mono tags, text-anchor="end", right edge x=200 (10px clear of the
+      field's left edge at 210), baseline = row y + 4 (optical centre on the rule).
+    - READ-POINT — one vertical hairline (1px #6f7277), x=210, y 142→338 (8px overshoot
+      past the top and bottom rules — the boundary where marks enter the field).
+    - WEEK TICKS — 4 short vertical ticks (8px tall, 1px #6f7277) crossing the TOP rule
+      (y=150): (x,146)→(x,154) at x = 255, 345, 435, 525 — 90px pitch (3 modules),
+      45px inset from the read-point. These mark the 4 week columns.
+    - THE CLUSTER — 8 data dots (r=3.5 fill #9ea3a9), loose and irregular, upper-left:
+      (15,70) (62,52) (103,80) (35,108) (86,122) (130,62) (55,145) (118,132)
+    - CLUSTER TAG — one mono tag ELENA, x=15 (flush with the leftmost cluster ink),
+      baseline y=168 (23px below the lowest cluster dot at y=145).
+    - THE SEATED MARKS — the same 8 dots at row-column intersections (syncopated, true
+      to her profile: 2 shifts per week, Wed–Fri, one Saturday in week 4):
+        week1 (x=255): (255,240) WED · (255,300) FRI
+        week2 (x=345): (345,270) THU · (345,300) FRI
+        week3 (x=435): (435,240) WED · (435,270) THU
+        week4 (x=525): (525,270) THU
+        ORANGE DOT: (525,330) SAT — her single permitted Saturday, the payoff.
+      Count check: 7 grey + 1 orange = 8 seated = 8 in the cluster.
+      SUN (y=150) / MON (y=180) / TUE (y=210) rows: zero dots — three silent rows.
+    - PAINT ORDER = z-order: hairlines (rules + read-point) → week ticks → mono tags →
+      grey dots (cluster, then seated) → the ONE orange dot LAST.
+    - STAT LINE (final, winner polish): "1 sentence · 8 shifts placed" — re-fitted from
+      the bake-off's shared "2 interviews · 1 constraint set" to count what THIS figure
+      shows. Separator space U+00B7 space. FIG caption unchanged.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D23 Plain Language</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as shipped plates do) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — artwork floating in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Fixed-width column: figure, stat, and FIG caption all hang from the
+       SAME left edge (shared-left-margin rule — leftmost artwork ink is at
+       the SVG's own x=0, so the stack edge IS the ink edge). */
+    .stack {
+      width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .stat {
+      margin-top: 20px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .fig-caption {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+
+    <svg viewBox="0 0 600 420" width="600" height="420" role="img"
+         aria-labelledby="d23t d23d" shape-rendering="geometricPrecision"
+         xmlns="http://www.w3.org/2000/svg">
+      <title id="d23t">Plain language becomes solver input</title>
+      <desc id="d23d">Eight scattered marks become eight notes on a weekly grid: a plain sentence seated as exact positions, with the Sunday, Monday and Tuesday rows silent.</desc>
+
+      <!-- RULED FIELD — 7 day rules (0.5px hairlines), SUN→SAT top to bottom,
+           30px pitch. Painted first. -->
+      <line x1="210" y1="150" x2="570" y2="150" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="210" y1="180" x2="570" y2="180" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="210" y1="210" x2="570" y2="210" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="210" y1="240" x2="570" y2="240" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="210" y1="270" x2="570" y2="270" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="210" y1="300" x2="570" y2="300" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="210" y1="330" x2="570" y2="330" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+
+      <!-- READ-POINT — the boundary where marks enter the field. -->
+      <line x1="210" y1="142" x2="210" y2="338" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+
+      <!-- WEEK TICKS — 4 week columns crossing the top rule. -->
+      <line x1="255" y1="146" x2="255" y2="154" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+      <line x1="345" y1="146" x2="345" y2="154" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+      <line x1="435" y1="146" x2="435" y2="154" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+      <line x1="525" y1="146" x2="525" y2="154" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+
+      <!-- DAY TAGS — mono micro-tags, right-aligned against the field. -->
+      <text x="200" y="154" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">SUN</text>
+      <text x="200" y="184" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">MON</text>
+      <text x="200" y="214" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">TUE</text>
+      <text x="200" y="244" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">WED</text>
+      <text x="200" y="274" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">THU</text>
+      <text x="200" y="304" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">FRI</text>
+      <text x="200" y="334" text-anchor="end" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">SAT</text>
+
+      <!-- CLUSTER TAG -->
+      <text x="15" y="168" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#9e9e9e">ELENA</text>
+
+      <!-- THE CLUSTER — 8 data dots, loose and irregular, upper-left. -->
+      <circle cx="15"  cy="70"  r="3.5" fill="#9ea3a9" />
+      <circle cx="62"  cy="52"  r="3.5" fill="#9ea3a9" />
+      <circle cx="103" cy="80"  r="3.5" fill="#9ea3a9" />
+      <circle cx="35"  cy="108" r="3.5" fill="#9ea3a9" />
+      <circle cx="86"  cy="122" r="3.5" fill="#9ea3a9" />
+      <circle cx="130" cy="62"  r="3.5" fill="#9ea3a9" />
+      <circle cx="55"  cy="145" r="3.5" fill="#9ea3a9" />
+      <circle cx="118" cy="132" r="3.5" fill="#9ea3a9" />
+
+      <!-- THE SEATED MARKS — the same 8 dots at row-column intersections.
+           SUN/MON/TUE rows silent; 7 grey here, the orange follows. -->
+      <circle cx="255" cy="240" r="3.5" fill="#9ea3a9" />
+      <circle cx="255" cy="300" r="3.5" fill="#9ea3a9" />
+      <circle cx="345" cy="270" r="3.5" fill="#9ea3a9" />
+      <circle cx="345" cy="300" r="3.5" fill="#9ea3a9" />
+      <circle cx="435" cy="240" r="3.5" fill="#9ea3a9" />
+      <circle cx="435" cy="270" r="3.5" fill="#9ea3a9" />
+      <circle cx="525" cy="270" r="3.5" fill="#9ea3a9" />
+
+      <!-- THE ORANGE DOT — Elena's single permitted Saturday. Painted very last. -->
+      <circle cx="525" cy="330" r="3.5" fill="#ee5f19" />
+    </svg>
+
+    <div class="stat num">1 sentence · 8 shifts placed</div>
+    <div class="fig-caption">FIG 14.4A - PLAIN LANGUAGE BECOMES SOLVER INPUT</div>
+
+   </div>
+  </div>
+</body>
+</html>

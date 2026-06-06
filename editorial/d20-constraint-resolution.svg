@@ -1,0 +1,33 @@
+<!-- EXPORT ARTIFACT — the HTML plate diagrams/svg/d20-constraint-resolution.html is the source of truth; regenerate this file on any change. Generated 2026-06-06. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="600" height="500" shape-rendering="geometricPrecision" role="img" aria-labelledby="d20t d20d">
+  <title id="d20t">Every active rule applied at once</title>
+  <desc id="d20d">Many scheduling rules converging into one valid rota: thin rule-lines meeting and leaving as a single thread.</desc>
+  <rect x="0" y="0" width="600" height="500" fill="#0a0a0c"/>
+  <g>
+      <!-- 14 thin context lines (1px, dead straight), all ending at the shared
+           junction coordinate 400,195 with butt caps. Painted first. -->
+      <line x1="0" y1="70"  x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="90"  x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="118" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="136" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="161" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="194" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="213" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="237" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="255" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="282" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="303" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="329" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="348" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="370" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+
+      <!-- THE THREAD — one path, painted last. Starts at the junction with a
+           square cap (its 2px overhang covers the thin line-ends), exits the
+           right edge on a level drift. -->
+      <path d="M 400 195 C 490 195, 510 192, 600 192"
+            fill="none" stroke="#9ea3a9" stroke-width="4"
+            stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4" />
+  </g>
+  <text x="0" y="455" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="14" fill="#b2b2b2">25+ rules · 1 valid rota</text>
+  <text x="0" y="480" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#6e7176">FIG 14.1A - EVERY ACTIVE RULE APPLIED AT ONCE</text>
+</svg>

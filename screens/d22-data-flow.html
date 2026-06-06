@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--
+  Accord — D22: Data-flow station thread — WINNER — chosen 2026-06-06 (was Variant C:
+  stepped descent; beat Variant A level + drift-down exit and Variant B dead-flat).
+  Provenance: the A/B/C variant pass varied thread path + station y only (A: level y=186
+  with one shallow drift down after SCHEDULE · B: dead-flat y=190 · C: stepped descent
+  141→231 — this file); stations, tags, strokes, and all text were identical across the
+  pass. The losing -A/-B files stay on disk as process records.
+  Editorial / semi-abstract family (Bible §5.3 · diagrams/style-lock-editorial.md).
+  Bare strokes on the page ground — no frame, no card, no vignette, no glass, no fills
+  (text glyphs excepted). PURE GREYSCALE — zero orange anywhere in D22.
+
+  HEX → TOKEN MAP (SVG uses literal hex only; page furniture below uses CSS vars):
+    #9ea3a9 = --stroke-wire-hi   (the Thread, 4px — brightest grey)
+    #868990 = --stroke-wire-mid  (4 open station circles, 1px)
+    #9e9e9e = --text-tertiary    (FRONTEND / STORAGE / SOLVER / SCHEDULE mono micro-tags)
+
+  GEOMETRY MATH (600×420 canvas = 20×14 modules of 30px):
+    - 4 STATIONS: open circles r=6 (Ø12px), fill none, 1px #868990, at
+      x = 60, 180, 300, 420 (spacing 120 = 4 × the family's 30px module), at
+      DESCENDING y = 141, 171, 201, 231 (one 30px module down per station; the
+      141→231 span centres the ink band on y=186, keeping the composition centroid
+      with tags at ~y=193 — the optical-centre rule).
+      Painted BEFORE the Thread — the thick line crossing over each bead is the point.
+    - 4 MONO MICRO-TAGS: one per station, text-anchor middle at the station's own x,
+      baselines y = 167, 197, 227, 257 (= each station's y + 26).
+      Centred-under-node placement is the style-lock G "micro-tag beneath its own node"
+      exception — deliberate. Painted after circles, before the Thread.
+    - THREAD (VARIANT C — STEPPED DESCENT): enters level at y=141, is HORIZONTAL
+      where it crosses every circle, and steps down 30px between consecutive
+      stations via SIX GEOMETRICALLY IDENTICAL CORNERS (R=40, 30° turn each):
+        corner unit: arc Δx = R·sin30° = 20.00 · arc Δy = R(1−cos30°) = 5.36
+        two corners per step drop 2×5.36 = 10.72 → 30° ramp drops 30−10.72 = 19.28
+        → ramp Δx = 19.28/tan30° = 33.40 · step width = 20+33.40+20 = 73.40
+        each step centred in its 120px station gap → steps span
+        x = 83.30–156.70 · 203.30–276.70 · 323.30–396.70
+      Per-step waypoints (level y L → L+30):
+        (83.30, L) —A 40 40 0 0 1→ (103.30, L+5.36)   [turn down: cw, sweep 1]
+        —L→ (136.70, L+24.64)                          [30° ramp, slope ≤30° rule]
+        —A 40 40 0 0 0→ (156.70, L+30)                 [turn level: ccw, sweep 0]
+      applied at L = 141, 171, 201. Level runs at 141 (x 0–83.30), 171
+      (x 156.70–203.30), 201 (x 276.70–323.30), 231 (x 396.70–600) each cross
+      their station horizontally. Exits at (600, 231).
+    - STROKE WIDTHS at the 600px reference: Thread 4px · context circles 1px
+    - PAINT ORDER = z-order: circles first, micro-tags, Thread LAST.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D22 Data Flow</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as shipped plates do) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — artwork floating in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Fixed-width column: figure, stat, and FIG caption all hang from the
+       SAME left edge (shared-left-margin rule — leftmost artwork ink is the
+       Thread entering at the SVG's own x=0, so the stack edge IS the ink edge). */
+    .stack {
+      width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .stat {
+      margin-top: 20px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .fig-caption {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+
+    <svg viewBox="0 0 600 420" width="600" height="420" role="img"
+         aria-labelledby="d22t d22d" shape-rendering="geometricPrecision"
+         xmlns="http://www.w3.org/2000/svg">
+      <title id="d22t">No hand touches the data in transit</title>
+      <desc id="d22d">One unbroken line passing through four stations: frontend, storage, solver, schedule. Data moves end to end with no manual step.</desc>
+
+      <!-- 4 open station circles (1px, r=6), painted first — the Thread crosses
+           over them. -->
+      <circle cx="60"  cy="141" r="6" fill="none" stroke="#868990" stroke-width="1" />
+      <circle cx="180" cy="171" r="6" fill="none" stroke="#868990" stroke-width="1" />
+      <circle cx="300" cy="201" r="6" fill="none" stroke="#868990" stroke-width="1" />
+      <circle cx="420" cy="231" r="6" fill="none" stroke="#868990" stroke-width="1" />
+
+      <!-- Mono micro-tags — one per station, centred beneath its own circle.
+           Painted after circles, before the Thread. -->
+      <text x="60" y="167" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">FRONTEND</text>
+      <text x="180" y="197" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">STORAGE</text>
+      <text x="300" y="227" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">SOLVER</text>
+      <text x="420" y="257" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">SCHEDULE</text>
+
+      <!-- THE THREAD — one path, painted last. Horizontal through every station,
+           stepping down one 30px module between stations via six identical
+           R=40 / 30° corners. Exits level at (600, 231). -->
+      <path d="M 0 141 L 83.30 141 A 40 40 0 0 1 103.30 146.36 L 136.70 165.64 A 40 40 0 0 0 156.70 171 L 203.30 171 A 40 40 0 0 1 223.30 176.36 L 256.70 195.64 A 40 40 0 0 0 276.70 201 L 323.30 201 A 40 40 0 0 1 343.30 206.36 L 376.70 225.64 A 40 40 0 0 0 396.70 231 L 600 231"
+            fill="none" stroke="#9ea3a9" stroke-width="4"
+            stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" />
+    </svg>
+
+    <div class="stat num">3 systems · 1 schedule</div>
+    <div class="fig-caption">FIG 14.3A - NO HAND TOUCHES THE DATA IN TRANSIT</div>
+
+   </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!-- EXPORT ARTIFACT — the HTML plate diagrams/svg/d21-cross-month-continuity.html is the source of truth; regenerate this file on any change. Generated 2026-06-06. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="600" height="500" shape-rendering="geometricPrecision" role="img" aria-labelledby="d21t d21d">
+  <title id="d21t">The schedule is continuous when the calendar resets</title>
+  <desc id="d21d">One schedule continuing across the month boundary: a single thread crossing the seam between February and March unbroken.</desc>
+  <rect x="0" y="0" width="600" height="500" fill="#0a0a0c"/>
+  <g>
+      <!-- FEBRUARY field — hairline rules at 0.55 opacity (the past month,
+           one grey step dimmer by opacity only). Painted first. -->
+      <line x1="105" y1="73"  x2="290" y2="73"  stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="103" x2="290" y2="103" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="133" x2="290" y2="133" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="163" x2="290" y2="163" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="193" x2="290" y2="193" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="223" x2="290" y2="223" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="253" x2="290" y2="253" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="283" x2="290" y2="283" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="313" x2="290" y2="313" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+
+      <!-- MARCH field — hairline rules at full opacity. -->
+      <line x1="310" y1="73"  x2="495" y2="73"  stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="103" x2="495" y2="103" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="133" x2="495" y2="133" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="163" x2="495" y2="163" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="193" x2="495" y2="193" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="223" x2="495" y2="223" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="253" x2="495" y2="253" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="283" x2="495" y2="283" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="313" x2="495" y2="313" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+
+      <!-- THE SEAM — one clean vertical 1px line in the gap between the fields,
+           at the horizontal centre of the ruled area. -->
+      <line x1="300" y1="73" x2="300" y2="313" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+
+      <!-- Mono micro-tags — the only text inside the SVG. -->
+      <text x="105" y="332" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">FEB</text>
+      <text x="310" y="332" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">MAR</text>
+
+      <!-- THE THREAD — one path, painted last. Dead straight, crossing both
+           fields and the seam unbroken. No endpoint emphasis. -->
+      <path d="M 0 208 L 600 208"
+            fill="none" stroke="#9ea3a9" stroke-width="4"
+            stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" />
+  </g>
+  <text x="0" y="455" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="14" fill="#b2b2b2">2 months · 1 unbroken thread</text>
+  <text x="0" y="480" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace" font-size="11" letter-spacing="0.66" fill="#6e7176">FIG 14.2A - THE SCHEDULE IS CONTINUOUS WHEN THE CALENDAR RESETS</text>
+</svg>
