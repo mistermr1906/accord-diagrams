@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!--
+  Accord — D20: Constraint-resolution convergence fan — WINNER — chosen 2026-06-06 (was Variant B: apex-low (400,195) + level drift; beat Variant A apex-high + rising drift).
+  Editorial / semi-abstract family (Bible §5.3 · diagrams/style-lock-editorial.md).
+  Bare strokes on the page ground — no frame, no card, no vignette, no glass, no fills.
+
+  HEX → TOKEN MAP (SVG uses literal hex only; page furniture below uses CSS vars):
+    #9ea3a9 = --stroke-wire-hi   (the Thread, 4px — brightest grey)
+    #868990 = --stroke-wire-mid  (14 thin context rule-lines, 1px)
+    (no hairline-weight elements in D20)
+
+  GEOMETRY MATH (600×420 canvas = 20×14 modules of 30px):
+    - 14 thin lines, dead straight, from the left edge x=0 at origins
+      y = 70, 90, 118, 136, 161, 194, 213, 237, 255, 282, 303, 329, 348, 370
+      13 gaps = 20, 28, 18, 25, 33, 19, 24, 18, 27, 21, 26, 19, 22
+      (all within 18–33px; no two adjacent gaps equal; 30px module is the base
+      rhythm, jittered — the 70..370 span over 13 gaps forces a ~23px average)
+      — IDENTICAL to Variant A.
+    - JUNCTION — ONE shared literal coordinate: 400,195
+      (lower in the upper-right band; endpoint of all 14 thin lines with butt
+      caps, and the start of the Thread, whose square cap overhangs 2px to cover
+      the line-ends — no blob, no dot, no marker at the apex)
+    - THREAD DRIFT (VARIANT B — LEVEL): M 400 195 C 490 195, 510 192, 600 192
+      chord (400,195)→(600,192) ≈ 200px · C1 pull 90px (0.45 × chord, horizontal
+      start tangent) · C2 pull 90px (0.45 × chord, horizontal exit tangent)
+      exit y=192 ≈ junction height (3px above) · total direction change ≈ 2° (≤ 30°)
+    - STROKE WIDTHS at the 600px reference: Thread 4px · context 1px
+    - PAINT ORDER = z-order: 14 thin context lines first, Thread LAST
+    - VARIED PARAMETER vs VARIANT A: junction-y (195 vs 135) + drift shape
+      (level vs rising). Origins, strokes, and all text identical.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D20 Constraint Resolution</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as shipped plates do) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — artwork floating in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Fixed-width column: figure, stat, and FIG caption all hang from the
+       SAME left edge (shared-left-margin rule — leftmost artwork ink is at
+       the SVG's own x=0, so the stack edge IS the ink edge). */
+    .stack {
+      width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .stat {
+      margin-top: 20px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .fig-caption {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+
+    <svg viewBox="0 0 600 420" width="600" height="420" role="img"
+         aria-labelledby="d20t d20d" shape-rendering="geometricPrecision"
+         xmlns="http://www.w3.org/2000/svg">
+      <title id="d20t">Every active rule applied at once</title>
+      <desc id="d20d">Many scheduling rules converging into one valid rota: thin rule-lines meeting and leaving as a single thread.</desc>
+
+      <!-- 14 thin context lines (1px, dead straight), all ending at the shared
+           junction coordinate 400,195 with butt caps. Painted first. -->
+      <line x1="0" y1="70"  x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="90"  x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="118" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="136" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="161" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="194" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="213" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="237" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="255" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="282" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="303" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="329" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="348" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+      <line x1="0" y1="370" x2="400" y2="195" stroke="#868990" stroke-width="1" stroke-linecap="butt" />
+
+      <!-- THE THREAD — one path, painted last. Starts at the junction with a
+           square cap (its 2px overhang covers the thin line-ends), exits the
+           right edge on a level drift. -->
+      <path d="M 400 195 C 490 195, 510 192, 600 192"
+            fill="none" stroke="#9ea3a9" stroke-width="4"
+            stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4" />
+    </svg>
+
+    <div class="stat num">25+ rules · 1 valid rota</div>
+    <div class="fig-caption">FIG 14.1A - EVERY ACTIVE RULE APPLIED AT ONCE</div>
+
+   </div>
+  </div>
+</body>
+</html>

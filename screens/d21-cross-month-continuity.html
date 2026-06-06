@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--
+  Accord — D21: Cross-month seam crossing — WINNER — chosen 2026-06-06 (was Variant A: dead-straight thread; beat B corner-event-at-seam and C shallow-drift).
+  Editorial / semi-abstract family (Bible §5.3 · diagrams/style-lock-editorial.md).
+  Bare strokes on the page ground — no frame, no card, no vignette, no glass, no fills
+  (text glyphs excepted).
+
+  HEX → TOKEN MAP (SVG uses literal hex only; page furniture below uses CSS vars):
+    #9ea3a9 = --stroke-wire-hi   (the Thread, 4px — brightest grey)
+    #6f7277 = --stroke-wire-lo   (hairline field rules, 0.5px; ALSO the 1px seam —
+                                  the style-lock F-lexicon defines "a boundary" as a
+                                  single vertical 1px hairline-value seam, restated
+                                  verbatim by the build brief)
+    #9e9e9e = --text-tertiary    (FEB / MAR mono micro-tags)
+
+  GEOMETRY MATH (600×420 canvas = 20×14 modules of 30px):
+    - Ruled area spans x = 105 → 495 (390px = 65% of canvas width), centred on x=300.
+    - LEFT field (FEBRUARY — the past month): rules x 105→290,
+      stroke-opacity 0.55 (one grey step dimmer via opacity only — no new hex).
+    - RIGHT field (MARCH): rules x 310→495, full opacity.
+    - 9 rules per field on the 30px module pitch, every y integer-snapped:
+      y = 73, 103, 133, 163, 193, 223, 253, 283, 313 (anti-moiré).
+      Field height 240px · vertical midline y=193 = geometric centre 210 minus
+      ~17px (≈4% of canvas height — the optical-centre rule).
+    - SEAM: single vertical line, 1px, x=300 (integer-snapped, the horizontal
+      centre of the ruled area), y 73→313 (same height as the fields).
+    - TAGS: FEB baseline at x=105 y=332 · MAR at x=310 y=332 — each hung from its
+      own field's left edge, ≈1 tag-cap-height below the bottom rule.
+    - THREAD (VARIANT A — DEAD-STRAIGHT): M 0 208 L 600 208
+      perfectly straight and horizontal at y=208 — 15px (half a module) below the
+      fields' vertical midline (193). Enters left edge, crosses both fields and
+      the seam UNBROKEN, exits right edge. Butt caps, no endpoint emphasis.
+    - STROKE WIDTHS at the 600px reference: Thread 4px · seam 1px · hairline 0.5px
+    - PAINT ORDER = z-order: hairline rules first, seam next, tags, Thread LAST.
+    - VARIED PARAMETER vs VARIANTS B/C: thread path geometry only
+      (A straight · B one corner-event at the seam · C shallow drift curve).
+      Fields, seam, tags, and all text identical across A/B/C.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accord — D21 Cross-Month Continuity</title>
+
+  <!-- IBM Plex Sans + IBM Plex Mono (loaded exactly as shipped plates do) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Shared Accord diagram tokens (one level up from diagrams/svg/) -->
+  <link rel="stylesheet" href="../diagram-tokens.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-root);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* The figure stage — artwork floating in dominant negative space. */
+    .figure {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px;
+    }
+
+    /* Fixed-width column: figure, stat, and FIG caption all hang from the
+       SAME left edge (shared-left-margin rule — leftmost artwork ink is the
+       Thread entering at the SVG's own x=0, so the stack edge IS the ink edge). */
+    .stack {
+      width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .stat {
+      margin-top: 20px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .fig-caption {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="figure">
+   <div class="stack">
+
+    <svg viewBox="0 0 600 420" width="600" height="420" role="img"
+         aria-labelledby="d21t d21d" shape-rendering="geometricPrecision"
+         xmlns="http://www.w3.org/2000/svg">
+      <title id="d21t">The schedule is continuous when the calendar resets</title>
+      <desc id="d21d">One schedule continuing across the month boundary: a single thread crossing the seam between February and March unbroken.</desc>
+
+      <!-- FEBRUARY field — hairline rules at 0.55 opacity (the past month,
+           one grey step dimmer by opacity only). Painted first. -->
+      <line x1="105" y1="73"  x2="290" y2="73"  stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="103" x2="290" y2="103" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="133" x2="290" y2="133" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="163" x2="290" y2="163" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="193" x2="290" y2="193" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="223" x2="290" y2="223" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="253" x2="290" y2="253" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="283" x2="290" y2="283" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+      <line x1="105" y1="313" x2="290" y2="313" stroke="#6f7277" stroke-width="0.5" stroke-opacity="0.55" stroke-linecap="butt" />
+
+      <!-- MARCH field — hairline rules at full opacity. -->
+      <line x1="310" y1="73"  x2="495" y2="73"  stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="103" x2="495" y2="103" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="133" x2="495" y2="133" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="163" x2="495" y2="163" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="193" x2="495" y2="193" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="223" x2="495" y2="223" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="253" x2="495" y2="253" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="283" x2="495" y2="283" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+      <line x1="310" y1="313" x2="495" y2="313" stroke="#6f7277" stroke-width="0.5" stroke-linecap="butt" />
+
+      <!-- THE SEAM — one clean vertical 1px line in the gap between the fields,
+           at the horizontal centre of the ruled area. -->
+      <line x1="300" y1="73" x2="300" y2="313" stroke="#6f7277" stroke-width="1" stroke-linecap="butt" />
+
+      <!-- Mono micro-tags — the only text inside the SVG. -->
+      <text x="105" y="332" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">FEB</text>
+      <text x="310" y="332" font-family="IBM Plex Mono, ui-monospace, Menlo, monospace"
+            font-size="11" font-weight="400" letter-spacing="0.66" fill="#9e9e9e">MAR</text>
+
+      <!-- THE THREAD — one path, painted last. Dead straight, crossing both
+           fields and the seam unbroken. No endpoint emphasis. -->
+      <path d="M 0 208 L 600 208"
+            fill="none" stroke="#9ea3a9" stroke-width="4"
+            stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" />
+    </svg>
+
+    <div class="stat num">2 months · 1 unbroken thread</div>
+    <div class="fig-caption">FIG 14.2A - THE SCHEDULE IS CONTINUOUS WHEN THE CALENDAR RESETS</div>
+
+   </div>
+  </div>
+</body>
+</html>
