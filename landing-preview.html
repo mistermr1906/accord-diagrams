@@ -614,8 +614,8 @@
     /* ---- §08 — sticky panel + migrating rails ----------------------------- */
     .stage-8 {
       position: relative;
-      width: 520px;
-      height: 390px;            /* 4:3 */
+      width: 100%;
+      height: 470px;
       margin-bottom: 44px;      /* room for the deck peek below the front card */
     }
     /* Each layer is its own card so the GSAP deck can fan them out; the CSS
@@ -953,7 +953,7 @@
       .stats-bar { grid-template-columns: 1fr; }
       .rail { display: none !important; }
       .feature, .reveal { min-height: 0; margin-bottom: 56px; }
-      .stage-8 { width: 380px; height: 285px; }
+      .stage-8 { width: 100%; max-width: 420px; height: 340px; }
       .stage-8 iframe { transform: scale(0.345); }
       .ghost-num { display: none; }
       .scrub-text { font-size: 1.25rem; }

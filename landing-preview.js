@@ -769,11 +769,54 @@
     const sh = stage.clientHeight;
     if (!sw || !sh) return;
 
-    // Union bounding box of the page's visible top-level content.
+    // Union bounding box of elements that actually PAINT something —
+    // backgrounds, borders, images, direct text. Invisible full-width
+    // layout wrappers (which made the old top-level measure huge) are
+    // skipped, as are page-sized backdrop fills.
+    const view = doc.defaultView;
+    const pageW = view.innerWidth;
+    const pageH = view.innerHeight;
     let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
-    Array.from(doc.body.children).forEach((el) => {
+
+    doc.body.querySelectorAll('*').forEach((el) => {
+      const tag = el.tagName;
+      if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'LINK') return;
+
+      // The screens' own `FIG n.nA - …` captions sit at the page's bottom
+      // edge, far from the figure — including them inflates the box and
+      // shrinks the figure. The preview renders its own captions, so skip
+      // them (and anything inside them).
+      if (
+        el.closest('.fig-caption') ||
+        /^FIG\s+\d/i.test((el.textContent || '').trim().slice(0, 8))
+      ) {
+        return;
+      }
+
       const r = el.getBoundingClientRect();
       if (r.width < 8 || r.height < 8) return;
+      // Page-sized backdrop, not content.
+      if (r.width > pageW * 0.96 && r.height > pageH * 0.96) return;
+
+      const cs = view.getComputedStyle(el);
+      if (cs.visibility === 'hidden' || cs.opacity === '0') return;
+
+      const paints =
+        tag === 'IMG' || tag === 'svg' || tag === 'SVG' ||
+        tag === 'CANVAS' || tag === 'VIDEO' ||
+        (cs.backgroundColor &&
+          cs.backgroundColor !== 'transparent' &&
+          !/^rgba\(\s*\d+,\s*\d+,\s*\d+,\s*0\)$/.test(cs.backgroundColor)) ||
+        cs.backgroundImage !== 'none' ||
+        parseFloat(cs.borderTopWidth) > 0 ||
+        parseFloat(cs.borderBottomWidth) > 0 ||
+        parseFloat(cs.borderLeftWidth) > 0 ||
+        parseFloat(cs.borderRightWidth) > 0 ||
+        Array.from(el.childNodes).some(
+          (n) => n.nodeType === 3 && n.textContent.trim()
+        );
+      if (!paints) return;
+
       x1 = Math.min(x1, r.left);
       y1 = Math.min(y1, r.top);
       x2 = Math.max(x2, r.right);
@@ -786,8 +829,8 @@
     const w = x2 - x1;
     const h = y2 - y1;
 
-    // Contain-fit, with mild upscaling allowed (HTML scales crisply).
-    let scale = Math.min(sw / w, sh / h, 1.15);
+    // Contain-fit, with upscaling allowed (HTML scales crisply).
+    let scale = Math.min(sw / w, sh / h, 1.3);
 
     // Landscape stages showing TALL content (§07's chat panel): contain-fit
     // wastes most of the stage. Fill the width instead and accept a capped
@@ -795,7 +838,7 @@
     // Phones are exempt — a cropped phone reads as broken.
     const isPhone = !!iframe.closest('.phone-stage');
     if (!isPhone) {
-      scale = Math.min(sw / w, scale * 1.35, 1.15);
+      scale = Math.min(sw / w, scale * 1.35, 1.3);
     }
 
     const vh = h * scale;
