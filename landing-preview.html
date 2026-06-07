@@ -269,10 +269,28 @@
     }
     .swap-stage {
       position: relative;
+      z-index: 1;
       border: 1px solid var(--glass-hairline);
       border-radius: 14px;
       overflow: hidden;
       background: var(--bg-root);
+    }
+
+    /* §06 ghost index — JS-created (GSAP scene only), rolls 01→05 behind the
+       stage. Decorative; stroke-only so it reads as depth, not content. */
+    .ghost-num {
+      position: absolute;
+      top: -52px;
+      right: -10px;
+      z-index: 0;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 150px;
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.14);
+      pointer-events: none;
+      user-select: none;
     }
     .swap-stage.square { aspect-ratio: 1 / 1; }
     .swap-layer {
@@ -303,7 +321,7 @@
     }
 
     /* ---- §02 — pinned stats + count-up ------------------------------------ */
-    #s02 .tall { min-height: 170vh; }
+    #s02 .tall { min-height: 140vh; }
     .pin-sentinel { height: 1px; }
     .stats-bar {
       position: sticky;
@@ -369,8 +387,26 @@
       border-bottom: 1px solid var(--accent-stroke);
       padding-bottom: 1px;
     }
+    /* §02 body — fills the scroll run under the pinned bar. With GSAP the
+       words brighten in sequence as you scroll (scrubbed); without it the
+       paragraph is simply fully visible. */
+    .s02-body {
+      margin: 14vh 0 0;
+      max-width: 760px;
+    }
+    .scrub-text {
+      font-family: var(--font-sans);
+      font-weight: 300;
+      font-size: 1.5rem;
+      line-height: 1.55;
+      letter-spacing: -0.005em;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .scrub-text .w { opacity: 0.16; }
+
     .s02-quote {
-      margin: 70vh 0 0;
+      margin: 16vh 0 0;
       max-width: 640px;
     }
     .s02-quote blockquote {
@@ -538,12 +574,16 @@
       position: relative;
       width: 520px;
       height: 390px;            /* 4:3 */
+      margin-bottom: 44px;      /* room for the deck peek below the front card */
+    }
+    /* Each layer is its own card so the GSAP deck can fan them out; the CSS
+       fallback still reads as one bordered card (non-active layers hidden). */
+    .stage-8 .swap-layer {
+      overflow: hidden;
       border: 1px solid var(--glass-hairline);
       border-radius: 14px;
-      overflow: hidden;
       background: var(--bg-root);
     }
-    .stage-8 .swap-layer { overflow: hidden; }
     .stage-8 iframe {
       position: absolute;
       top: 0;
@@ -555,7 +595,14 @@
       transform-origin: top left;
       pointer-events: none;
     }
-    .feature { min-height: 55vh; scroll-margin-top: 40vh; }
+    .feature {
+      min-height: 55vh;
+      scroll-margin-top: 40vh;
+      border-left: 2px solid transparent;
+      padding-left: 18px;
+      transition: border-color .3s ease;
+    }
+    .feature.is-focus { border-left-color: var(--accent); }
     .feature .cat {
       font-family: var(--font-mono);
       text-transform: uppercase;
@@ -634,12 +681,21 @@
     }
     .reveal { min-height: 70vh; scroll-margin-top: 40vh; }
     .icon-word {
+      display: inline-block;
       font-family: var(--font-mono);
       font-size: 0.6875rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--text-muted);
+      border: 1px solid var(--glass-hairline);
+      border-radius: 999px;
+      padding: 4px 12px;
       margin: 0 0 10px;
+      transition: color .3s ease, border-color .3s ease;
+    }
+    .reveal.is-focus .icon-word {
+      color: var(--accent-stroke);
+      border-color: var(--accent-stroke);
     }
     .reveal h3 {
       font-family: var(--font-sans);
@@ -839,7 +895,7 @@
 
     /* ---- Reduced motion -------------------------------------------------------- */
     @media (prefers-reduced-motion: reduce) {
-      .swap-layer, .count[data-count-to="0"] { transition: none; }
+      .swap-layer, .count[data-count-to="0"], .feature, .icon-word { transition: none; }
       .autotabs.running .tab[aria-selected="true"] .progress { animation: none; display: none; }
     }
 
@@ -855,6 +911,8 @@
       .feature, .reveal { min-height: 0; margin-bottom: 56px; }
       .stage-8 { width: 380px; height: 285px; }
       .stage-8 iframe { transform: scale(0.345); }
+      .ghost-num { display: none; }
+      .scrub-text { font-size: 1.25rem; }
       .phone-stage { width: 346px; height: 519px; }
       .phone-stage iframe { transform: scale(0.54); }
       .step .screen-stage { width: 100%; max-width: 380px; }
@@ -945,6 +1003,16 @@
             </div>
           </article>
 
+        </div>
+
+        <div class="s02-body">
+          <p class="scrub-text">
+            It reads holidays, shift restrictions, part-timer caps, coverage minimums, and
+            carryover from last month, then processes them as a single equation. The output is
+            a full 30-day rota, checked against 25+ rules, ready to review and publish. The
+            manager's input is the team's requests. The output is a schedule that holds all
+            week.
+          </p>
         </div>
 
         <div class="s02-quote">

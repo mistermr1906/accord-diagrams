@@ -3,53 +3,56 @@
    All behaviour for landing-preview.html in one vanilla-JS IIFE.
 
    GSAP (gsap + ScrollTrigger, loaded from CDN in the HTML) is an OPTIONAL
-   enhancement layer: when present and motion is allowed, the three sticky
-   swap sections get distinct, direction-aware transitions, a scrubbed
-   progress rail with step dots, focus-dimming on the text columns, and
-   entrance reveals. When GSAP is absent — or prefers-reduced-motion is set —
-   every behaviour still works via the original CSS swaps.
+   enhancement layer. With it, each sticky section runs a DISTINCT scene:
+     §06 — living figure: directional clip-path wipes, rolling ghost index
+            (01–05) behind the stage, breathing float, mouse parallax
+     §08 — card deck: the next two screens visibly stacked and peeking below
+            the front card; scroll promotes the stack, front card flies off
+     §10 — 3D phone: perspective tilt scrubbed by scroll position while
+            screens push inside the frame like a native app
+   Plus: §02 scrubbed text reveal, focus-dimming, progress rails, entrance
+   reveals. Without GSAP — or with prefers-reduced-motion — every behaviour
+   still works via the original CSS swaps.
 
    Modules:
      1. reducedMotion  — single matchMedia flag consulted everywhere
      2. gsapOK         — GSAP availability gate (motion-allowed + CDN loaded)
      3. countUp        — §02 stat numbers (IntersectionObserver + rAF ease-out)
      4. pinWatch       — §02 sticky stats bar .is-pinned toggle via 1px sentinel
-     5. makeScrollSpy  — centre-band observer factory (§06, §08, §10)
-     6. swap FX        — per-section GSAP transitions + progress rail + dimming
-     7. makeTabs       — accessible tablist (§07, §19) with panel entrance fade
-     8. §08 rails      — migrating bottom→top fixed tab rails (two-rail version)
-     9. makeAutoTabs   — §19 auto-advance wrapper (animationend-driven)
-    10. ambient reveals — §02 stat stagger, §14 alternating row reveals
-    11. hashRouter     — deterministic state URLs
+     5. scrubText      — §02 body copy brightens word-by-word with scroll
+     6. makeScrollSpy  — centre-band observer factory (§06, §08, §10)
+     7. scenes         — per-section GSAP scenes + progress rail + dimming
+     8. makeTabs       — accessible tablist (§07, §19) with panel entrance fade
+     9. §08 rails      — migrating bottom→top fixed tab rails (two-rail version)
+    10. makeAutoTabs   — §19 auto-advance wrapper (animationend-driven)
+    11. ambient reveals — §02 stat stagger, §14 alternating row reveals
+    12. hashRouter     — deterministic state URLs
    ============================================================================ */
 (() => {
   'use strict';
 
   /* ----------------------------------------------------------------------
      1. Reduced motion — one flag, consulted everywhere.
-        Reduced: count-ups render final values instantly, §19 has no timer
-        and no progress bar, layer swaps are instant, GSAP layer disabled.
      ---------------------------------------------------------------------- */
   const reducedMotion =
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ----------------------------------------------------------------------
      2. GSAP gate — the enhancement layer only activates when the CDN
-        scripts actually loaded AND motion is allowed. Everything below
-        checks this single flag; no behaviour depends on GSAP existing.
+        scripts actually loaded AND motion is allowed.
      ---------------------------------------------------------------------- */
   const gsapOK =
     !reducedMotion &&
     typeof window.gsap !== 'undefined' &&
     typeof window.ScrollTrigger !== 'undefined';
 
-  if (gsapOK) window.gsap.registerPlugin(window.ScrollTrigger);
+  const g = gsapOK ? window.gsap : null;
+  if (gsapOK) g.registerPlugin(window.ScrollTrigger);
 
   /* ----------------------------------------------------------------------
      3. §02 — count-up
         Numbers carry data-count-to; prefix/suffix text lives OUTSIDE the
-        counting span, so nothing but the digits ever changes. The bar uses
-        tabular-nums so the line never reflows while counting.
+        counting span. tabular-nums keeps the line from reflowing.
      ---------------------------------------------------------------------- */
   function countUp(el) {
     const target = parseInt(el.dataset.countTo, 10);
@@ -127,7 +130,35 @@
   }
 
   /* ----------------------------------------------------------------------
-     5. Scroll-spy factory — the workhorse (§06, §08, §10)
+     5. §02 — scrubbed text reveal
+        The section body copy fills the scroll run under the pinned bar.
+        Words start at 16% opacity and brighten in reading order, scrubbed
+        to scroll position. GSAP-only — the fallback paragraph is simply
+        fully visible (no .w spans are ever created).
+     ---------------------------------------------------------------------- */
+  function initScrubText() {
+    if (!gsapOK) return;
+    const p = document.querySelector('#s02 .scrub-text');
+    if (!p) return;
+
+    const words = p.textContent.trim().split(/\s+/);
+    p.innerHTML = words.map((w) => `<span class="w">${w}</span>`).join(' ');
+
+    g.to(p.querySelectorAll('.w'), {
+      opacity: 1,
+      stagger: 0.5,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: p,
+        start: 'top 80%',
+        end: 'bottom 45%',
+        scrub: 0.3,
+      },
+    });
+  }
+
+  /* ----------------------------------------------------------------------
+     6. Scroll-spy factory — the workhorse (§06, §08, §10)
         Centre-band observer: rootMargin -45%/-45% leaves a 10% band at the
         viewport centre. The block crossing that band activates. Rules:
         last activated wins; never deactivate to nothing. Blocks carry
@@ -181,92 +212,196 @@
   }
 
   /* ----------------------------------------------------------------------
-     6. Swap FX — the GSAP enhancement layer for the three sticky sections.
-        Each section gets its OWN transition so the pattern stops feeling
-        repetitive:
-          §06 isometric — figure settles in: scale 1.07→1 + slight tilt,
-                          direction-aware drift
-          §08 screens   — card-deck slide: pushes in from scroll direction
-          §10 phone     — native app push: full vertical slide inside the
-                          phone frame (overflow:hidden clips it)
-        All factories take the layer list and return (from, to, dir) where
-        dir is +1 scrolling down, -1 scrolling up.
-        Transforms live ONLY on .swap-layer — a descendant of the sticky
-        panel, never an ancestor of anything sticky or fixed.
+     7. Scenes — one per sticky section. Each factory receives
+        { layers, stage, section, panel } and returns:
+          init()                  — one-time setup (initial layer states,
+                                    scene furniture, ambient motion)
+          swap(prev, active, dir) — dir is +1 scrolling down, -1 up
+        Transforms live ONLY on the stage and its descendants — both are
+        DESCENDANTS of the sticky panel, never ancestors of anything
+        sticky or fixed.
      ---------------------------------------------------------------------- */
-  const fxIso = (layers) => (from, to, dir) => {
-    const out = layers[from];
-    const inc = layers[to];
-    window.gsap.killTweensOf([out, inc]);
-    layers.forEach((l, i) => {
-      if (i !== to && i !== from) window.gsap.set(l, { autoAlpha: 0 });
-    });
-    window.gsap.to(out, {
-      autoAlpha: 0,
-      scale: 0.96,
-      y: -16 * dir,
-      duration: 0.35,
-      ease: 'power2.in',
-    });
-    window.gsap.fromTo(
-      inc,
-      { autoAlpha: 0, scale: 1.07, y: 22 * dir, rotation: 0.8 * dir },
-      {
-        autoAlpha: 1,
-        scale: 1,
-        y: 0,
-        rotation: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-      }
-    );
+
+  /* §06 — living figure: clip-path wipe + rolling ghost index + breathing
+     float + mouse parallax. */
+  const sceneIso = ({ layers, stage, panel }) => {
+    let ghost = null;
+
+    return {
+      init() {
+        layers.forEach((l, i) => g.set(l, { autoAlpha: i === 0 ? 1 : 0 }));
+
+        // Ghost index, stacked behind the stage (stage is z-index:1).
+        ghost = document.createElement('div');
+        ghost.className = 'ghost-num';
+        ghost.textContent = '01';
+        panel.insertBefore(ghost, stage);
+
+        // Breathing float — the figure never sits perfectly still.
+        g.set(stage, { transformPerspective: 700 });
+        g.to(stage, {
+          y: 10,
+          duration: 3.2,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+        });
+
+        // Mouse parallax — the figure tilts toward the cursor.
+        const qx = g.quickTo(stage, 'rotationY', {
+          duration: 0.6,
+          ease: 'power2.out',
+        });
+        const qy = g.quickTo(stage, 'rotationX', {
+          duration: 0.6,
+          ease: 'power2.out',
+        });
+        panel.addEventListener('pointermove', (e) => {
+          const r = stage.getBoundingClientRect();
+          qx(((e.clientX - r.left) / r.width - 0.5) * 8);
+          qy(-((e.clientY - r.top) / r.height - 0.5) * 6);
+        });
+        panel.addEventListener('pointerleave', () => {
+          qx(0);
+          qy(0);
+        });
+      },
+
+      swap(prev, active, dir) {
+        const out = layers[prev];
+        const inc = layers[active];
+        g.killTweensOf([out, inc]);
+        layers.forEach((l, i) => {
+          if (i !== active && i !== prev) g.set(l, { autoAlpha: 0 });
+        });
+
+        g.to(out, {
+          autoAlpha: 0,
+          scale: 0.97,
+          duration: 0.3,
+          ease: 'power1.in',
+        });
+
+        // Directional wipe: scrolling down reveals upward, up reveals downward.
+        const clipFrom =
+          dir > 0 ? 'inset(100% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)';
+        g.set(inc, { autoAlpha: 1 });
+        g.fromTo(
+          inc,
+          { clipPath: clipFrom, scale: 1.04 },
+          {
+            clipPath: 'inset(0% 0% 0% 0%)',
+            scale: 1,
+            duration: 0.55,
+            ease: 'power3.out',
+          }
+        );
+
+        // Ghost index rolls to the new number.
+        if (ghost) {
+          const next = String(active + 1).padStart(2, '0');
+          g.timeline()
+            .to(ghost, {
+              yPercent: -40,
+              autoAlpha: 0,
+              duration: 0.18,
+              ease: 'power1.in',
+              onComplete: () => {
+                ghost.textContent = next;
+              },
+            })
+            .fromTo(
+              ghost,
+              { yPercent: 40 },
+              { yPercent: 0, autoAlpha: 1, duration: 0.3, ease: 'power2.out' }
+            );
+        }
+      },
+    };
   };
 
-  const fxScreens = (layers) => (from, to, dir) => {
-    const out = layers[from];
-    const inc = layers[to];
-    window.gsap.killTweensOf([out, inc]);
-    layers.forEach((l, i) => {
-      if (i !== to && i !== from) window.gsap.set(l, { autoAlpha: 0 });
-    });
-    window.gsap.to(out, {
-      autoAlpha: 0,
-      y: -30 * dir,
-      scale: 0.99,
-      duration: 0.32,
-      ease: 'power1.in',
-    });
-    window.gsap.fromTo(
-      inc,
-      { autoAlpha: 0, y: 46 * dir, scale: 0.98 },
-      { autoAlpha: 1, y: 0, scale: 1, duration: 0.55, ease: 'power3.out' }
-    );
+  /* §08 — card deck: every layer animates to the slot for its depth
+     (active = front; next two peek below; passed cards fly up and off).
+     Works for any jump size — each card just moves to its new slot. */
+  const sceneDeck = ({ layers }) => {
+    const slot = (depth) => {
+      if (depth < 0) return { y: -54, scale: 1.02, autoAlpha: 0, zIndex: 40 };
+      if (depth === 0) return { y: 0, scale: 1, autoAlpha: 1, zIndex: 30 };
+      if (depth === 1) return { y: 18, scale: 0.95, autoAlpha: 0.5, zIndex: 29 };
+      if (depth === 2) return { y: 34, scale: 0.9, autoAlpha: 0.22, zIndex: 28 };
+      return { y: 46, scale: 0.86, autoAlpha: 0, zIndex: 27 };
+    };
+
+    const apply = (active, instant) => {
+      layers.forEach((layer, i) =>
+        g.to(layer, {
+          ...slot(i - active),
+          duration: instant ? 0 : 0.55,
+          ease: 'power3.out',
+          overwrite: 'auto',
+        })
+      );
+    };
+
+    return {
+      init() {
+        // Bottom-anchored scaling so depth reads as a peek below the front card.
+        layers.forEach((l) => g.set(l, { transformOrigin: 'center bottom' }));
+        apply(0, true);
+      },
+      swap(_prev, active) {
+        apply(active, false);
+      },
+    };
   };
 
-  const fxPhone = (layers) => (from, to, dir) => {
-    const out = layers[from];
-    const inc = layers[to];
-    window.gsap.killTweensOf([out, inc]);
-    layers.forEach((l, i) => {
-      if (i !== to && i !== from) window.gsap.set(l, { autoAlpha: 0 });
-    });
-    window.gsap.to(out, {
-      yPercent: -32 * dir,
-      autoAlpha: 0,
-      duration: 0.45,
-      ease: 'power2.inOut',
-    });
-    window.gsap.fromTo(
-      inc,
-      { yPercent: 70 * dir, autoAlpha: 1 },
-      { yPercent: 0, duration: 0.6, ease: 'power4.out' }
-    );
-  };
+  /* §10 — 3D phone: perspective tilt scrubbed by section scroll progress,
+     screens push vertically inside the frame like native app navigation. */
+  const scenePhone = ({ layers, stage, section }) => ({
+    init() {
+      layers.forEach((l, i) => g.set(l, { autoAlpha: i === 0 ? 1 : 0 }));
+      g.set(stage, { transformPerspective: 900 });
+      g.fromTo(
+        stage,
+        { rotationY: -9, rotationX: 1.5 },
+        {
+          rotationY: 9,
+          rotationX: -1.5,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 60%',
+            end: 'bottom 60%',
+            scrub: 0.5,
+          },
+        }
+      );
+    },
+
+    swap(prev, active, dir) {
+      const out = layers[prev];
+      const inc = layers[active];
+      g.killTweensOf([out, inc]);
+      layers.forEach((l, i) => {
+        if (i !== active && i !== prev) g.set(l, { autoAlpha: 0 });
+      });
+      g.to(out, {
+        yPercent: -32 * dir,
+        autoAlpha: 0,
+        duration: 0.45,
+        ease: 'power2.inOut',
+      });
+      g.fromTo(
+        inc,
+        { yPercent: 70 * dir, autoAlpha: 1 },
+        { yPercent: 0, duration: 0.6, ease: 'power4.out' }
+      );
+    },
+  });
 
   /* Scrubbed progress rail + step dots, appended beside the sticky stage.
-     The fill scrubs with section scroll (ScrollTrigger); dots light up as
-     blocks are passed. Decorative — aria-hidden; the TOC and §08 rails
-     remain the navigable equivalents. GSAP-only (hidden ≤900px in CSS). */
+     Decorative — aria-hidden; the TOC and §08 rails remain the navigable
+     equivalents. GSAP-only (hidden ≤900px in CSS). */
   function buildRail(panel, stage, count, section) {
     const rail = document.createElement('div');
     rail.className = 'progress-rail';
@@ -280,8 +415,7 @@
     for (let i = 0; i < count; i++) {
       const dot = document.createElement('div');
       dot.className = 'dot';
-      dot.style.top =
-        (count > 1 ? (i / (count - 1)) * 100 : 0) + '%';
+      dot.style.top = (count > 1 ? (i / (count - 1)) * 100 : 0) + '%';
       rail.appendChild(dot);
       dots.push(dot);
     }
@@ -293,7 +427,7 @@
     size();
     window.addEventListener('resize', size);
 
-    window.gsap.to(fill, {
+    g.to(fill, {
       scaleY: 1,
       ease: 'none',
       scrollTrigger: {
@@ -311,9 +445,11 @@
     };
   }
 
-  /* Generic swap-consumer. With GSAP: direction-aware FX, caption micro-
-     fade, focus-dimming of the text blocks, progress rail. Without GSAP:
-     the original .is-active CSS crossfade and plain caption swap. */
+  /* Generic swap-consumer. With GSAP: the section's scene runs the swap,
+     plus caption micro-fade, focus-dimming, progress rail. Without GSAP:
+     the original .is-active CSS crossfade and plain caption swap. The
+     .is-focus class on the active block is toggled in BOTH modes (drives
+     the §08 accent edge and §10 icon chips). */
   function wireSwap(sectionId, blockSelector, stageId, captionId, opts = {}) {
     const section = document.getElementById(sectionId);
     const stage = document.getElementById(stageId);
@@ -321,18 +457,20 @@
     if (!section || !stage) return null;
 
     const layers = Array.from(stage.querySelectorAll('.swap-layer'));
+    const panel = stage.closest('.swap-panel');
     const blockCount = section.querySelectorAll(blockSelector).length;
 
-    let fx = null;
+    let scene = null;
     let rail = null;
 
     if (gsapOK) {
-      stage.classList.add('fx'); // CSS hands opacity control to inline styles
-      layers.forEach((l, i) =>
-        window.gsap.set(l, { autoAlpha: i === 0 ? 1 : 0 })
-      );
-      if (opts.fx) fx = opts.fx(layers);
-      const panel = stage.closest('.swap-panel');
+      stage.classList.add('fx'); // CSS hands layer control to inline styles
+      if (opts.scene) {
+        scene = opts.scene({ layers, stage, section, panel });
+        scene.init();
+      } else {
+        layers.forEach((l, i) => g.set(l, { autoAlpha: i === 0 ? 1 : 0 }));
+      }
       if (panel) rail = buildRail(panel, stage, blockCount, section);
     }
 
@@ -341,21 +479,24 @@
 
     return makeScrollSpy(section, blockSelector, (active, states, blocks) => {
       // Layer swap
-      if (fx) {
-        if (active !== prev) fx(prev, active, active > prev ? 1 : -1);
-      } else {
+      if (scene) {
+        if (active !== prev) scene.swap(prev, active, active > prev ? 1 : -1);
+      } else if (!gsapOK) {
         layers.forEach((layer, i) =>
           layer.classList.toggle('is-active', i === active)
         );
       }
       prev = active;
 
+      // Focus marker — both modes (CSS hooks: §08 edge, §10 chips)
+      blocks.forEach((b, i) => b.classList.toggle('is-focus', i === active));
+
       // Caption
       const cap = blocks[active] && blocks[active].dataset.caption;
       if (caption && cap) {
         caption.textContent = cap;
         if (gsapOK && booted) {
-          window.gsap.fromTo(
+          g.fromTo(
             caption,
             { autoAlpha: 0, y: 6 },
             {
@@ -372,7 +513,7 @@
       // Focus-dimming: active block full strength, the rest recede.
       // Opacity only (never visibility) — content stays readable to AT.
       if (gsapOK) {
-        window.gsap.to(blocks, {
+        g.to(blocks, {
           opacity: (i) => (i === active ? 1 : 0.45),
           duration: booted ? 0.35 : 0,
           ease: 'power1.out',
@@ -387,7 +528,7 @@
   }
 
   /* ----------------------------------------------------------------------
-     7. Accessible tablist factory (§07, §19)
+     8. Accessible tablist factory (§07, §19)
         Click + Left/Right/Home/End keys, aria-selected, roving tabindex,
         panels toggled with the hidden attribute. With GSAP, the shown
         panel gets a small entrance fade.
@@ -416,7 +557,7 @@
         if (panels[i]) panels[i].hidden = !selected;
       });
       if (gsapOK && panels[index]) {
-        window.gsap.fromTo(
+        g.fromTo(
           panels[index],
           { autoAlpha: 0, y: 14 },
           { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }
@@ -476,7 +617,7 @@
   }
 
   /* ----------------------------------------------------------------------
-     8. §08 — migrating tab rails (two-rail version)
+     9. §08 — migrating tab rails (two-rail version)
         Two fixed rails, rendered only while §08 intersects the viewport
         (body.in-s08). All 8 feature-name tabs are real anchors. Per the
         scroll-spy state: passed → TOP rail, upcoming → BOTTOM rail, the
@@ -543,12 +684,11 @@
   }
 
   /* ----------------------------------------------------------------------
-     9. §19 — auto-tabs
+     10. §19 — auto-tabs
         Auto-advance every 5s. The 2px accent progress bar under the active
         tab IS the timer: a 5s CSS animation whose animationend event
         advances to the next tab. Pausing is pure CSS
-        (.autotabs:hover/:focus-within → animation-play-state: paused), so
-        the bar and the advance can never drift apart.
+        (.autotabs:hover/:focus-within → animation-play-state: paused).
         ANY user interaction (click, keyboard, or arriving via #s19-tabN)
         stops the timer PERMANENTLY. Reduced motion: no timer, no bar.
      ---------------------------------------------------------------------- */
@@ -577,7 +717,7 @@
   }
 
   /* ----------------------------------------------------------------------
-     10. Ambient reveals (GSAP-only)
+     11. Ambient reveals (GSAP-only)
          §02 — the three stat cards rise in, staggered, on first view.
          §14 — each row's text and figure slide in from opposite sides,
                 mirrored on the alternating (.rev) rows.
@@ -585,7 +725,7 @@
   function initAmbientReveals() {
     if (!gsapOK) return;
 
-    window.gsap.from('#s02 .stat', {
+    g.from('#s02 .stat', {
       y: 26,
       autoAlpha: 0,
       duration: 0.6,
@@ -594,9 +734,9 @@
       scrollTrigger: { trigger: '#s02-stats', start: 'top 80%', once: true },
     });
 
-    window.gsap.utils.toArray('#s14 .hood-row').forEach((row) => {
+    g.utils.toArray('#s14 .hood-row').forEach((row) => {
       const rev = row.classList.contains('rev');
-      window.gsap.from(Array.from(row.children), {
+      g.from(Array.from(row.children), {
         x: (i) => (i === 0 ? -1 : 1) * (rev ? -1 : 1) * 28,
         autoAlpha: 0,
         duration: 0.6,
@@ -614,26 +754,27 @@
   // §02
   initCountUps();
   initPinWatch();
+  initScrubText();
 
-  // §06 — sticky diagram swap (isometric settle FX) + audience toggle
+  // §06 — living figure scene + audience toggle
   const audience = initAudienceToggle();
-  wireSwap('s06', '.outcome', 's06-stage', 's06-caption', { fx: fxIso });
+  wireSwap('s06', '.outcome', 's06-stage', 's06-caption', { scene: sceneIso });
 
   // §07 — two-track switch
   const s07Root = document.querySelector('#s07 .tablist');
   const s07Tabs = s07Root ? makeTabs(s07Root) : null;
 
-  // §08 — sticky panel (card-deck FX) + migrating rails on the same spy
+  // §08 — card-deck scene + migrating rails on the same spy
   const distributeRails = initRails();
   wireSwap('s08', '.feature', 's08-stage', 's08-caption', {
-    fx: fxScreens,
+    scene: sceneDeck,
     extra: (active, states) => {
       if (distributeRails) distributeRails(active, states);
     },
   });
 
-  // §10 — phone scroll-reveals (app-push FX)
-  wireSwap('s10', '.reveal', 's10-stage', 's10-caption', { fx: fxPhone });
+  // §10 — 3D phone scene
+  wireSwap('s10', '.reveal', 's10-stage', 's10-caption', { scene: scenePhone });
 
   // §19 — auto-tabs + permanent-stop wiring
   const s19Root = document.getElementById('s19-autotabs');
@@ -643,7 +784,7 @@
   initAmbientReveals();
 
   /* ----------------------------------------------------------------------
-     11. Hash router
+     12. Hash router
         #s06-oN / #s08-fN / #s10-rN are real element ids — native anchor
         scrolling plus scroll-margin-top: 40vh lands them inside the spy's
         activation band, so the right layer activates by itself.
