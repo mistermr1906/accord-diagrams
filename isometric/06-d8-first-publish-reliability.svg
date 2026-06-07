@@ -1,122 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Accord landing page — Section 06 · D8 First-publish reliability (ziggurat rebuild)
-  Supersedes: the previous "plain cube with dashed back edges" mechanic
-              (rejected 2026-04-17 — read as identical to D7).
+  Accord landing page — Section 06 · D8 First-publish reliability
+  Fan-out panel winner 2026-06-07: "THE VAULT SEAM"
+  Selected by Robert 2026-06-07 as the final D8 — replaces the original three-tier
+  ziggurat (deleted same day); renamed from 06-d8-first-publish-reliability-v2.svg.
   Style-lock: diagrams/style-lock-isometric.md
-  Benchmark:  D4 hourglass · D5 lattice-plus-plane · D6 V-trough-plus-ball ·
-              D7 flush-fit plug-in-ground · Stat Row A.
+              (accent colour superseded 2026-06-04: the lock's original blue accent is
+              dead — accent is orange #f7693b; see
+              diagrams/reviews/06-isometric-orange-retrofit.md)
 
-  Metaphor: Three-tier stepped pyramid (ziggurat) — three iso rectangular cuboids centred
-            on the same vertical axis, each tier square in footprint, each narrower than
-            the tier below. Broad base tapering upward. Reads as weight, permanence,
-            unshakeable. Emotional territory: solidity · trust · anchored for the week.
+  Metaphor: One tall sealed monolith; the only event on the mass is the level orange
+            seam where the lid closed. Reads: sealed, complete, checked before anyone
+            saw inside.
 
   Geometry — true 30° isometric, parallel projection:
     screen_x = 200 + 0.866·(X − Y)
-    screen_y = 224 + 0.5·(X + Y) − Z
-    Origin canvas (200, 224) — shifts shape's visual centroid to optical centre (200, 184).
+    screen_y = 259 + 0.5·(X + Y) − Z
 
-  Tier 1 (bottom) — half 80, Z ∈ [0, 40]:
-    Bottom rhombus (Z=0):    BB (200, 144) · BR (338.56, 224) · BF (200, 304) · BL ( 61.44, 224)
-    Top rhombus    (Z=40):   TB (200, 104) · TR (338.56, 184) · TF (200, 264) · TL ( 61.44, 184)
+  Volume — square footprint half-width a=48, height h=150, seam at Z=120:
+    Bottom rhombus (Z=0):    B_back (200, 211) · B_right (283.14, 259) ·
+                             B_front (200, 307) · B_left (116.86, 259)
+    Top rhombus    (Z=150):  T_back (200,  61) · T_right (283.14, 109) ·
+                             T_front (200, 157) · T_left (116.86, 109)
+    Seam points    (Z=120):  S_left (116.86, 139) · S_front (200, 187) ·
+                             S_right (283.14, 139)
 
-  Tier 2 (middle) — half 60, Z ∈ [40, 80]:
-    Bottom rhombus (Z=40):   BB (200, 124) · BR (303.92, 184) · BF (200, 244) · BL ( 96.08, 184)
-    Top rhombus    (Z=80):   TB (200,  84) · TR (303.92, 144) · TF (200, 204) · TL ( 96.08, 144)
+  Shape bounds: x ∈ [116.86, 283.14] (width 166.28) · y ∈ [61, 307] (height 246,
+                61.5% of canvas — within the 60–70% rule) · vertical centre 184
+                (optical centre).
 
-  Tier 3 (top) — half 40, Z ∈ [80, 120]:
-    Bottom rhombus (Z=80):   BB (200, 104) · BR (269.28, 144) · BF (200, 184) · BL (130.72, 144)
-    Top rhombus    (Z=120):  TB (200,  64) · TR (269.28, 104) · TF (200, 144) · TL (130.72, 104)
+  Edge roster:
+    SECONDARY (2) — top back edges T_left→T_back · T_back→T_right (receding lid)
+    PRIMARY   (7) — 2 silhouette verticals · 2 bottom near edges · 2 top near edges ·
+                    front vertical
+    ORANGE    (1) — ONE continuous polyline S_left → S_front → S_right; the level
+                    seam wrapping the front corner where the lid closed
+    No back verticals, no bottom back edges, no broken hidden-edge strokes — the mass
+    is opaque by omission.
 
-  Shape bounds: x ∈ [61.44, 338.56] (width 277.12, 69.3% of canvas) ·
-                y ∈ [64, 304]       (height 240, 60% of canvas) · longest dim fits 60–70% rule.
-
-  Edge roster per tier (standard iso cube wireframe):
-    Tier 1 — 6 silhouette + 3 visible-Y from T1_TF (primary) + 3 hidden-Y from T1_BB (dashed)
-    Tier 2 — 6 silhouette + 3 visible-Y from T2_TF (primary)       [hidden edges omitted;
-                                                                    occluded by tier 1 body,
-                                                                    no trace would help]
-    Tier 3 — 6 silhouette + 3 visible-Y from T3_TF, one replaced by orange (8 primary + 1 orange)
-
-  Orange — single spotlight · Tier 3 top-face FRONT-TO-LEFT edge
-    T3_TF (200, 144) → T3_TL (130.72, 104). Upper-left diagonal crown highlight on the
-    ziggurat apex. Position-distinct from all prior orange moments (D4 mid-upper centre,
-    D5 bottom-left, D6 mid-centre-upper-right, D7 mid-right-lower-left).
-
-  Canvas: 400×400 · 1:1 square · container supplies dark ground (#0a0a0c) + 12 ambient
-  gridlines per style-lock container rules.
+  Canvas: 400×400 · 1:1 square · container supplies dark ground (#0a0a0c) per
+  style-lock container rules.
 -->
 <svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 400 400"
      role="img"
-     aria-labelledby="d8-title d8-desc"
+     aria-labelledby="d8v2-title d8v2-desc"
      shape-rendering="geometricPrecision"
      fill="none">
-  <title id="d8-title">First-publish reliability</title>
-  <desc id="d8-desc">A three-tier isometric stepped pyramid, broad base tapering upward through three discrete stacked tiers — representing every validation rule checked and a rota that holds under load for the full week after publish.</desc>
+  <title id="d8v2-title">First-publish reliability</title>
+  <desc id="d8v2-desc">A tall sealed isometric monolith. A single level orange seam wraps the front corner near the top — the line where the lid closed: every rule checked and sealed before anyone saw the rota; what publishes on Monday holds on Friday.</desc>
 
   <defs>
     <style>
       .primary   { stroke: #e8e8ea; stroke-width: 1;    fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
       .secondary { stroke: #5a5a60; stroke-width: 0.75; fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
-      .hidden    { stroke: #33333a; stroke-width: 0.5;  fill: none; stroke-dasharray: 3 3;             stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
       .accent    { stroke: #f7693b; stroke-width: 1;    fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
     </style>
   </defs>
 
-  <!-- Tier 1 · hidden Y-radiator edges from back-bottom T1_BB (200, 144) · dashed · draw first (behind) -->
+  <!-- Top back edges (receding lid) · secondary · drawn first (behind) -->
   <g aria-hidden="true">
-    <line class="hidden" x1="200" y1="144" x2="338.56" y2="224" /><!-- T1_BB → T1_BR  bottom-face back-right -->
-    <line class="hidden" x1="200" y1="144" x2="61.44"  y2="224" /><!-- T1_BB → T1_BL  bottom-face back-left  -->
-    <line class="hidden" x1="200" y1="144" x2="200"    y2="104" /><!-- T1_BB → T1_TB  vertical back        -->
+    <line class="secondary" x1="116.86" y1="109" x2="200"    y2="61"  /><!-- T_left  → T_back  -->
+    <line class="secondary" x1="200"    y1="61"  x2="283.14" y2="109" /><!-- T_back  → T_right -->
   </g>
 
-  <!-- Tier 1 · silhouette hexagon + visible-Y from T1_TF (200, 264) · primary -->
+  <!-- Monolith silhouette + front vertical · primary -->
   <g aria-hidden="true">
-    <!-- Silhouette hexagon (CW from top): T1_TB · T1_TR · T1_BR · T1_BF · T1_BL · T1_TL -->
-    <line class="primary" x1="200"    y1="104" x2="338.56" y2="184" /><!-- T1_TB → T1_TR -->
-    <line class="primary" x1="338.56" y1="184" x2="338.56" y2="224" /><!-- T1_TR → T1_BR -->
-    <line class="primary" x1="338.56" y1="224" x2="200"    y2="304" /><!-- T1_BR → T1_BF -->
-    <line class="primary" x1="200"    y1="304" x2="61.44"  y2="224" /><!-- T1_BF → T1_BL -->
-    <line class="primary" x1="61.44"  y1="224" x2="61.44"  y2="184" /><!-- T1_BL → T1_TL -->
-    <line class="primary" x1="61.44"  y1="184" x2="200"    y2="104" /><!-- T1_TL → T1_TB -->
-    <!-- Visible-Y edges from T1_TF (front-top) -->
-    <line class="primary" x1="200"    y1="264" x2="200"    y2="304" /><!-- T1_TF → T1_BF  vertical front -->
-    <line class="primary" x1="200"    y1="264" x2="338.56" y2="184" /><!-- T1_TF → T1_TR  top-face diag right -->
-    <line class="primary" x1="200"    y1="264" x2="61.44"  y2="184" /><!-- T1_TF → T1_TL  top-face diag left  -->
+    <line class="primary" x1="283.14" y1="109" x2="283.14" y2="259" /><!-- T_right → B_right  silhouette vertical right -->
+    <line class="primary" x1="116.86" y1="109" x2="116.86" y2="259" /><!-- T_left  → B_left   silhouette vertical left  -->
+    <line class="primary" x1="283.14" y1="259" x2="200"    y2="307" /><!-- B_right → B_front  bottom near edge right    -->
+    <line class="primary" x1="200"    y1="307" x2="116.86" y2="259" /><!-- B_front → B_left   bottom near edge left     -->
+    <line class="primary" x1="200"    y1="157" x2="283.14" y2="109" /><!-- T_front → T_right  top near edge right       -->
+    <line class="primary" x1="200"    y1="157" x2="116.86" y2="109" /><!-- T_front → T_left   top near edge left        -->
+    <line class="primary" x1="200"    y1="157" x2="200"    y2="307" /><!-- T_front → B_front  front vertical            -->
   </g>
 
-  <!-- Tier 2 · silhouette hexagon + visible-Y from T2_TF (200, 204) · primary -->
-  <g aria-hidden="true">
-    <!-- Silhouette hexagon -->
-    <line class="primary" x1="200"    y1="84"  x2="303.92" y2="144" /><!-- T2_TB → T2_TR -->
-    <line class="primary" x1="303.92" y1="144" x2="303.92" y2="184" /><!-- T2_TR → T2_BR -->
-    <line class="primary" x1="303.92" y1="184" x2="200"    y2="244" /><!-- T2_BR → T2_BF -->
-    <line class="primary" x1="200"    y1="244" x2="96.08"  y2="184" /><!-- T2_BF → T2_BL -->
-    <line class="primary" x1="96.08"  y1="184" x2="96.08"  y2="144" /><!-- T2_BL → T2_TL -->
-    <line class="primary" x1="96.08"  y1="144" x2="200"    y2="84"  /><!-- T2_TL → T2_TB -->
-    <!-- Visible-Y edges from T2_TF -->
-    <line class="primary" x1="200"    y1="204" x2="200"    y2="244" /><!-- T2_TF → T2_BF  vertical front -->
-    <line class="primary" x1="200"    y1="204" x2="303.92" y2="144" /><!-- T2_TF → T2_TR  top-face diag right -->
-    <line class="primary" x1="200"    y1="204" x2="96.08"  y2="144" /><!-- T2_TF → T2_TL  top-face diag left  -->
-  </g>
-
-  <!-- Tier 3 · silhouette hexagon + visible-Y from T3_TF (200, 144) · primary (2 edges; 3rd replaced by orange) -->
-  <g aria-hidden="true">
-    <!-- Silhouette hexagon -->
-    <line class="primary" x1="200"    y1="64"  x2="269.28" y2="104" /><!-- T3_TB → T3_TR -->
-    <line class="primary" x1="269.28" y1="104" x2="269.28" y2="144" /><!-- T3_TR → T3_BR -->
-    <line class="primary" x1="269.28" y1="144" x2="200"    y2="184" /><!-- T3_BR → T3_BF -->
-    <line class="primary" x1="200"    y1="184" x2="130.72" y2="144" /><!-- T3_BF → T3_BL -->
-    <line class="primary" x1="130.72" y1="144" x2="130.72" y2="104" /><!-- T3_BL → T3_TL -->
-    <line class="primary" x1="130.72" y1="104" x2="200"    y2="64"  /><!-- T3_TL → T3_TB -->
-    <!-- Visible-Y edges from T3_TF · 2 of 3 (third = front-to-left replaced by orange below) -->
-    <line class="primary" x1="200"    y1="144" x2="200"    y2="184" /><!-- T3_TF → T3_BF  vertical front     -->
-    <line class="primary" x1="200"    y1="144" x2="269.28" y2="104" /><!-- T3_TF → T3_TR  top-face diag right -->
-  </g>
-
-  <!-- Orange · single spotlight · Tier 3 top-face front-to-left edge · the apex crown highlight -->
-  <line class="accent" x1="200" y1="144" x2="130.72" y2="104" /><!-- T3_TF → T3_TL -->
+  <!-- Orange · single spotlight · the level seam where the lid closed · ONE continuous polyline -->
+  <polyline class="accent" points="116.86,139 200,187 283.14,139" /><!-- S_left → S_front → S_right -->
 
 </svg>
