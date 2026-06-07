@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Accord landing page — Section 06 · D6 Automatic rebalancing
+  v2 — fan-out panel winner 2026-06-07
+  Winner: "TWO STACKS, ONE LEVEL"
+  Original 06-d6-automatic-rebalancing.svg untouched; site swap pending decision.
+  Style-lock: diagrams/style-lock-isometric.md
+              (accent colour superseded 2026-06-04: the lock's original blue accent is
+              dead — accent is orange #f7693b; see
+              diagrams/reviews/06-isometric-orange-retrofit.md)
+
+  Metaphor: Two block towers of identical height — one of three slabs, one of two
+            taller slabs (fewer pieces, same total). A single level orange line runs
+            from front-top corner to front-top corner: the recalculated target level,
+            held. Reads: something changed, the remainder absorbed it, equilibrium held.
+
+  Geometry — true 30° isometric, parallel projection.
+  Panel spec was 600×500; all world coordinates uniformly scaled ×0.625 to retarget
+  400×400 (uniform scale preserves the 30° angles):
+    screen_x = 200 + 0.866·(X − Y)
+    screen_y = SY0 + 0.5·(X + Y) − Z          with SY0 = 237.125
+    (SY0 chosen so the composition bounding box — x ∈ [70.10, 329.90],
+     y ∈ [109.00, 259.00] — centres on the optical centre (200, 184).)
+
+  Scaled world geometry (after ×0.625):
+    Stack L (reference, 3 slabs): X ∈ [−75, −31.25], Y ∈ [31.25, 75], H = 106.25,
+      division planes at Z = 35.42 and Z = 70.83.
+    Stack R (adjusted, 2 slabs):  X ∈ [31.25, 75], Y ∈ [−75, −31.25], H = 106.25,
+      division plane at Z = 53.13.
+    (The two stacks sit on the depth diagonal — same screen height by construction.)
+
+  Projected vertex table (rounded to 2 decimals):
+    Stack L:
+      B_front (107.99, 259.00) · B_left (70.10, 237.13) · B_right (145.88, 237.13) ·
+      B_back (107.99, 215.25)
+      T_front (107.99, 152.75) · T_left (70.10, 130.88) · T_right (145.88, 130.88) ·
+      T_back (107.99, 109.00)
+      Division Z=35.42: D1_left (70.10, 201.71) · D1_front (107.99, 223.58) ·
+                        D1_right (145.88, 201.71)
+      Division Z=70.83: D2_left (70.10, 166.30) · D2_front (107.99, 188.17) ·
+                        D2_right (145.88, 166.30)
+    Stack R:
+      B_front (292.01, 259.00) · B_left (254.13, 237.13) · B_right (329.90, 237.13) ·
+      B_back (292.01, 215.25)
+      T_front (292.01, 152.75) · T_left (254.13, 130.88) · T_right (329.90, 130.88) ·
+      T_back (292.01, 109.00)
+      Division Z=53.13: D1_left (254.13, 184.00) · D1_front (292.01, 205.87) ·
+                        D1_right (329.90, 184.00)
+
+  Shape bounds: x ∈ [70.10, 329.90] (width 259.80, 65% of canvas — within the
+                60–70% rule) · y ∈ [109.00, 259.00] (height 150) · centre (200, 184).
+
+  Edge roster (25 strokes total):
+    Stack L (13) — PRIMARY (5): 2 front-top edges · front vertical · 2 bottom near
+                   edges; SECONDARY (4): 2 back-top edges · 2 silhouette verticals;
+                   PRIMARY divisions (4): 2 divisions × 2 visible-face segments.
+    Stack R (11) — PRIMARY (5) + SECONDARY (4) as above; PRIMARY division (2):
+                   1 division × 2 visible-face segments.
+    ORANGE   (1) — one perfectly horizontal line, Stack L T_front → Stack R T_front
+                   (the recalculated target level, held).
+    Panel's optional tertiary tick on Stack R's right face: REJECTED — not drawn.
+
+  Canvas: 400×400 · 1:1 square · container supplies dark ground (#0a0a0c) + 12 ambient
+  gridlines per style-lock container rules.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 400 400"
+     role="img"
+     aria-labelledby="d6v2-title d6v2-desc"
+     shape-rendering="geometricPrecision"
+     fill="none">
+  <title id="d6v2-title">Automatic rebalancing</title>
+  <desc id="d6v2-desc">Two isometric block towers of equal height — one of three slabs, one of two taller slabs — joined by a single level orange line across their tops. Fewer pieces, same total: when a holiday is booked, the remaining shift targets absorb it and the level holds — no manager action.</desc>
+
+  <defs>
+    <style>
+      .primary   { stroke: #e8e8ea; stroke-width: 1;    fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+      .secondary { stroke: #5a5a60; stroke-width: 0.75; fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+      .accent    { stroke: #f7693b; stroke-width: 1;    fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
+    </style>
+  </defs>
+
+  <!-- Stack L · back-top edges + silhouette verticals · secondary · drawn first (behind) -->
+  <g aria-hidden="true">
+    <line class="secondary" x1="107.99" y1="109"    x2="70.10"  y2="130.88" /><!-- T_back → T_left   back-top edge left  -->
+    <line class="secondary" x1="107.99" y1="109"    x2="145.88" y2="130.88" /><!-- T_back → T_right  back-top edge right -->
+    <line class="secondary" x1="70.10"  y1="130.88" x2="70.10"  y2="237.13" /><!-- T_left  → B_left   silhouette vertical left  -->
+    <line class="secondary" x1="145.88" y1="130.88" x2="145.88" y2="237.13" /><!-- T_right → B_right  silhouette vertical right -->
+  </g>
+
+  <!-- Stack R · back-top edges + silhouette verticals · secondary -->
+  <g aria-hidden="true">
+    <line class="secondary" x1="292.01" y1="109"    x2="254.13" y2="130.88" /><!-- T_back → T_left   back-top edge left  -->
+    <line class="secondary" x1="292.01" y1="109"    x2="329.90" y2="130.88" /><!-- T_back → T_right  back-top edge right -->
+    <line class="secondary" x1="254.13" y1="130.88" x2="254.13" y2="237.13" /><!-- T_left  → B_left   silhouette vertical left  -->
+    <line class="secondary" x1="329.90" y1="130.88" x2="329.90" y2="237.13" /><!-- T_right → B_right  silhouette vertical right -->
+  </g>
+
+  <!-- Stack L · front wireframe · primary -->
+  <g aria-hidden="true">
+    <line class="primary" x1="107.99" y1="152.75" x2="70.10"  y2="130.88" /><!-- T_front → T_left   front-top edge left  -->
+    <line class="primary" x1="107.99" y1="152.75" x2="145.88" y2="130.88" /><!-- T_front → T_right  front-top edge right -->
+    <line class="primary" x1="107.99" y1="152.75" x2="107.99" y2="259"    /><!-- T_front → B_front  front vertical       -->
+    <line class="primary" x1="107.99" y1="259"    x2="70.10"  y2="237.13" /><!-- B_front → B_left   bottom near edge left  -->
+    <line class="primary" x1="107.99" y1="259"    x2="145.88" y2="237.13" /><!-- B_front → B_right  bottom near edge right -->
+  </g>
+
+  <!-- Stack L · slab division lines (each wraps both visible faces) · primary -->
+  <g aria-hidden="true">
+    <line class="primary" x1="70.10"  y1="201.71" x2="107.99" y2="223.58" /><!-- D1_left  → D1_front  division Z=35.42 left face  -->
+    <line class="primary" x1="107.99" y1="223.58" x2="145.88" y2="201.71" /><!-- D1_front → D1_right  division Z=35.42 right face -->
+    <line class="primary" x1="70.10"  y1="166.30" x2="107.99" y2="188.17" /><!-- D2_left  → D2_front  division Z=70.83 left face  -->
+    <line class="primary" x1="107.99" y1="188.17" x2="145.88" y2="166.30" /><!-- D2_front → D2_right  division Z=70.83 right face -->
+  </g>
+
+  <!-- Stack R · front wireframe · primary -->
+  <g aria-hidden="true">
+    <line class="primary" x1="292.01" y1="152.75" x2="254.13" y2="130.88" /><!-- T_front → T_left   front-top edge left  -->
+    <line class="primary" x1="292.01" y1="152.75" x2="329.90" y2="130.88" /><!-- T_front → T_right  front-top edge right -->
+    <line class="primary" x1="292.01" y1="152.75" x2="292.01" y2="259"    /><!-- T_front → B_front  front vertical       -->
+    <line class="primary" x1="292.01" y1="259"    x2="254.13" y2="237.13" /><!-- B_front → B_left   bottom near edge left  -->
+    <line class="primary" x1="292.01" y1="259"    x2="329.90" y2="237.13" /><!-- B_front → B_right  bottom near edge right -->
+  </g>
+
+  <!-- Stack R · slab division line (wraps both visible faces) · primary -->
+  <g aria-hidden="true">
+    <line class="primary" x1="254.13" y1="184"    x2="292.01" y2="205.87" /><!-- D1_left  → D1_front  division Z=53.13 left face  -->
+    <line class="primary" x1="292.01" y1="205.87" x2="329.90" y2="184"    /><!-- D1_front → D1_right  division Z=53.13 right face -->
+  </g>
+
+  <!-- Orange · single spotlight · the recalculated target level, held · perfectly horizontal -->
+  <line class="accent" x1="107.99" y1="152.75" x2="292.01" y2="152.75" /><!-- Stack L T_front → Stack R T_front -->
+
+</svg>
