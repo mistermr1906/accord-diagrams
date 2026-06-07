@@ -748,6 +748,89 @@
   }
 
   /* ----------------------------------------------------------------------
+     Iframe auto-fit — the embedded screens are full 1100×825 (or 640×960)
+     designer-handoff pages whose actual figure sits small in the centre.
+     Same-origin, so we can measure the content's bounding box and zoom the
+     iframe so the FIGURE fills the stage instead of the empty page around
+     it. Runs in both modes (no GSAP needed); falls back silently to the
+     stock CSS scale if the document isn't readable.
+     ---------------------------------------------------------------------- */
+  function fitFrame(iframe) {
+    let doc;
+    try {
+      doc = iframe.contentDocument;
+    } catch (e) {
+      return; // cross-origin — keep the stock CSS scale
+    }
+    if (!doc || !doc.body) return;
+
+    const stage = iframe.parentElement; // .swap-layer or .screen-stage
+    const sw = stage.clientWidth;
+    const sh = stage.clientHeight;
+    if (!sw || !sh) return;
+
+    // Union bounding box of the page's visible top-level content.
+    let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+    Array.from(doc.body.children).forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.width < 8 || r.height < 8) return;
+      x1 = Math.min(x1, r.left);
+      y1 = Math.min(y1, r.top);
+      x2 = Math.max(x2, r.right);
+      y2 = Math.max(y2, r.bottom);
+    });
+    if (!isFinite(x1) || x2 - x1 < 40 || y2 - y1 < 40) return;
+
+    const PAD = 28;
+    x1 -= PAD; y1 -= PAD; x2 += PAD; y2 += PAD;
+    const w = x2 - x1;
+    const h = y2 - y1;
+
+    // Contain-fit, with mild upscaling allowed (HTML scales crisply).
+    let scale = Math.min(sw / w, sh / h, 1.15);
+
+    // Landscape stages showing TALL content (§07's chat panel): contain-fit
+    // wastes most of the stage. Fill the width instead and accept a capped
+    // bottom crop (≤35%), top-aligned so the content's head stays visible.
+    // Phones are exempt — a cropped phone reads as broken.
+    const isPhone = !!iframe.closest('.phone-stage');
+    if (!isPhone) {
+      scale = Math.min(sw / w, scale * 1.35, 1.15);
+    }
+
+    const vh = h * scale;
+    const top =
+      vh <= sh ? (sh - vh) / 2 - y1 * scale : -y1 * scale; // centre or top-crop
+    iframe.style.transform = 'scale(' + scale + ')';
+    iframe.style.left = (sw - w * scale) / 2 - x1 * scale + 'px';
+    iframe.style.top = top + 'px';
+  }
+
+  function initIframeFit() {
+    const frames = Array.from(
+      document.querySelectorAll(
+        '.screen-stage iframe, .stage-8 iframe, .phone-stage iframe'
+      )
+    );
+    frames.forEach((f) => {
+      const run = () => {
+        requestAnimationFrame(() => fitFrame(f));
+        // Re-fit once webfonts have settled.
+        setTimeout(() => fitFrame(f), 900);
+      };
+      if (f.contentDocument && f.contentDocument.readyState === 'complete') {
+        run();
+      }
+      f.addEventListener('load', run);
+    });
+    let t;
+    window.addEventListener('resize', () => {
+      clearTimeout(t);
+      t = setTimeout(() => frames.forEach(fitFrame), 150);
+    });
+  }
+
+  /* ----------------------------------------------------------------------
      Boot
      ---------------------------------------------------------------------- */
 
@@ -782,6 +865,9 @@
 
   // Entrance reveals (§02 stats stagger, §14 rows)
   initAmbientReveals();
+
+  // Zoom every embedded screen to its actual content
+  initIframeFit();
 
   /* ----------------------------------------------------------------------
      12. Hash router

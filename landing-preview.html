@@ -267,6 +267,16 @@
       top: 48px;
       align-self: start;
     }
+    /* Neutral depth glow so the dark stage separates from the dark page */
+    .swap-panel::before {
+      content: '';
+      position: absolute;
+      inset: -56px;
+      background: radial-gradient(closest-side, rgba(255, 255, 255, 0.055), transparent 72%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .stage-8, .phone-stage { z-index: 1; }
     .swap-stage {
       position: relative;
       z-index: 1;
@@ -540,33 +550,65 @@
     }
     .step {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 380px;
+      grid-template-columns: minmax(0, 1fr) 460px;
       gap: 48px;
       align-items: start;
-      margin-bottom: 64px;
-      max-width: 980px;
+      margin-bottom: 72px;
+      max-width: 1040px;
     }
-    .step.no-fig { grid-template-columns: minmax(0, 1fr); max-width: 552px; }
+    .step.no-fig { grid-template-columns: minmax(0, 1fr); max-width: 620px; }
     .step-label {
       font-family: var(--font-mono);
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-size: 0.6875rem;
       color: var(--accent-stroke);
-      margin: 0 0 8px;
+      margin: 0 0 10px;
     }
     .step-title {
       font-family: var(--font-sans);
       font-weight: 300;
-      font-size: 1.375rem;
+      font-size: 1.75rem;
+      letter-spacing: -0.01em;
       color: var(--text-primary);
-      margin: 0 0 10px;
+      margin: 0 0 12px;
     }
-    .step-desc { font-size: 0.9375rem; color: var(--text-secondary); margin: 0; max-width: 480px; }
+    .step-desc { font-size: 1.0625rem; line-height: 1.6; color: var(--text-secondary); margin: 0; max-width: 520px; }
     .step .screen-stage {
-      width: 380px;
+      width: 460px;
       border: 1px solid var(--glass-hairline);
       border-radius: 14px;
+    }
+
+    /* Detail lists + testimonial pull-quotes (copy-deck content) */
+    .mini-list {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 520px;
+    }
+    .mini-list li { margin-bottom: 6px; }
+    .mini-list li::marker { color: var(--accent-stroke); }
+    .feat-quote {
+      margin: 20px 0 0;
+      max-width: 480px;
+      font-style: italic;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--text-quote);
+      border-left: 2px solid var(--glass-gridline);
+      padding-left: 14px;
+    }
+    .feat-quote cite {
+      display: block;
+      margin-top: 8px;
+      font-style: normal;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
     }
 
     /* ---- §08 — sticky panel + migrating rails ----------------------------- */
@@ -614,11 +656,12 @@
     .feature h3 {
       font-family: var(--font-sans);
       font-weight: 300;
-      font-size: 1.375rem;
+      font-size: 1.625rem;
+      letter-spacing: -0.01em;
       color: var(--text-primary);
-      margin: 0 0 10px;
+      margin: 0 0 12px;
     }
-    .feature p { font-size: 0.9375rem; color: var(--text-secondary); margin: 0; max-width: 480px; }
+    .feature > p { font-size: 1.0625rem; line-height: 1.6; color: var(--text-secondary); margin: 0; max-width: 500px; }
 
     /* Fixed rails — direct children of <body>; no transformed ancestors. */
     .rail {
@@ -700,11 +743,12 @@
     .reveal h3 {
       font-family: var(--font-sans);
       font-weight: 300;
-      font-size: 1.375rem;
+      font-size: 1.625rem;
+      letter-spacing: -0.01em;
       color: var(--text-primary);
-      margin: 0 0 10px;
+      margin: 0 0 12px;
     }
-    .reveal p { font-size: 0.9375rem; color: var(--text-secondary); margin: 0; max-width: 440px; }
+    .reveal p { font-size: 1.0625rem; line-height: 1.6; color: var(--text-secondary); margin: 0; max-width: 460px; }
     .mgr-tag {
       font-family: var(--font-mono);
       font-size: 0.625rem;
@@ -915,7 +959,7 @@
       .scrub-text { font-size: 1.25rem; }
       .phone-stage { width: 346px; height: 519px; }
       .phone-stage iframe { transform: scale(0.54); }
-      .step .screen-stage { width: 100%; max-width: 380px; }
+      .step .screen-stage { width: 100%; max-width: 460px; }
     }
   </style>
 </head>
@@ -1243,6 +1287,14 @@
             <p class="step-label">SETUP · 5 MINUTES</p>
             <h3 class="step-title">Configure the store</h3>
             <p class="step-desc">Answer 5-7 questions in an AI chat. The system builds a scheduling profile from the conversation.</p>
+            <p class="aud-label">What's captured</p>
+            <ul class="mini-list">
+              <li>Opening hours and trading days</li>
+              <li>Shift types and time blocks</li>
+              <li>Coverage minimums per shift</li>
+              <li>Business-specific rules (e.g. Tuesday manager meetings)</li>
+              <li>Peak periods and bank holiday handling</li>
+            </ul>
           </div>
           <div class="screen-stage">
             <iframe src="screens/d9-setup-interview.html" title="D9 — Store setup in plain conversation" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
@@ -1255,6 +1307,13 @@
             <p class="step-label">TEAM · 2 MINUTES PER PERSON</p>
             <h3 class="step-title">Add the team</h3>
             <p class="step-desc">Describe each employee in a conversation. The system captures their profile and feeds it into the constraint model.</p>
+            <p class="aud-label">What's captured</p>
+            <ul class="mini-list">
+              <li>Role and contract type (full-time or part-time)</li>
+              <li>Weekly shift target and part-timer caps</li>
+              <li>Shift restrictions (e.g. Lates only, no Sundays)</li>
+              <li>Blocked days and availability patterns</li>
+            </ul>
           </div>
         </div>
 
@@ -1263,6 +1322,13 @@
             <p class="step-label">GENERATE</p>
             <h3 class="step-title">Generate, review, publish</h3>
             <p class="step-desc">Press generate. Accord processes all team requests and business rules as one equation. A full 30-day schedule comes back, validated against all active constraints.</p>
+            <p class="aud-label">What happens next</p>
+            <ul class="mini-list">
+              <li>Review the output in the grid</li>
+              <li>Edit individual shifts if needed</li>
+              <li>Approve and download as formatted Excel</li>
+              <li>If the configuration is impossible, the system names the specific conflict and suggests a fix</li>
+            </ul>
           </div>
           <div class="screen-stage">
             <iframe src="screens/d10-generation-sequence.html" title="D10 — Generation sequence" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
@@ -1278,7 +1344,12 @@
           <div>
             <p class="step-label">REQUESTS · 2 MINUTES</p>
             <h3 class="step-title">Submit your requests</h3>
-            <p class="step-desc">Each request type carries a defined weight in the scheduling equation.</p>
+            <p class="step-desc">Each request type carries a defined weight in the scheduling equation. Three types:</p>
+            <ul class="mini-list">
+              <li><strong>Holiday (H):</strong> Book time off. Your weekly shift target adjusts automatically. Book Monday and Tuesday, your target drops from 5 to 3.</li>
+              <li><strong>Day off (X):</strong> Mark a specific day as unavailable. Your shift target stays the same. Same number of shifts, different days.</li>
+              <li><strong>Shift preference (Early/Mid/Late):</strong> Request a specific shift on a specific day. Honoured where coverage allows. If it can't be, you see the reason.</li>
+            </ul>
           </div>
           <div class="screen-stage">
             <iframe src="screens/d11-h-vs-x.html" title="D11 — Holiday vs day-off (H vs X)" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
@@ -1291,6 +1362,16 @@
             <p class="step-label">ALWAYS AVAILABLE</p>
             <h3 class="step-title">View your published schedule</h3>
             <p class="step-desc">Once approved, the rota is visible in the app. Full month of shifts, colour-coded by type (Early, Mid, Late, Off). Accessible from any device.</p>
+            <p class="aud-label">What you see</p>
+            <ul class="mini-list">
+              <li>Full month view with colour-coded shifts</li>
+              <li>Your request status (honoured, deferred with reason)</li>
+              <li>Team schedule overview</li>
+            </ul>
+            <blockquote class="feat-quote">
+              "I used to keep a photo of the rota on my phone. Now I just open the app and it's already there, colour-coded and up to date."
+              <cite>— Marcus Chen, Retail Associate, Wren &amp; Co Interiors</cite>
+            </blockquote>
           </div>
         </div>
 
@@ -1335,49 +1416,129 @@
           <article class="feature" id="s08-f1" data-tab="Set daily staffing minimums" data-caption="D12 · COVERAGE MINIMUMS">
             <p class="cat">COVERAGE</p>
             <h3>Set daily staffing minimums</h3>
-            <p>Define how many staff are needed per shift type.</p>
+            <p>Define how many staff are needed per shift type. The engine treats this as a hard constraint and confirms coverage before the rota generates.</p>
+            <p class="aud-label">What it does</p>
+            <ul class="mini-list">
+              <li>Set minimum staff per shift: at least one opener, one closer, two on the floor during peak</li>
+              <li>Redistribute remaining team across available slots when someone is unavailable</li>
+              <li>Display redistribution in the grid, not as a gap discovered mid-week</li>
+            </ul>
+            <blockquote class="feat-quote">
+              "We had a Tuesday where nobody was on Lates. Just... nobody. Found out at 4pm. That doesn't happen anymore."
+              <cite>— Daniel Osei, Store Manager, Beechwood &amp; Hale</cite>
+            </blockquote>
           </article>
 
           <article class="feature" id="s08-f2" data-tab="Flex part-timer shifts across weeks" data-caption="D13 · FLEX-MODE TOGGLE">
             <p class="cat">CONTRACTS</p>
             <h3>Flex part-timer shifts across weeks</h3>
-            <p>Move shifts between weeks when coverage demands it.</p>
+            <p>Move shifts between weeks when coverage demands it. The monthly total stays locked to the contract.</p>
+            <p class="aud-label">What it does</p>
+            <ul class="mini-list">
+              <li>Opt a part-timer into flexible mode when one week needs more shifts and another needs fewer</li>
+              <li>Strict mode (exact count per week) is the default</li>
+              <li>The manager controls who flexes and when. Flexibility is a permission, not an override</li>
+            </ul>
+            <blockquote class="feat-quote">
+              "Nadia does three shifts a week but some weeks we need four. I used to just... give her four and hope payroll didn't notice. Now it balances itself."
+              <cite>— James Whitfield, Deputy Manager, Wren &amp; Co Interiors</cite>
+            </blockquote>
           </article>
 
           <article class="feature" id="s08-f3" data-tab="Carry rules across months automatically" data-caption="D14 · MONTH-BOUNDARY CARRYOVER">
             <p class="cat">CONTINUITY</p>
             <h3>Carry rules across months automatically</h3>
-            <p>Last month's final shifts feed into this month's first assignments.</p>
+            <p>Last month's final shifts feed into this month's first assignments. The engine reads the previous published rota and counts forward.</p>
+            <p class="aud-label">What it does</p>
+            <ul class="mini-list">
+              <li>Import previous month data at generation, applied automatically</li>
+              <li>Late-to-Early turnarounds blocked across the month boundary (Late Friday → Early Saturday)</li>
+              <li>Carryover recalculated every generation, always current</li>
+            </ul>
+            <blockquote class="feat-quote">
+              "The carryover across months was the thing that got me. I had no idea James was working six days straight because the spreadsheet only shows one month at a time."
+              <cite>— Sophie Andersen, Store Manager, Beechwood &amp; Hale</cite>
+            </blockquote>
           </article>
 
           <article class="feature" id="s08-f4" data-tab="Cap consecutive working days" data-caption="D15 · CONSECUTIVE-DAY TRACKER">
             <p class="cat">LIMITS</p>
             <h3>Cap consecutive working days</h3>
-            <p>Set the maximum number of working days in a row.</p>
+            <p>Set the maximum number of working days in a row. Default: 5. Tracked continuously as a hard constraint.</p>
+            <p class="aud-label">What it does</p>
+            <ul class="mini-list">
+              <li>Count consecutive days across the full scheduling window, including across month boundaries</li>
+              <li>Flag any stretch that exceeds the cap, with the specific days and employee named</li>
+              <li>Suggest the smallest change to resolve the violation</li>
+            </ul>
+            <blockquote class="feat-quote">
+              "James came in looking knackered one Monday and I checked. Six days in a row, spanning two months. I hadn't even seen it."
+              <cite>— Lisa Nguyen, Store Manager, Wren &amp; Co Interiors</cite>
+            </blockquote>
           </article>
 
           <article class="feature" id="s08-f5" data-tab="Lock shifts by employee" data-caption="D16 · RESTRICTION PROFILE">
             <p class="cat">RESTRICTIONS</p>
             <h3>Lock shifts by employee</h3>
-            <p>Assign shift-type restrictions per person.</p>
+            <p>Assign shift-type restrictions per person. Hard constraints, respected on every generation.</p>
+            <p class="aud-label">What it does</p>
+            <ul class="mini-list">
+              <li>Elena: Lates only, no Sundays, no Monday/Tuesday</li>
+              <li>Defined once in the employee profile, enforced automatically</li>
+              <li>The grid shows restricted shifts as unavailable. No manual memory, no forgotten exceptions</li>
+            </ul>
+            <blockquote class="feat-quote">
+              "Elena's restrictions are complicated. Lates only, no Sundays, no Mon-Tue. I used to forget at least one of those every month."
+              <cite>— Anna Kaus, Deputy Manager, Thread &amp; Grain</cite>
+            </blockquote>
           </article>
 
           <article class="feature" id="s08-f6" data-tab="Require manager presence on key days" data-caption="D17 · MANAGER CONFLICT">
             <p class="cat">COVERAGE</p>
             <h3>Require manager presence on key days</h3>
-            <p>Designate days that need a manager on-shift.</p>
+            <p>Designate days that need a manager on-shift. Overlapping manager requests trigger a specific conflict alert.</p>
+            <p class="aud-label">What it does</p>
+            <ul class="mini-list">
+              <li>Both managers requesting the same Tuesday off triggers a named conflict</li>
+              <li>The message names the date, the gap, and a suggested resolution</li>
+              <li>Caught at generation, not discovered at 9am when no manager walks in</li>
+            </ul>
+            <blockquote class="feat-quote">
+              "Me and Sophie both booked the same Tuesday off once. Nobody noticed until the morning team turned up and there was no manager. Never again."
+              <cite>— Rachel Torres, Store Manager, Wren &amp; Co Interiors</cite>
+            </blockquote>
           </article>
 
           <article class="feature" id="s08-f7" data-tab="Run pre-solve diagnostics" data-caption="D18 · VALIDATION OVERLAY">
             <p class="cat">VALIDATION</p>
             <h3>Run pre-solve diagnostics</h3>
-            <p>Test whether the current configuration is solvable before the engine runs.</p>
+            <p>Test whether the current configuration is solvable before the engine runs. Conflicts named and fixes suggested.</p>
+            <p class="aud-label">What it does</p>
+            <ul class="mini-list">
+              <li>Bank holiday Monday with two holidays and one restriction? The diagnostic names it</li>
+              <li>"Coverage cannot be met on Monday 30 March. 3 of 5 employees unavailable."</li>
+              <li>A fix is suggested before any schedule generates</li>
+            </ul>
+            <blockquote class="feat-quote">
+              "It told me the schedule was impossible before it even tried. Three people off on the same day with a two-person minimum. Obvious in hindsight, invisible in the spreadsheet."
+              <cite>— Sophie Andersen, Store Manager, Beechwood &amp; Hale</cite>
+            </blockquote>
           </article>
 
           <article class="feature" id="s08-f8" data-tab="Edit, approve, and download" data-caption="D19 · EDITABLE EXPORT">
             <p class="cat">OUTPUT</p>
             <h3>Edit, approve, and download</h3>
-            <p>Review the generated rota in an editable grid.</p>
+            <p>Review the generated rota in an editable grid. Adjust any shift. Export when ready.</p>
+            <p class="aud-label">What it does</p>
+            <ul class="mini-list">
+              <li>Download as formatted Excel or Deputy CSV</li>
+              <li>Override any cell before publication: the engine proposes, the manager decides</li>
+              <li>Nothing reaches the team until the manager approves</li>
+            </ul>
+            <blockquote class="feat-quote">
+              "I like that I can still change things. It gives me the schedule but I'm the one who says 'yes, publish it.' That matters."
+              <cite>— Anna Kaus, Deputy Manager, Thread &amp; Grain</cite>
+            </blockquote>
           </article>
 
         </div>
