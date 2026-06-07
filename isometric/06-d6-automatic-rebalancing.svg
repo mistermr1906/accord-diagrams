@@ -1,53 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Accord landing page — Section 06 · D6 Automatic rebalancing (V-trough rebuild)
-  Supersedes: the previous "beam resting on columns with one block missing" mechanic
-              (rejected 2026-04-17 — read as industrial machinery, not silent correction).
+  Accord landing page — Section 06 · D6 Automatic rebalancing (clean-line redesign · 2026-06-07)
+  Supersedes: the 2026-04-17 transparent-wireframe build — same designer-confirmed concept
+              (V-trough + settled cube), "nested valley" execution: the trough re-proportioned
+              so the cube nests with clear air; crease breaks behind the solid cube; no
+              hidden-edge strokes; one crossing-break in A→E.
   Style-lock: diagrams/style-lock-isometric.md
-  Benchmark:  D4 hourglass (400×400 · filled orange grain at waist) · D5 lattice-plus-plane
-              (460×460 · orange edge on anchor rhombus) · Stat Row A (A1–A3).
+  Precedent:  D8 final (06-d8-first-publish-reliability.svg) — "opaque by omission".
+  Review:     diagrams/reviews/d6-redesign.md
 
   Metaphor: A concave V-trough in isometric wireframe — two sloping inner walls meeting
             at a horizontal crease along the floor — with a single small cube settled
-            at the lowest point of the valley. Gravity found the ball's resting place;
+            at the lowest point of the valley. Gravity found the cube's resting place;
             the geometry of the well made it inevitable; no hand, no machinery, no
             trajectory lines. Emotional territory: invisibility · automatic correction.
 
   Geometry — true 30° isometric, parallel projection:
     screen_x = 200 + 0.866·(X − Y)
-    screen_y = 163 + 0.5·(X + Y) − Z
+    screen_y = 147 + 0.5·(X + Y) − Z
 
-  Trough — length L=192 (along X, half=96), width W=120 (along Y, half=60), depth D=72:
-    A (−96, −60,  0) → (168.82,  85)   top-rim · back-far side · back corner
-    B (+96, −60,  0) → (335.10, 181)   top-rim · back-far side · front corner
-    C (+96, +60,  0) → (231.18, 241)   top-rim · near side · front corner
-    D (−96, +60,  0) → ( 64.90, 145)   top-rim · near side · back corner
-    E (−96,   0, −72)→ (116.86, 187)   crease · back end
-    F (+96,   0, −72)→ (283.14, 283)   crease · front end
+  Trough — length L=216 (along X, half=108), width W=88 (along Y, half=44), depth D=96:
+    A (−108, −44,  0) → (144.58,  71)   top-rim · back-far side · back corner
+    B (+108, −44,  0) → (331.63, 179)   top-rim · back-far side · front corner
+    C (+108, +44,  0) → (255.42, 223)   top-rim · near side · front corner
+    D (−108, +44,  0) → ( 68.37, 115)   top-rim · near side · back corner
+    E (−108,   0, −96)→ (106.47, 189)   crease · back end
+    F (+108,   0, −96)→ (293.53, 297)   crease · front end
 
-  Edge-weight assignment by depth (closer → primary):
-    PRIMARY    — C→F · B→F · B→C · E→F · C→D    (front-end V-cross-section + near rim + valley floor)
-    SECONDARY  — D→E · A→B · A→E · D→A           (back-end V-cross-section + far rim)
+  Why these proportions: screen clearance between near-rim line and crease
+    = d − w = 96 − 44 = 52px; the 40px-tall cube fits with 12px air. The near rim C→D
+    now passes ~22px ABOVE the cube's top corner (rim y=191 at x=200; cube top y=213) —
+    nothing touches the cube except the crease it sits on.
+  Bounds: width 263px = 65.8% of canvas (60–70% rule) · y 71→297, centred on the
+    optical centre (200, 184).
 
-  Ball — iso cube, side 20, centred at world (0, 0, −62); bottom face rests on crease at (0,0,−72):
-    Silhouette hexagon (CW from top):
-      (200, 205) back-top (−10,−10,−52)
-      (217.32, 215) top-right (+10,−10,−52)
-      (217.32, 235) bottom-right (+10,−10,−72)
-      (200, 245) front-bottom (+10,+10,−72)
-      (182.68, 235) bottom-left (−10,+10,−72)
-      (182.68, 215) top-left (−10,+10,−52)
-    Front-top interior corner (visible Y-radiator): (200, 225) = (+10,+10,−52)
-    Back-bottom interior corner (hidden Y-radiator): (200, 225) = (−10,−10,−72) — coincident in screen
+  Occlusion edits:
+    · A→E (secondary, back slope) breaks 6px where it passes behind the brighter near
+      rim C→D — crossing centre (120.63, 145.17): drawn as A→(121.55, 142.32) and
+      (119.70, 148.03)→E.
+    · Crease E→F breaks behind the solid cube: E→(182.68, 233) — entry exactly on the
+      cube's left vertical silhouette edge at its midpoint — and (208.66, 248)→F —
+      exit exactly on the bottom-right silhouette edge at its midpoint.
+    · No hidden cube edges — the cube is a solid mass, opaque by omission.
 
-  Orange — single edge on the settled ball: the top-face near-right edge
-    FRONT-TOP (200, 225) → TOP-RIGHT (217.32, 215). Short diagonal glint on the top
-    of the rested mass. Position-distinct from D4 (centre waist, filled diamond) and
-    D5 (bottom-left of large anchor rhombus). Gesture-distinct: interior diagonal edge
-    at upper-middle, not silhouette edge, not filled primitive.
+  Cube — iso cube, side 20, centred at world (0, 0, −86); bottom face rests on crease:
+    Silhouette hexagon (CW from top): (200, 213) · (217.32, 223) · (217.32, 243) ·
+      (200, 253) · (182.68, 243) · (182.68, 223)
+    Visible interior corner (front-top): (200, 233)
+    9 strokes total: 6 silhouette + 2 visible interior edges + 1 accent. No hidden edges.
 
-  Canvas: 400×400 · 1:1 square · container supplies dark ground (#0a0a0c) + 12 ambient
-  gridlines per style-lock container rules.
+  Orange — single edge on the settled cube: the top-face near-right edge
+    FRONT-TOP (200, 233) → TOP-RIGHT (217.32, 223). Short diagonal glint on the top
+    of the rested mass.
+
+  Canvas: 400×400 · 1:1 square · container supplies dark ground (#0a0a0c) per
+  style-lock container rules.
 -->
 <svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 400 400"
@@ -62,52 +69,46 @@
     <style>
       .primary   { stroke: #e8e8ea; stroke-width: 1;    fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
       .secondary { stroke: #5a5a60; stroke-width: 0.75; fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
-      .hidden    { stroke: #33333a; stroke-width: 0.5;  fill: none; stroke-dasharray: 3 3;             stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
       .accent    { stroke: #f7693b; stroke-width: 1;    fill: none; vector-effect: non-scaling-stroke; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; }
     </style>
   </defs>
 
   <!-- Trough · back-end V-cross-section + far rim + back slopes (secondary · receding) -->
   <g aria-hidden="true">
-    <line class="secondary" x1="64.90"  y1="145" x2="168.82" y2="85"  /><!-- D→A  back-end rim -->
-    <line class="secondary" x1="168.82" y1="85"  x2="335.10" y2="181" /><!-- A→B  far-side top rim -->
-    <line class="secondary" x1="168.82" y1="85"  x2="116.86" y2="187" /><!-- A→E  back-far slope edge -->
-    <line class="secondary" x1="64.90"  y1="145" x2="116.86" y2="187" /><!-- D→E  back-near slope edge -->
+    <line class="secondary" x1="68.37"  y1="115"    x2="144.58" y2="71"     /><!-- D→A  back-end rim -->
+    <line class="secondary" x1="144.58" y1="71"     x2="331.63" y2="179"    /><!-- A→B  far-side top rim -->
+    <line class="secondary" x1="68.37"  y1="115"    x2="106.47" y2="189"    /><!-- D→E  back-near slope edge -->
+    <line class="secondary" x1="144.58" y1="71"     x2="121.55" y2="142.32" /><!-- A→E  back-far slope · upper segment (breaks behind near rim C→D) -->
+    <line class="secondary" x1="119.70" y1="148.03" x2="106.47" y2="189"    /><!-- A→E  back-far slope · lower segment -->
   </g>
 
   <!-- Trough · front-end V-cross-section + near rim + crease (primary · foreground) -->
   <g aria-hidden="true">
-    <line class="primary" x1="335.10" y1="181" x2="231.18" y2="241" /><!-- B→C  front-end rim  -->
-    <line class="primary" x1="231.18" y1="241" x2="64.90"  y2="145" /><!-- C→D  near-side top rim -->
-    <line class="primary" x1="335.10" y1="181" x2="283.14" y2="283" /><!-- B→F  front-far slope -->
-    <line class="primary" x1="231.18" y1="241" x2="283.14" y2="283" /><!-- C→F  front-near slope -->
-    <line class="primary" x1="116.86" y1="187" x2="283.14" y2="283" /><!-- E→F  crease (valley bottom) -->
+    <line class="primary" x1="331.63" y1="179" x2="255.42" y2="223" /><!-- B→C  front-end rim  -->
+    <line class="primary" x1="255.42" y1="223" x2="68.37"  y2="115" /><!-- C→D  near-side top rim (passes ~22px above the cube — clear air) -->
+    <line class="primary" x1="331.63" y1="179" x2="293.53" y2="297" /><!-- B→F  front-far slope -->
+    <line class="primary" x1="255.42" y1="223" x2="293.53" y2="297" /><!-- C→F  front-near slope -->
+    <line class="primary" x1="106.47" y1="189" x2="182.68" y2="233" /><!-- E→F  crease · back segment (dies at cube left silhouette edge) -->
+    <line class="primary" x1="208.66" y1="248" x2="293.53" y2="297" /><!-- E→F  crease · front segment (re-emerges at bottom-right silhouette edge) -->
   </g>
 
-  <!-- Ball · hidden Y-radiator edges from back-bottom corner (dashed tertiary) -->
+  <!-- Cube · silhouette hexagon (primary) — solid mass, no hidden edges -->
   <g aria-hidden="true">
-    <line class="hidden" x1="200" y1="225" x2="200"    y2="205" /><!-- back-bottom → back-top (vertical, behind) -->
-    <line class="hidden" x1="200" y1="225" x2="217.32" y2="235" /><!-- back-bottom → bottom-right -->
-    <line class="hidden" x1="200" y1="225" x2="182.68" y2="235" /><!-- back-bottom → bottom-left  -->
+    <line class="primary" x1="200"    y1="213" x2="217.32" y2="223" /><!-- back-top → top-right -->
+    <line class="primary" x1="217.32" y1="223" x2="217.32" y2="243" /><!-- top-right → bottom-right -->
+    <line class="primary" x1="217.32" y1="243" x2="200"    y2="253" /><!-- bottom-right → front-bottom -->
+    <line class="primary" x1="200"    y1="253" x2="182.68" y2="243" /><!-- front-bottom → bottom-left -->
+    <line class="primary" x1="182.68" y1="243" x2="182.68" y2="223" /><!-- bottom-left → top-left -->
+    <line class="primary" x1="182.68" y1="223" x2="200"    y2="213" /><!-- top-left → back-top -->
   </g>
 
-  <!-- Ball · silhouette hexagon (primary) -->
+  <!-- Cube · visible interior edges from front-top corner (primary · third edge is the orange accent) -->
   <g aria-hidden="true">
-    <line class="primary" x1="200"    y1="205" x2="217.32" y2="215" /><!-- back-top → top-right -->
-    <line class="primary" x1="217.32" y1="215" x2="217.32" y2="235" /><!-- top-right → bottom-right -->
-    <line class="primary" x1="217.32" y1="235" x2="200"    y2="245" /><!-- bottom-right → front-bottom -->
-    <line class="primary" x1="200"    y1="245" x2="182.68" y2="235" /><!-- front-bottom → bottom-left -->
-    <line class="primary" x1="182.68" y1="235" x2="182.68" y2="215" /><!-- bottom-left → top-left -->
-    <line class="primary" x1="182.68" y1="215" x2="200"    y2="205" /><!-- top-left → back-top -->
+    <line class="primary" x1="200" y1="233" x2="200"    y2="253" /><!-- front-top → front-bottom (vertical front) -->
+    <line class="primary" x1="200" y1="233" x2="182.68" y2="223" /><!-- front-top → top-left     (top-face diagonal) -->
   </g>
 
-  <!-- Ball · visible Y-radiator edges from front-top corner (primary · 2 interior edges; third replaced by orange) -->
-  <g aria-hidden="true">
-    <line class="primary" x1="200" y1="225" x2="200"    y2="245" /><!-- front-top → front-bottom (vertical front) -->
-    <line class="primary" x1="200" y1="225" x2="182.68" y2="215" /><!-- front-top → top-left     (top-face diagonal) -->
-  </g>
-
-  <!-- Orange · single spotlight · top-face near-right edge of the settled ball -->
-  <line class="accent" x1="200" y1="225" x2="217.32" y2="215" />
+  <!-- Orange · single spotlight · top-face near-right edge of the settled cube -->
+  <line class="accent" x1="200" y1="233" x2="217.32" y2="223" />
 
 </svg>
